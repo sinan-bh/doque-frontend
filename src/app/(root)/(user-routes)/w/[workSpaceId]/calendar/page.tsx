@@ -20,7 +20,7 @@ function Page() {
   return (
     <div className="bg-gray-100 flex justify-end pr-10">
       <div>
-        <div className="py-3 w-3/3 flex justify-between">
+        <div className="py-3 flex justify-between">
           <div>
             <h1 className="font-extrabold text-3xl">Calendar</h1>
             <span>
@@ -35,8 +35,7 @@ function Page() {
                   className={`px-4 py-2 rounded-xl focus:outline-none ${
                     activeTab === tab ? "bg-gray-300 text-black" : "text-black "
                   }`}
-                  onClick={() => setActiveTab(tab as "Day" | "Week" | "Month")}
-                >
+                  onClick={() => setActiveTab(tab as "Day" | "Week" | "Month")}>
                   {tab}
                 </button>
               ))}
