@@ -17,6 +17,11 @@ const nextConfig = {
         hostname: '"th.bing.com"',
         port: "",
       },
+      {
+        protocol: 'https',
+        hostname: 'imgv3.fotor.com', 
+        port: '',
+      },
     ],
   },
 };
