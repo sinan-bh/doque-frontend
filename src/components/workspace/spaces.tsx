@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IoSearchSharp } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
+import Link from 'next/link';
 
 interface Space {
   id: number;
@@ -49,7 +50,7 @@ const Spaces: React.FC = () => {
           {spaces.map(space => (
             <div key={space.id}>
               <div className='flex justify-between items-center p-1 hover:border-l-8 cursor-pointer'>
-                <h2 className='font-medium text-md text-black'>{space.name}</h2>
+                <Link href={"/w/1/1"} ><h2 className='font-medium text-md text-black'>{space.name}</h2></Link>
                 <div className='flex items-center'>
                   <FaPlus className='text-black mr-2 cursor-pointer' onClick={() => addProject(space.id)} />                  
                   <IoIosArrowDown
