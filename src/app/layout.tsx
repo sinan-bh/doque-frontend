@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { CalenderContextProvider } from "@/contexts/CalenderContext";
 import "./globals.css";
 import UserContextProvider from "@/contexts/user-context";
+import { MessageProvider } from "@/contexts/message-context";
 
 export const metadata: Metadata = {
   title: "DOQUE",
@@ -23,9 +24,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <UserContextProvider>
-          <CalenderContextProvider>{children}</CalenderContextProvider>
-        </UserContextProvider>
+        <MessageProvider>
+          <UserContextProvider>
+            <CalenderContextProvider>{children}</CalenderContextProvider>
+          </UserContextProvider>
+        </MessageProvider>
       </body>
     </html>
   );

@@ -1,3 +1,4 @@
+import Chat from '@/components/chat/chat';
 import Navbar from '@/components/navbar/navbar';
 import React from 'react';
 
@@ -9,6 +10,7 @@ export default function Layout({
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <Navbar />
+      <Chat />
       <div className="flex-1 overflow-y-auto">
         {children}
       </div>
