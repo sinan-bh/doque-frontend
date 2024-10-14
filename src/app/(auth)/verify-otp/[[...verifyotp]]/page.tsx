@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BiLogIn } from "react-icons/bi";
+import { useUser } from '@/contexts/user-context'; 
 
 export default function VerifyEmail() {
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
-    const [isResendDisabled, setIsResendDisabled] = useState(true);
-    const [timer, setTimer] = useState(30);
+    const [email, setEmail] = useState<string>(''); // New state for email
+    // const [isResendDisabled, setIsResendDisabled] = useState(true);
+    // const [timer, setTimer] = useState(30);
+    const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
+    const { verifyOtp } = useUser(); 
     const router = useRouter();
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -27,24 +31,39 @@ export default function VerifyEmail() {
         }
     };
 
-    const handleResendOTP = () => {
-        setIsResendDisabled(true);
-        setTimer(30);
-        console.log('Resending OTP...');
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
     };
 
-    const handleSubmit = () => {
-        router.push('/reset-password');
-    };
+    // const handleResendOTP = () => {
+    //     setIsResendDisabled(true);
+    //     setTimer(30);
+    //     console.log('Resending OTP...');
+    // };
 
-    useEffect(() => {
-        if (timer > 0) {
-            const countdown = setTimeout(() => setTimer(timer - 1), 1000);
-            return () => clearTimeout(countdown);
+    const handleSubmit = async () => {
+        const fullOtp = otp.join('');
+        if (email) {
+            const response = await verifyOtp(email, fullOtp);
+            if (response.statusCode === 201) {
+                setStatusMessage("OTP verified successfully!");
+                router.push('/signin');
+            } else {
+                setStatusMessage(response.error);
+            }
         } else {
-            setIsResendDisabled(false);
+            setStatusMessage("Please provide a valid email address.");
         }
-    }, [timer]);
+    };
+
+    // useEffect(() => {
+    //     if (timer > 0) {
+    //         const countdown = setTimeout(() => setTimer(timer - 1), 1000);
+    //         return () => clearTimeout(countdown);
+    //     } else {
+    //         setIsResendDisabled(false);
+    //     }
+    // }, [timer]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] w-full flex justify-center items-center">
@@ -60,9 +79,21 @@ export default function VerifyEmail() {
                 <p className="text-gray-600 text-sm text-center mb-6">
                     An OTP has been sent to your email. Please enter the 6-digit OTP to verify your account.
                 </p>
+                <p className="text-sm font-semibold text-left mb-2 text-[#5E6061]">Enter Email</p>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    className="w-full h-12 mb-6 text-xl border border-gray-400 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#93D8EE] px-4"
+                    placeholder="Enter your email"
+                />
+
                 <p className="text-sm font-semibold text-left mb-6 text-[#5E6061]">
                     Enter OTP
                 </p>
+                {statusMessage && (
+                    <div className="text-center mb-4 text-red-500">{statusMessage}</div>
+                )}
                 <div className="flex justify-between mb-8">
                     {otp.map((digit, index) => (
                         <input
@@ -83,15 +114,15 @@ export default function VerifyEmail() {
                 >
                     Submit
                 </button>
-                <div className="flex justify-center items-center text-sm text-[#5E6061]">
+                {/* <div className="flex justify-center items-center text-sm text-[#5E6061]">
                     <button
                         onClick={handleResendOTP}
                         disabled={isResendDisabled}
-                        className={`text-[#5E6061] hover:underline ${isResendDisabled ? 'cursor-not-allowed' : ''}`}
+                        className={`text-[#569cb3] font-bold ${isResendDisabled ? 'opacity-50' : 'hover:underline'}`}
                     >
-                        {isResendDisabled ? `Resend OTP in (${timer}s)` : 'Resend OTP'}
+                        Resend OTP {isResendDisabled ? `(${timer})` : ''}
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     );

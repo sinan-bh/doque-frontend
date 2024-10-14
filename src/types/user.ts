@@ -1,10 +1,16 @@
 export interface User {
-  id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  avatar: string | null;
+  image: string;
+  password: string;
 }
 
 export interface UserData extends User {
   password: string;
+}
+
+export interface loginUser{
+  email: string;
+  token: string;
 }

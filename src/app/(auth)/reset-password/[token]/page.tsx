@@ -1,31 +1,52 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, {  useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { BiLogIn } from "react-icons/bi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import Link from 'next/link';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { useUser } from '@/contexts/user-context';
 
 export default function ResetPassword() {
-    const [password, setPassword] = useState('');
+
+    const { resetPassword } = useUser();
+
+    const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const router = useRouter();
 
-    const handleResetPassword = (e: React.FormEvent) => {
+    const {token}: {token?: string} = useParams()
+
+    const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
-        
-        if (password !== confirmPassword) {
+
+        if (newPassword !== confirmPassword) {
             setError('Passwords do not match. Please try again.');
             return;
         }
+
         setError('');
-        console.log('Password reset:', password);
-        router.push('/home');
+        setSuccess('');
+
+        if (!token) {
+            setError('Token is missing. Please try again.');
+            return;
+        }
+
+        const result = await resetPassword(token, newPassword);
+
+        if (result.statusCode === 200) {
+            setSuccess(result.error || "Password reset successfully.");
+            router.push('/signin');
+        } else {
+            setError(result.error || "An error occurred. Please try again.");
+        }
     };
 
     return (
@@ -44,7 +65,8 @@ export default function ResetPassword() {
                     Enter your new password below.
                 </p>
 
-                {error && <p className="text-red-600 text-center mb-4">{error}</p>} 
+                {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+                {success && <p className="text-green-600 text-center mb-4">{success}</p>}
 
                 <form onSubmit={handleResetPassword} className="space-y-8">
                     <div className="relative">
@@ -52,8 +74,8 @@ export default function ResetPassword() {
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="New Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
                             className="block w-full px-4 py-3 pl-10 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
                             required
                         />

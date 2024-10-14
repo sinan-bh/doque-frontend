@@ -6,10 +6,13 @@ import { Button } from '../ui/button';
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import Image from 'next/image';
+import { useUser } from '@/contexts/user-context';
 
 export default function ProfileSection() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+    const { logout } = useUser();
 
     const handleClickOutside = (event: MouseEvent) => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -23,6 +26,10 @@ export default function ProfileSection() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const handleLogout = () => {
+        logout();
+    };
 
     return (
         <div className="relative">
@@ -83,7 +90,7 @@ export default function ProfileSection() {
                             <FiSettings className="mr-1" />
                             Settings
                         </Button>
-                        <Button className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]">
+                        <Button onClick={handleLogout} className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]">
                             <IoLogOutOutline className="mr-1" />
                             Logout
                         </Button>
