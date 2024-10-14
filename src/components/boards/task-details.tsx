@@ -58,7 +58,7 @@ export default function TaskDetails({ taskId }: { taskId?: string }) {
 
           <CardHeader>
             <CardTitle className="flex gap-4 items-center text-2xl">
-              <FiCreditCard className="mt-1" /> {task.content}
+              <FiCreditCard className="mt-1" /> {task.title}
             </CardTitle>
             <div className="h-0.5 bg-zinc-400 rounded-full"></div>
 

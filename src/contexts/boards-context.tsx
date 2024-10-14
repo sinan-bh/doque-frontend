@@ -1,20 +1,60 @@
 "use client";
 
-import { sections, tasksData } from "@/consts/spaces";
-import { Section, Task } from "@/types/spaces";
+import { Space, TaskRow, Column } from "@/types/spaces";
+import {
+  apiCreateList,
+  apiCreateTask,
+  apiDeleteTask,
+  apiListDelete,
+  apiUpdateList,
+} from "@/utils/taskUtils";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import React, { createContext, useContext, useState } from "react";
 
-const BoardsContext = createContext<{
-  columns: Section[];
-  setColumns: React.Dispatch<React.SetStateAction<Section[]>>;
-  tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-  createColumn: () => void;
-  createTask: (sectionId: string) => void;
-  handleDelete: (id: string) => void;
-  updateSectionTitle: (id: string, newTitle: string) => void;
+type LoadingStates =
+  | "createCol"
+  | "createTask"
+  | "moveTask"
+  | "deleteTask"
+  | "deleteCol"
+  | "updateCol";
+
+type ContextType = {
+  loading: LoadingStates | null;
+  columns: Column[];
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
+  tasks: TaskRow[];
+  setTasks: React.Dispatch<React.SetStateAction<TaskRow[]>>;
+  spaces: Space[];
+  populateSpacesData: (spaces: Space[]) => void;
+  populateBoardData: (spaceData: Space) => {
+    cols: Column[];
+    taskRows: TaskRow[];
+  };
+  createColumn: (
+    workspaceId: string,
+    onError: (error: string) => void
+  ) => Promise<void>;
+  deleteColumn: (
+    spaceId: string,
+    listId: string,
+    onError: (error: string) => void
+  ) => Promise<void>;
+  createTask: (
+    spaceId: string,
+    listId: string,
+    onError: (msg: string) => void
+  ) => Promise<void>;
+  updateList: (
+    spaceId: string,
+    listId: string,
+    payload: {
+      name: string;
+      color?: string;
+    },
+    onError: (msg: string) => void
+  ) => Promise<void>;
   moveColumn: (activeId: UniqueIdentifier, overId: UniqueIdentifier) => void;
   swapTasksInSameColumn: (
     activeId: UniqueIdentifier,
@@ -24,7 +64,15 @@ const BoardsContext = createContext<{
     activeId: UniqueIdentifier,
     overId: UniqueIdentifier
   ) => void;
-} | null>(null);
+  deleteTask: (
+    spaceId: string,
+    listId: string,
+    taskId: string,
+    onError: (msg: string) => void
+  ) => Promise<void>;
+};
+
+const BoardsContext = createContext<ContextType | null>(null);
 
 export const useBoards = () => {
   const context = useContext(BoardsContext);
@@ -39,42 +87,109 @@ export default function BoardsProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [columns, setColumns] = useState<Section[]>(sections);
-  const [tasks, setTasks] = useState<Task[]>(tasksData);
+  const [columns, setColumns] = useState<Column[]>([]); // contains the lists of the current space
+  const [tasks, setTasks] = useState<TaskRow[]>([]); // contains the tasks of the current space
+  const [spaces, setSpaces] = useState<Space[]>([]); // contains every spaces in the work space
+  const [loading, setLoading] = useState<LoadingStates | null>(null);
 
-  const createColumn = () => {
-    setColumns((prevColumns) => [
-      ...prevColumns,
-      { id: Date.now().toString(), title: "New Column", color: "bg-blue-500" },
-    ]);
+  const createColumn = async (
+    spaceId: string,
+    onError: (msg: string) => void
+  ) => {
+    setLoading("createCol");
+    const res = await apiCreateList(spaceId, { name: "New List" });
+    if (res.data) {
+      setColumns((prevColumns) => [
+        {
+          id: res.data!._id,
+          title: res.data!.name,
+          color: res.data!.color,
+        },
+        ...prevColumns,
+      ]);
+    } else if (res.error) {
+      onError(res.error);
+    }
+    setLoading(null);
   };
 
-  const createTask = (sectionId: string) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      content: "New Task",
-      section: sectionId,
-    };
-    setTasks([...tasks, newTask]);
-  };
-
-  const handleDelete = (id: string) => {
+  const deleteColumn = async (
+    spaceId: string,
+    listId: string,
+    onError: (msg: string) => void
+  ) => {
+    setLoading("deleteCol");
+    const res = await apiListDelete(spaceId, listId);
+    if (res.error) {
+      onError(res.error);
+      setLoading(null);
+      return;
+    }
     setColumns((prevColumns) =>
-      prevColumns.filter((column) => column.id !== id)
+      prevColumns.filter((column) => column.id !== listId)
     );
+    setLoading(null);
   };
 
-  const updateSectionTitle = (id: string, newTitle: string) => {
-    setColumns((prevColumns) =>
-      prevColumns.map((column) =>
-        column.id === id ? { ...column, title: newTitle } : column
-      )
-    );
+  const createTask = async (
+    spaceId: string,
+    listId: string,
+    onError: (msg: string) => void
+  ) => {
+    setLoading("createTask");
+    const res = await apiCreateTask(spaceId, listId, {
+      title: "New",
+      description: "hello this is a new task",
+    });
+    if (res.data) {
+      setTasks([
+        ...tasks,
+        {
+          title: res.data.title,
+          description: res.data.description,
+          id: res.data._id,
+          column: listId,
+        },
+      ]);
+    }
+    if (res.error) {
+      onError(res.error);
+    }
+    setLoading(null);
+  };
+
+  const updateList = async (
+    spaceId: string,
+    listId: string,
+    payload: {
+      name: string;
+      color?: string;
+    },
+    onError: (msg: string) => void
+  ) => {
+    setLoading("updateCol");
+    const res = await apiUpdateList(spaceId, listId, payload);
+    setLoading(null);
+    if (res.data) {
+      setColumns((prevColumns) =>
+        prevColumns.map((column) => {
+          if (column.id === listId) {
+            return {
+              ...column,
+              title: res.data!.name,
+              color: res.data!.color,
+            };
+          }
+          return column;
+        })
+      );
+    }
+    if (res.error) {
+      onError(res.error);
+    }
   };
 
   const moveColumn = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
-    console.log("column mmve");
-
     setColumns((prevColumns) => {
       // Find the index of the active and over columns and move the active column to the over column's position
       const activeColumnIndex = prevColumns.findIndex(
@@ -94,8 +209,8 @@ export default function BoardsProvider({
     setTasks((tasks) => {
       const activeIndex = tasks.findIndex((task) => task.id === activeId);
       const overIndex = tasks.findIndex((task) => task.id === overId);
-      if (tasks[activeIndex].section !== tasks[overIndex].section) {
-        tasks[activeIndex].section = tasks[overIndex].section;
+      if (tasks[activeIndex].column !== tasks[overIndex].column) {
+        tasks[activeIndex].column = tasks[overIndex].column;
       }
 
       return arrayMove(tasks, activeIndex, overIndex);
@@ -106,13 +221,65 @@ export default function BoardsProvider({
     activeId: UniqueIdentifier,
     overId: UniqueIdentifier
   ) => {
+    // Update the state first
     setTasks((tasks) => {
+      // Save the previous state to revert later if needed
       const activeIndex = tasks.findIndex((task) => task.id === activeId);
+      if (activeIndex === -1) {
+        return tasks;
+      }
+      // Update the task's column
 
-      tasks[activeIndex].section = overId.toString();
+      tasks[activeIndex].column = overId.toString();
 
       return arrayMove(tasks, activeIndex, activeIndex);
     });
+  };
+
+  const deleteTask = async (
+    spaceId: string,
+    listId: string,
+    taskId: string,
+    onError: (msg: string) => void
+  ) => {
+    setLoading("deleteTask");
+    const res = await apiDeleteTask(spaceId, listId, taskId);
+    if (res.error) {
+      onError(res.error);
+      setLoading(null);
+      return;
+    }
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    setLoading(null);
+  };
+
+  const populateSpacesData = (spaces: Space[]) => {
+    setSpaces(spaces);
+  };
+
+  const populateBoardData = (spaceData: Space) => {
+    // Populate columns
+    const cols: Column[] = spaceData.lists.map((list) => {
+      return {
+        id: list._id,
+        title: list.name,
+        color: list.color,
+      };
+    });
+
+    // Extract tasks from all lists and populate taskRows
+    const taskRows: TaskRow[] = spaceData.lists.flatMap((list) =>
+      list.tasks.map((task) => ({
+        ...task,
+        id: task._id,
+        column: list._id,
+      }))
+    );
+
+    setColumns(cols);
+    setTasks(taskRows);
+
+    return { cols, taskRows };
   };
 
   const values = {
@@ -121,12 +288,17 @@ export default function BoardsProvider({
     tasks,
     setTasks,
     createColumn,
+    deleteColumn,
     createTask,
-    handleDelete,
-    updateSectionTitle,
+    updateList,
     moveColumn,
     swapTasksInSameColumn,
     moveTaskToColumn,
+    deleteTask,
+    populateSpacesData,
+    spaces,
+    populateBoardData,
+    loading,
   };
   return (
     <BoardsContext.Provider value={values}>{children}</BoardsContext.Provider>

@@ -10,7 +10,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   horizontalListSortingStrategy,
   SortableContext,
@@ -18,26 +18,39 @@ import {
 import SectionContainer from "./section-container";
 import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa6";
-import { Section, Task } from "@/types/spaces";
+import { Column, Space, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
 import { useBoards } from "@/contexts/boards-context";
+import { useParams } from "next/navigation";
+import { debouncedApiMoveTask } from "@/utils/taskUtils";
 
-export default function BoardsContainer() {
-  const [activeColumn, setActiveColumn] = useState<Section | null>(null);
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
+export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
+  const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+  const [activeTask, setActiveTask] = useState<TaskRow | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const { spaceId } = useParams();
 
   const {
     tasks,
+    setTasks,
     columns,
-
     createColumn,
+    deleteColumn,
     createTask,
-    handleDelete,
     moveColumn,
     moveTaskToColumn,
     swapTasksInSameColumn,
-    updateSectionTitle,
+    populateBoardData,
+    loading,
   } = useBoards();
+
+  const [prevState, setPrevState] = useState<string>(JSON.stringify(tasks));
+
+  useEffect(() => {
+    populateBoardData(spaceData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spaceData]); //do not include populate function inside dependency!!
 
   const columnsIds = useMemo(
     () => columns.map((column) => column.id),
@@ -51,6 +64,7 @@ export default function BoardsContainer() {
       return;
     }
     if (active?.type === "task") {
+      setPrevState(JSON.stringify(tasks)); // Save the previous state of the tasks to revert back incase of error
       setActiveTask(active.task); // if the active item is a task, set it as the active task
       return;
     }
@@ -66,6 +80,32 @@ export default function BoardsContainer() {
 
     const activeId = active.id;
     const overId = over.id;
+
+    // api call for moving the task
+    if (active.data.current?.type === "task") {
+      const currentListId = JSON.parse(prevState).find(
+        (task: TaskRow) => task.id === activeId
+      )?.column;
+
+      const newListId =
+        over.data.current?.type === "section"
+          ? overId
+          : over.data.current?.type === "task"
+          ? tasks.find((task) => task.id === overId)?.column
+          : null;
+
+      if (currentListId !== newListId) {
+        debouncedApiMoveTask(
+          spaceId[0],
+          currentListId!,
+          activeId.toString(),
+          newListId?.toString() || "",
+          setTasks,
+          prevState,
+          (msg) => setError(msg)
+        );
+      }
+    }
 
     if (activeId === overId) return;
 
@@ -101,6 +141,7 @@ export default function BoardsContainer() {
     if (taskIsActive && isOverAColumn) {
       // If the active item is a task and the over item is a column, move the task to the column
       setTimeout(() => {
+        setError(null);
         moveTaskToColumn(activeId, overId);
       }, 10);
     }
@@ -131,13 +172,25 @@ export default function BoardsContainer() {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}>
       <div className="w-full">
-        <Button
-          onClick={createColumn}
-          size="sm"
-          variant="outline"
-          className="flex gap-2 items-center my-2">
-          Add Column <FaPlus size={10} />
-        </Button>
+        <div className="flex gap-4 items-center">
+          <Button
+            disabled={loading === "createCol"}
+            onClick={() => {
+              setError(null);
+              createColumn(spaceId[0], (error) => setError(error));
+            }}
+            size="sm"
+            variant="outline"
+            className="flex gap-2 items-center my-2">
+            Add Column <FaPlus size={10} />
+          </Button>
+          <div className="text-sm text-gray-700">
+            {loading === "createCol" && <p>Creating..</p>}
+            {loading === "deleteCol" && <p>Deleting List..</p>}
+            {loading === "createTask" && <p>Creating task...</p>}
+            {error && <p>Error: {error}</p>}
+          </div>
+        </div>
         <div className="flex gap-4 w-screen-lg overflow-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
           <SortableContext
             items={columnsIds}
@@ -145,11 +198,18 @@ export default function BoardsContainer() {
             {columns.map((section) => (
               <SectionContainer
                 key={section.id}
-                createTask={createTask}
-                updateSectionTitle={updateSectionTitle}
-                deleteSection={handleDelete}
+                createTask={() => {
+                  setError(null);
+                  createTask(spaceId[0], section.id, (msg) => setError(msg));
+                }}
+                deleteSection={(listId) => {
+                  setError(null);
+                  deleteColumn(spaceId[0], listId, (error) => {
+                    setError(error);
+                  });
+                }}
                 section={section}
-                tasks={tasks.filter((task) => task.section === section.id)}
+                tasks={tasks.filter((task) => task.column === section.id)}
               />
             ))}
           </SortableContext>
@@ -158,7 +218,7 @@ export default function BoardsContainer() {
           {activeColumn ? (
             <SectionContainer
               section={activeColumn}
-              tasks={tasks.filter((task) => task.section === activeColumn.id)}
+              tasks={tasks.filter((task) => task.column === activeColumn.id)}
             />
           ) : null}
           {activeTask ? <TaskCard task={activeTask} /> : null}

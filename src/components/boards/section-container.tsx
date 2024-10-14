@@ -8,27 +8,36 @@ import { Button } from "../ui/button";
 import { FaPlus, FaTrash } from "react-icons/fa6";
 import { useMemo, useState } from "react";
 import { Input } from "../ui/input";
-import { Section, Task } from "@/types/spaces";
+import { Column, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
+import { useBoards } from "@/contexts/boards-context";
+import { MdOutlineFormatColorFill } from "react-icons/md";
+import { useParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SectionContainer({
   section,
   deleteSection = () => {},
-  updateSectionTitle = () => {},
   createTask = () => {},
   tasks,
   isOverLay = false,
 }: {
-  section: Section;
+  section: Column;
   deleteSection?: (id: string) => void;
-  updateSectionTitle?: (id: string, title: string) => void;
-  createTask?: (id: string) => void;
+  createTask?: () => void;
   isOverLay?: boolean;
-  tasks: Task[];
+  tasks: TaskRow[];
 }) {
   const [editMode, setEditMode] = useState(false);
+  const [value, setValue] = useState(section.title);
 
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
+
+  const { spaceId } = useParams();
+
+  const { loading, updateList } = useBoards();
+
+  const { toast } = useToast();
 
   const {
     setNodeRef,
@@ -53,53 +62,68 @@ export default function SectionContainer({
     border: `1px solid ${section.color || "#FEE485"}`,
   };
 
+  const handleUpdateTitle = async () => {
+    await updateList(spaceId[0], section.id, { name: value }, () => {
+      toast({ value: "Failed to update section title" });
+    });
+    setEditMode(false);
+  };
+
   return (
     <div
       style={style}
       ref={setNodeRef}
-      className={` w-72 h-[600px] flex-shrink-0 p-4 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white
+      className={` w-64 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white
        ${isDragging && !isOverLay && "opacity-50"} `}
       {...attributes}>
       <div
-        className="flex justify-between p-2 gap-2 cursor-pointer"
+        className="flex justify-between gap-2 p-2 cursor-pointer"
         {...listeners}>
         <h2
           onClick={() => setEditMode(true)}
-          className="font-semibold bg-zinc-200 rounded-md p-1 text-center px-4">
+          className="font-semibold rounded-md text-center">
           {!editMode && section.title}
           {editMode && (
             <Input
+              disabled={loading === "updateCol"}
               className="bg-white"
               type="text"
               autoFocus
-              value={section.title}
+              value={value}
               onChange={(e) => {
-                updateSectionTitle(section.id, e.target.value);
+                setValue(e.target.value);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter") setEditMode(false);
+                if (e.key === "Enter") handleUpdateTitle();
               }}
-              onBlur={() => setEditMode(false)}
+              onBlur={() => handleUpdateTitle()}
             />
           )}
         </h2>
-        <Button
-          onClick={() => {
-            deleteSection(section.id);
-          }}
-          variant="outline"
-          size="icon">
-          <FaTrash />
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="icon" className="h-6 w-6">
+            <MdOutlineFormatColorFill size={16} />
+          </Button>
+          <Button
+            onClick={() => {
+              deleteSection(section.id);
+            }}
+            variant="outline"
+            size="icon"
+            className="hover:text-red-700 h-6 w-6">
+            <FaTrash />
+          </Button>
+        </div>
       </div>
 
       <Button
         size="sm"
         variant="outline"
-        onClick={() => createTask(section.id)}
+        onClick={createTask}
         className="flex gap-2 items-center my-2 ">
         Create new task <FaPlus size={10} />
       </Button>
+
       <div className="flex flex-col gap-2 ">
         <SortableContext
           items={tasksIds}

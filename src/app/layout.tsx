@@ -4,6 +4,7 @@ import { CalenderContextProvider } from "@/contexts/CalenderContext";
 import "./globals.css";
 import UserContextProvider from "@/contexts/user-context";
 import { MessageProvider } from "@/contexts/message-context";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "DOQUE",
@@ -29,6 +30,7 @@ export default function RootLayout({
             <CalenderContextProvider>{children}</CalenderContextProvider>
           </UserContextProvider>
         </MessageProvider>
+        <Toaster />
       </body>
     </html>
   );
