@@ -1,12 +1,14 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { AiOutlineHome } from "react-icons/ai";
 import { HiOutlineTemplate } from "react-icons/hi";
 import { FiSettings } from "react-icons/fi";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Sidebar = () => {
+  const [activePath, setActivePath] = useState<string>("/u/home"); 
+
   const sidebarItems = [
     {
       icon: <AiOutlineHome className="text-2xl" />,
@@ -25,12 +27,20 @@ const Sidebar = () => {
     { name: "Guest's", link: "https://i.pravatar.cc/300" },
   ];
 
+  const activeLink = (path: string) => {
+    setActivePath(path); 
+  };
+
   return (
-    <div className="w-full h-auto sm:w-1/4 md:w-1/5  bg-[#EDF1F4] p-4 flex flex-col">
+    <div className="w-full h-auto sm:w-1/4 md:w-1/5 bg-[#EDF1F4] p-4 flex flex-col">
       <div className="flex-1">
         {sidebarItems.map((item, index) => (
-          <Link key={index} href={item.link}>
-            <div className="flex items-center p-1 mr-2 hover:bg-[#E1E4E6] rounded-lg mt-1">
+          <Link key={index} href={item.link} onClick={() => activeLink(item.link)}>
+            <div
+              className={`flex items-center p-1 mr-2 rounded-lg mt-1 cursor-pointer ${
+                activePath === item.link ? "bg-[#E1E4E6]" : "hover:bg-[#E1E4E6]"
+              }`}
+            >
               {item.icon}
               <h2 className="font-medium text-sm ml-2">{item.label}</h2>
             </div>
@@ -42,14 +52,14 @@ const Sidebar = () => {
 
         {workspaceItems.map((workspace, index) => (
           <Link href="/w/1/dashboard" key={index}>
-            <div className="flex items-center ml-1 mt-3 ">
-              <Image
-                src={workspace.link}
-                alt="Profile"
-                className="h-8 w-8 rounded-full object-cover mr-2"
-                width={32}
-                height={32}
-              />
+            <div className="flex items-center ml-1 mt-3">
+            <Avatar className="w-10 h-10">
+                <AvatarImage
+                  src={workspace.link}
+                  alt="User Profile"
+                />
+                <AvatarFallback />
+              </Avatar>
               <div className="flex flex-col py-1">
                 <span className="font-semibold text-sm">{workspace.name}</span>
                 <span className="font-medium text-sm">Workspace</span>

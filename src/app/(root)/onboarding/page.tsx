@@ -8,11 +8,11 @@ import TaskNameStep from "@/components/ui/onboarding/taskNamesStep";
 import ReadyPage from "@/components/ui/onboarding/readyPage";
 
 export default function Page() {
-  const [step, setStep] = useState(0); // Manage the current step
-  const [spaceName, setSpaceName] = useState(""); // State to hold the space name
-  const [boardName, setBoardName] = useState(""); // State to hold the current board name
+  const [step, setStep] = useState(0); 
+  const [spaceName, setSpaceName] = useState(""); 
+  const [boardName, setBoardName] = useState(""); 
 
-  // Move task categories state to the parent component
+  
   const [taskCategories, setTaskCategories] = useState({
     todo: "ToDo",
     doing: "Doing",
@@ -20,28 +20,28 @@ export default function Page() {
   });
 
   const handleContinue = () => {
-    setStep(1); // Move to Space Name Step
+    setStep(1); 
   };
 
   const handleSpaceNameNext = (name: string) => {
-    setSpaceName(name); // Set the space name when provided
-    setStep(2); // Move to Board Name Step
+    setSpaceName(name); 
+    setStep(2); 
   };
 
   const handleBoardNameNext = (name: string) => {
-    setBoardName(name); // Set the board name when provided
-    setStep(3); // Move to Task Name Step
+    setBoardName(name); 
+    setStep(3); 
   };
 
   const handleBack = () => {
-    setStep((prevStep) => prevStep - 1); // Go back to the previous step
+    setStep((prevStep) => prevStep - 1); 
   };
 
   const handleTaskNameNext = () => {
-    setStep(4); // Move to Ready Page
+    setStep(4); 
   };
 
-  // Update task categories when inputs change
+  
   const handleTaskCategoryChange = (name: string, value: string) => {
     setTaskCategories((prev) => ({
       ...prev,
@@ -55,7 +55,7 @@ export default function Page() {
       {step === 1 && (
         <SpaceNameStep
           onNext={handleSpaceNameNext}
-          initialName={spaceName} // Pass initial space name
+          initialName={spaceName} 
         />
       )}
       {step === 2 && (
@@ -63,7 +63,7 @@ export default function Page() {
           previousName={spaceName}
           onNext={handleBoardNameNext}
           onBack={handleBack}
-          initialName={boardName} // Pass initial board name
+          initialName={boardName} 
         />
       )}
       {step === 3 && (
@@ -71,12 +71,12 @@ export default function Page() {
           previousSpaceName={spaceName}
           previousBoardName={boardName}
           onBack={handleBack}
-          taskCategories={taskCategories} // Pass task categories
-          onTaskCategoryChange={handleTaskCategoryChange} // Pass handler for category changes
+          taskCategories={taskCategories} 
+          onTaskCategoryChange={handleTaskCategoryChange} 
           onNext={handleTaskNameNext}
         />
       )}
-      {step === 4 && <ReadyPage />}
+      {step === 4 && <ReadyPage spaceName={boardName} listName={taskCategories}/>}
     </div>
   );
 }

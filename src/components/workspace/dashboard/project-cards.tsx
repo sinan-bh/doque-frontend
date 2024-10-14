@@ -1,6 +1,5 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
 import React, { useState } from "react";
 
 type Project = {
@@ -35,12 +34,12 @@ const ProjectCard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleProjects = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev); 
   };
 
   const handleProjectClick = (index: number) => {
     setSelectedProjectIndex(index);
-    setIsOpen(false);
+    setIsOpen(false); 
   };
 
   const displayedProject = projects[selectedProjectIndex];
@@ -50,53 +49,55 @@ const ProjectCard: React.FC = () => {
   );
 
   return (
-    <div className="w-[257px] h-[96px] overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md p-2">
-      <div className="flex items-center space-x-4">
-        <Avatar>
-          <AvatarImage src={displayedProject.image} alt="Project Icon" />
-          <AvatarFallback />
-        </Avatar>
-        <div className="flex-grow">
-          <h3 className="text-sm">{displayedProject.title}</h3>
+    <div className="relative w-[257px]">
+      <div className="w-full h-auto overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md p-2 relative z-10">
+        <div className="flex items-center space-x-4">
+          <Avatar>
+            <AvatarImage src={displayedProject.image} alt="Project Icon" />
+            <AvatarFallback />
+          </Avatar>
+          <div className="flex-grow">
+            <h3 className="text-sm">{displayedProject.title}</h3>
+          </div>
+          <button onClick={toggleProjects} className="focus:outline-none">
+            {isOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 15l7-7 7 7"
+                />
+              </svg>
+            )}
+          </button>
         </div>
-        <button onClick={toggleProjects} className="focus:outline-none">
-          {isOpen ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 20 20"
-              stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 15l7-7 7 7"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          )}
-        </button>
+        <p className="text-[10px] text-gray-500">{displayedProject.description}</p>
       </div>
-      <p className="text-[10px]  text-gray-500">
-        {displayedProject.description}
-      </p>
 
       {isOpen && otherProjects.length > 0 && (
-        <div className="mt-4">
+        <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-md mt-2 p-2 z-20">
           {otherProjects.map((project, index) => (
             <div
               key={index}
@@ -105,20 +106,18 @@ const ProjectCard: React.FC = () => {
                 handleProjectClick(
                   projects.findIndex((p) => p.title === project.title)
                 )
-              }>
+              }
+            >
               <div className="flex items-center space-x-4">
-                <Image
-                  width={48}
-                  height={48}
-                  src={project.image}
-                  alt="Profile"
-                  className="w-12 h-12 rounded-full"
-                />
+              <Avatar>
+            <AvatarImage src={project.image} alt={project.title} />
+            <AvatarFallback />
+          </Avatar>
                 <div className="flex-grow">
-                  <p className="">{project.title}</p>
+                  <p className="text-sm">{project.title}</p>
                 </div>
               </div>
-              <p className="mt-2 text-gray-500">{project.description}</p>
+              <p className="text-[10px] text-gray-500">{project.description}</p>
             </div>
           ))}
         </div>

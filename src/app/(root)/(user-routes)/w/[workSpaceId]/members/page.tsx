@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import MembersGrid from "@/components/workspace/members-views/member-grid";
 import MembersList from "@/components/workspace/members-views/member-list";
 import TeamsGrid from "@/components/workspace/members-views/team-grid";
@@ -8,13 +8,46 @@ import TeamsList from "@/components/workspace/members-views/team-list";
 import { members, teams } from "@/consts/members-datas";
 import { IoGrid, IoList } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
+// import axios from "axios";
+
+// type InvitedMembers = {
+//   data: {
+//     user: string;
+//     status: string;
+//   };
+// };
+
+// const token =
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU0MzM1MywiZXhwIjoxNzMxMTM1MzUzfQ.et4X9HazmsOZ7N4X20V4wlpOM26ubCthEFVJGLvPrGs";
+
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"members" | "teams">("members");
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
+  // const [data, setData] = useState<InvitedMembers[]>([]);
 
   const handleTabSwitch = (tab: "members" | "teams") => setActiveTab(tab);
   const handleViewSwitch = (view: "grid" | "list") => setViewType(view);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const workspaceId = "6707881d4440b0ba576f4162";
+  //       const response = await axios.get(
+  //         `https://daily-grid-rest-api.onrender.com/api//workspaces/${workspaceId}/invited-members`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       setData(response.data);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const renderContent = () => {
     if (activeTab === "members") {
