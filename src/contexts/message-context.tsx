@@ -8,6 +8,7 @@ import React, {
   useEffect,
 } from "react";
 import axios, { AxiosError } from "axios";
+import { useUser } from "./user-context";
 
 type Message = {
   data: {
@@ -36,15 +37,22 @@ type MessageContextType = {
 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODY0NjY3MSwiZXhwIjoxNzMxMjM4NjcxfQ.VStN3qS9yVvPguDGBtRVNnQXd416r3OPVXI0AniSaAA";
 
 export const MessageProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Message | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [trigger, setTrigger] = useState<boolean>(false);
-  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+  const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== 'undefined' ? navigator.onLine : true);
+  const {loggedUser} = useUser()
+  const [workSpaceId, setWorkSpaceId] = useState<string | null>(null)
+
+  useEffect(()=> {
+
+    const workSpace = localStorage.getItem("workSpace")
+    if (workSpace) {
+      setWorkSpaceId(JSON.parse(workSpace))
+    }
+  },[loggedUser?.id])
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -62,15 +70,13 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setError(false);
     if (!isOnline) return;
-
     const fetchData = async () => {
       try {
-        const workspaceId = "6707881d4440b0ba576f4162";
         const response = await axios.get(
-          `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workspaceId}/messages`,
+          `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${loggedUser?.token}`,
             },
           }
         );
@@ -80,22 +86,19 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
           return setMessages(null);
         setError(true);
         console.log(err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
     fetchData();
   }, [trigger, isOnline]);
 
   const addMessage = async (text: string) => {
     try {
-      const workspaceId = "6707881d4440b0ba576f4162";
       await axios.post(
-        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workspaceId}/messages`,
+        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
         { content: text },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${loggedUser?.token}`,
           },
         }
       );
@@ -111,7 +114,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
         `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${id}/chat`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${loggedUser?.token}`,
           },
         }
       );

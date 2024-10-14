@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Spinner from "../spinner/spinner";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/user-context";
 
 type readyPage = {
   spaceName: string;
@@ -15,17 +16,26 @@ type readyPage = {
 };
 
 export default function ReadyPage({ spaceName, listName }: readyPage) {
-  const router = useRouter();
+  const [workSpaceId, setWorkSpaceId] = useState<string | null>(null)
+  const { loggedUser} = useUser()
+  const router = useRouter();  
+
+  useEffect(()=> {
+    const workSpace = localStorage.getItem("workSpace")
+    if (workSpace) {
+      setWorkSpaceId(JSON.parse(workSpace))
+    }
+  },[loggedUser?.id])
 
   useEffect(() => {
     const handleReady = async () => {
       try {
         await axios.post(
-          "https://daily-grid-rest-api.onrender.com/api/space?workspaceId=6707881d4440b0ba576f4162",
+          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
           { name: spaceName },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU1MDk1NCwiZXhwIjoxNzMxMTQyOTU0fQ.Y9YjtJmC3VW442LyD-3JY9KW580izhAO2y3TZ8W1CT0`,
+              Authorization: `Bearer ${loggedUser?.token}`,
             },
           }
         );
@@ -34,7 +44,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
           { name: listName.todo },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU1MDk1NCwiZXhwIjoxNzMxMTQyOTU0fQ.Y9YjtJmC3VW442LyD-3JY9KW580izhAO2y3TZ8W1CT0`,
+              Authorization: `Bearer ${loggedUser?.token}`,
             },
           }
         );
@@ -43,7 +53,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
           { name: listName.doing },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU1MDk1NCwiZXhwIjoxNzMxMTQyOTU0fQ.Y9YjtJmC3VW442LyD-3JY9KW580izhAO2y3TZ8W1CT0`,
+              Authorization: `Bearer ${loggedUser?.token}`,
             },
           }
         );
@@ -52,7 +62,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
           { name: listName.completed },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU1MDk1NCwiZXhwIjoxNzMxMTQyOTU0fQ.Y9YjtJmC3VW442LyD-3JY9KW580izhAO2y3TZ8W1CT0`,
+              Authorization: `Bearer ${loggedUser?.token}`,
             },
           }
         );
@@ -63,8 +73,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
     };
 
     handleReady();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [workSpaceId]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

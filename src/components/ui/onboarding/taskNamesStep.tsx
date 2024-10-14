@@ -2,6 +2,7 @@
 
 import React from "react";
 import axios from "axios";
+import { useUser } from "@/contexts/user-context";
 
 interface TaskNameStepProps {
   previousSpaceName: string;
@@ -15,9 +16,6 @@ interface TaskNameStepProps {
   };
   onTaskCategoryChange: (name: string, value: string) => void;
 }
-
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU0MzM1MywiZXhwIjoxNzMxMTM1MzUzfQ.et4X9HazmsOZ7N4X20V4wlpOM26ubCthEFVJGLvPrGs";
 
 export default function TaskNameStep({
   previousSpaceName,
@@ -34,19 +32,22 @@ export default function TaskNameStep({
     onTaskCategoryChange(name, value);
   };
 
+  const {loggedUser} = useUser()
+
   const handleNext = async () => {
     const currentBoardName = taskCategories.todo;
 
     try {
-      await axios.post(
+     const res = await axios.post(
         "https://daily-grid-rest-api.onrender.com/api/workspace",
         { name: previousSpaceName },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${loggedUser?.token}`,
           },
         }
       );
+      localStorage.setItem("workSpace",JSON.stringify(res.data.data._id))
     } catch (error) {
       console.log(error);
     }

@@ -48,10 +48,13 @@ export default function UserContextProvider({ children }: { children: React.Reac
     try {
       const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/login", { email, password });
       const { statusCode, message, data, token } = response.data;
+      console.log(data);
+      
       if (statusCode === 200) {
         const user: loginUser = {
           email: data.email,
           token: token,
+          id: data._id
         };
         localStorage.setItem("user", JSON.stringify(user));
         setLoggedUser(user);

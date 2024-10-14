@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Usercards from "@/components/user-profile/user-cards";
 import axios from "axios";
+import { useUser } from "@/contexts/user-context";
+import { useParams } from "next/navigation";
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3OWExNDQ0MGIwYmE1NzZmNDEzNyIsImlhdCI6MTcyODU0MzM1MywiZXhwIjoxNzMxMTM1MzUzfQ.et4X9HazmsOZ7N4X20V4wlpOM26ubCthEFVJGLvPrGs";
 
   type UserProfile = {
     data: {
@@ -22,6 +22,8 @@ const token =
 export default function Page() {
   const [data, setData] = useState<UserProfile | null >(null);
   const [activeTab, setActiveTab] = useState<"activity" | "cards">("activity");
+  const {loggedUser} = useUser()
+  const {userId} : {userId: string} = useParams()
 
   const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
@@ -30,12 +32,11 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const id = "670779a14440b0ba576f4137";
         const response = await axios.get(
-          `https://daily-grid-rest-api.onrender.com/api/userprofile/${id}`,
+          `https://daily-grid-rest-api.onrender.com/api/userprofile/${userId}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${loggedUser?.token}`,
             },
           }
         );
@@ -46,7 +47,9 @@ export default function Page() {
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
+  
+  console.log(data);
   
 
   return (

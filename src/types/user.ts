@@ -11,6 +11,7 @@ export interface UserData extends User {
 }
 
 export interface loginUser{
+  id: string;
   email: string;
   token: string;
 }

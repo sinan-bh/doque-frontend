@@ -7,12 +7,20 @@ import MessageIcon from "./chat-icon";
 import DeleteButton from "./delete-button";
 import { useMessageContext } from "@/contexts/message-context";
 
-const workspaceId = "6707881d4440b0ba576f4162";
 
 export default function Chat() {
   const [isVisible, setIsVisible] = useState(false);
   const { deleteMessage } = useMessageContext();
   const chatRef = useRef<HTMLDivElement>(null);
+  const [workSpaceId, setWorkSpaceId] = useState<string>("")
+
+  useEffect(()=> {
+
+    const workSpace = localStorage.getItem("workSpace")
+    if (workSpace) {
+      setWorkSpaceId(JSON.parse(workSpace))
+    }
+  },[])
 
   const toggleChatVisibility = () => {
     setIsVisible((prev) => !prev);
@@ -44,7 +52,7 @@ export default function Chat() {
         >
           <div className="flex justify-between items-center mt-4 border-b pb-2 px-6">
             <h2 className="text-lg font-semibold text-gray-900">Messages</h2>
-            <DeleteButton onDelete={() => deleteMessage(workspaceId)} />
+            <DeleteButton onDelete={() => deleteMessage(workSpaceId)} />
           </div>
 
           <div className="flex-grow max-h-[calc(100vh-8rem)] overflow-y-auto">

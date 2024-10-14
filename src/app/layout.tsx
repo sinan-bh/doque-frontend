@@ -25,11 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <MessageProvider>
-          <UserContextProvider>
+        <UserContextProvider>
+          <MessageProvider>
             <CalenderContextProvider>{children}</CalenderContextProvider>
-          </UserContextProvider>
-        </MessageProvider>
+          </MessageProvider>
+        </UserContextProvider>
         <Toaster />
       </body>
     </html>

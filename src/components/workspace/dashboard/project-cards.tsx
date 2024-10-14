@@ -34,22 +34,22 @@ const ProjectCard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleProjects = () => {
-    setIsOpen((prev) => !prev); 
+    setIsOpen((prev) => !prev);
   };
 
   const handleProjectClick = (index: number) => {
     setSelectedProjectIndex(index);
-    setIsOpen(false); 
+    setIsOpen(false);
   };
 
   const displayedProject = projects[selectedProjectIndex];
-
   const otherProjects = projects.filter(
     (_, index) => index !== selectedProjectIndex
   );
 
   return (
-    <div className="w-full overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md p-2">
+    <div className="relative w-full bg-white border border-gray-200 rounded-lg shadow-md p-4">
+      {/* Main project display */}
       <div className="flex items-center space-x-4">
         <Avatar>
           <AvatarImage src={displayedProject.image} alt="Project Icon" />
@@ -65,7 +65,8 @@ const ProjectCard: React.FC = () => {
               className="h-6 w-6"
               fill="none"
               viewBox="0 0 20 20"
-              stroke="currentColor">
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -79,7 +80,8 @@ const ProjectCard: React.FC = () => {
               className="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor">
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -90,32 +92,29 @@ const ProjectCard: React.FC = () => {
           )}
         </button>
       </div>
-      <p className="text-[10px]  text-gray-500">
-        {displayedProject.description}
-      </p>
+      <p className="text-[10px] text-gray-500">{displayedProject.description}</p>
 
+      {/* Dropdown to display other projects */}
       {isOpen && otherProjects.length > 0 && (
-        <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-md mt-2 p-2 z-20">
+        <div className="absolute left-0 w-full mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
           {otherProjects.map((project, index) => (
             <div
               key={index}
-              className="border-t border-gray-300 pt-4 cursor-pointer"
+              className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b"
               onClick={() =>
                 handleProjectClick(
                   projects.findIndex((p) => p.title === project.title)
                 )
               }
             >
-              <div className="flex items-center space-x-4">
               <Avatar>
-            <AvatarImage src={project.image} alt={project.title} />
-            <AvatarFallback />
-          </Avatar>
-                <div className="flex-grow">
-                  <p className="text-sm">{project.title}</p>
-                </div>
+                <AvatarImage src={project.image} alt={project.title} />
+                <AvatarFallback />
+              </Avatar>
+              <div className="flex-grow">
+                <p className="text-sm font-medium">{project.title}</p>
+                <p className="text-xs text-gray-500">{project.description}</p>
               </div>
-              <p className="text-[10px] text-gray-500">{project.description}</p>
             </div>
           ))}
         </div>
