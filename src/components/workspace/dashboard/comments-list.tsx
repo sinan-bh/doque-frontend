@@ -59,9 +59,9 @@ const CommentsList = () => {
   ];
 
   return (
-    <div className="w-[259px] h-[160px] bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2 mt-2 overflow-hidden">
+    <div className="w-full  bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2 mt-2 overflow-hidden">
       <div className="font-semibold text-sm text-gray-500">New Comments</div>
-      <div className="space-y-2 h-[140px] overflow-auto">
+      <div className="space-y-2 overflow-auto">
         {comments.map((comment, index) => (
           <Comment key={index} {...comment} />
         ))}

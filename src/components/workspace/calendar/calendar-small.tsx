@@ -24,7 +24,7 @@ type calendar = {
   className: string;
 }
 
-const CalendarSmall: React.FC<calendar> = ({className}) => {
+const CalendarSmall: React.FC<calendar> = ({ className }) => {
   const { chosenDate, setChosenDate } = useCalendarContext();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isYearPickerOpen, setYearPickerOpen] = useState(false);
@@ -48,7 +48,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
   const onYearSelect = (year: number) => {
     const newDate = new Date(year, currentMonth.getMonth(), 1);
     setCurrentMonth(newDate);
-    setChosenDate(newDate); 
+    setChosenDate(newDate);
     setYearPickerOpen(false);
   };
 
@@ -76,21 +76,21 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
 
   const renderHeader = () => (
     <div className="flex justify-between items-center py-3">
-      <button onClick={prevMonth} className="text-gray-500">
+      <button onClick={prevMonth} className="text-gray-500 hover:text-black">
         &#x276E;
       </button>
-      <div className="flex space-x-4">
+      <div className="flex space-x-4 items-center">
         <div className="relative inline-block">
           <div
-            className="cursor-pointer p-2 rounded-lg"
+            className="cursor-pointer p-2 rounded-lg hover:bg-gray-100"
             onClick={() => setMonthPickerOpen(!isMonthPickerOpen)}
           >
             {format(currentMonth, "MMMM")}
           </div>
           {isMonthPickerOpen && (
             <div
-              ref={monthPickerRef} 
-              className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll hide-scrollbar"
+              ref={monthPickerRef}
+              className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll"
             >
               {months.map((month, index) => (
                 <div
@@ -107,7 +107,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
 
         <div className="relative inline-block">
           <div
-            className="cursor-pointer p-2 rounded-lg"
+            className="cursor-pointer p-2 rounded-lg hover:bg-gray-100"
             onClick={() => setYearPickerOpen(!isYearPickerOpen)}
           >
             {format(currentMonth, "yyyy")}
@@ -115,7 +115,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
           {isYearPickerOpen && renderYearPicker()}
         </div>
       </div>
-      <button onClick={nextMonth} className="text-gray-500">
+      <button onClick={nextMonth} className="text-gray-500 hover:text-black">
         &#x276F;
       </button>
     </div>
@@ -124,7 +124,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
   const renderYearPicker = () => (
     <div
       ref={yearPickerRef}
-      className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll hide-scrollbar"
+      className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll"
     >
       {years.map((year) => (
         <div
@@ -136,7 +136,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
         >
           <span>{year}</span>
           {year === currentMonth.getFullYear() && (
-            <span className="text-blue-500">&#10003;</span> 
+            <span className="text-blue-500">&#10003;</span>
           )}
         </div>
       ))}
@@ -156,7 +156,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
       );
     }
 
-    return <div className="grid grid-cols-7">{days}</div>;
+    return <div className="grid grid-cols-7 mb-2">{days}</div>;
   };
 
   const renderCells = () => {
@@ -194,7 +194,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
         day = addDays(day, 1);
       }
       rows.push(
-        <div key={day.toString()} className="grid grid-cols-7">
+        <div key={day.toString()} className="grid grid-cols-7 gap-1">
           {days}
         </div>
       );
@@ -204,7 +204,7 @@ const CalendarSmall: React.FC<calendar> = ({className}) => {
   };
 
   return (
-    <div className={className}>
+    <div className={`${className} p-4 bg-white rounded-lg shadow-md`}>
       {renderHeader()}
       {renderDays()}
       {renderCells()}

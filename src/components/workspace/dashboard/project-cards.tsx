@@ -49,52 +49,50 @@ const ProjectCard: React.FC = () => {
   );
 
   return (
-    <div className="relative w-[257px]">
-      <div className="w-full h-auto overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md p-2 relative z-10">
-        <div className="flex items-center space-x-4">
-          <Avatar>
-            <AvatarImage src={displayedProject.image} alt="Project Icon" />
-            <AvatarFallback />
-          </Avatar>
-          <div className="flex-grow">
-            <h3 className="text-sm">{displayedProject.title}</h3>
-          </div>
-          <button onClick={toggleProjects} className="focus:outline-none">
-            {isOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 15l7-7 7 7"
-                />
-              </svg>
-            )}
-          </button>
+    <div className="w-full overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md p-2">
+      <div className="flex items-center space-x-4">
+        <Avatar>
+          <AvatarImage src={displayedProject.image} alt="Project Icon" />
+          <AvatarFallback />
+        </Avatar>
+        <div className="flex-grow">
+          <h3 className="text-sm">{displayedProject.title}</h3>
         </div>
-        <p className="text-[10px] text-gray-500">{displayedProject.description}</p>
+        <button onClick={toggleProjects} className="focus:outline-none">
+          {isOpen ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 20 20"
+              stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 15l7-7 7 7"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          )}
+        </button>
       </div>
+      <p className="text-[10px]  text-gray-500">
+        {displayedProject.description}
+      </p>
 
       {isOpen && otherProjects.length > 0 && (
         <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-md mt-2 p-2 z-20">

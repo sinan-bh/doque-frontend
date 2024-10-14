@@ -28,7 +28,7 @@ const task: Task = {
 
 const HighPriorityTask: React.FC = () => {
   return (
-    <div className="w-[259px] h-[180px] bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2">
+    <div className="w-full h-[180px] bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2">
       <div className="flex justify-between items-center">
         <span className="text-xs  text-red-600 bg-red-100 px-1  rounded-full">
           {task.priority}

@@ -14,7 +14,7 @@ const tasks: Task[] = [
 
 const TaskList: React.FC = () => {
   return (
-    <div className="w-[257px]  bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2">
+    <div className="w-full  bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-sm ">Task Lists <span className="text-sm text-gray-400">(16)</span></h2>
         <button className="focus:outline-none">

@@ -30,7 +30,7 @@ const MembersGrid: React.FC<{ members: Member[] }> = ({ members }) => {
             </h2>
           </div>
           <div className="ml-4">
-            <h3 className="text-lg font-semibold text-gray-700">
+            <h3 className="text-md font-semibold text-gray-700">
               {member.name}
             </h3>
             <p className="text-sm text-gray-500">{member.email}</p>

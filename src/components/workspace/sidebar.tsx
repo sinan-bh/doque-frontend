@@ -1,56 +1,74 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { AiFillHome, AiFillMessage } from "react-icons/ai";
-import { RiDashboardFill } from "react-icons/ri";
-import { BsFillPeopleFill } from "react-icons/bs";
+import { FaPlus } from "react-icons/fa6";
 import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
-import { FaCalendar } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
-import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { sidebarItems } from "@/consts/sidebar-icons";
+import axios from "axios";
+import { AddSpaceBtn } from "../ui/add-space";
+import { useRouter } from "next/navigation";
+interface Workspace {
+  name: string;
+}
 
 const Sidebar: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [render, isRender] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [workspace, setWorkspace] = useState<Workspace[]>([]);
+  const [activeRoute, setActiveRoute] = useState<string>("");
 
-  const sidebarItems = [
-    {
-      icon: <AiFillHome className="text-xl text-black mr-3" />,
-      label: "Home",
-      href: "/home",
-    },
-    {
-      icon: <RiDashboardFill className="text-xl text-black mr-3" />,
-      label: "Dashboard",
-      href: "/w/id/dashboard",
-    },
-    {
-      icon: <BsFillPeopleFill className="text-xl text-black mr-3" />,
-      label: "Members",
-      href: "/w/id/members",
-    },
-    {
-      icon: <FaCalendar className="text-xl text-black mr-3" />,
-      label: "Calendar",
-      href: "/w/id/calendar",
-    },
-    {
-      icon: <AiFillMessage className="text-xl text-black mr-3" />,
-      label: "Message",
-      href: "",
-    },
-  ];
+  const router = useRouter();
+
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3MjZmM2IyNmQzZDAwYzliMWRkZSIsImlhdCI6MTcyODg4MTQyOCwiZXhwIjoxNzMxNDczNDI4fQ.R2o9Jk1ptrz8UJEvsMNfp2fePrTPR1_tTEkjsTMAZjg";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resp = await axios.get(
+          "https://daily-grid-rest-api.onrender.com/api/workspace",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setWorkspace(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [render]);
+
+  useEffect(() => {
+    setActiveRoute(window.location.pathname);
+  }, []);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleRouteChange = (route: string) => {
+    setActiveRoute(route);
+    router.push(route);
+  };
 
   return (
-    <div className="relative h-full w-1/5 bg-gray-100 p-2 flex flex-col">
-      <div
-        className="relative group"
-        onMouseEnter={() => setDropdownOpen(true)}
-        onMouseLeave={() => setDropdownOpen(false)}>
+    <div
+      className={`relative h-full p-2 flex-shrink-0 bg-gray-100 flex flex-col transition-all duration-300 ${
+        isSidebarOpen ? "w-64" : "w-20"
+      }`}
+      onMouseEnter={() => setIsSidebarOpen(true)}
+      onMouseLeave={() => setIsSidebarOpen(false)}
+    >
+      <div className="relative">
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer">
-          <div className="flex items-center">
+          <div className="flex items-center h-10 pl-1">
             <Avatar className="h-8 w-8">
               <AvatarImage
                 src="https://th.bing.com/th/id/OIP.qknTW8EsnyNvPGESKQFnWAHaEK?rs=1&pid=ImgDetMain"
@@ -58,29 +76,42 @@ const Sidebar: React.FC = () => {
               />
               <AvatarFallback />
             </Avatar>
-            <h2 className="text-md text-black">Alixa Workspace</h2>
+            {isSidebarOpen && (
+              <h2 className="text-md text-black ml-2 h-5 overflow-hidden">
+                Alixa workspace
+              </h2>
+            )}
           </div>
-          <IoIosArrowDown
-            className={`text-black transform transition-transform duration-300 ${
-              dropdownOpen ? "rotate-180" : ""
-            }`}
-          />
+          {isSidebarOpen && (
+            <IoIosArrowDown
+              className={`text-black transform transition-transform duration-300 cursor-pointer ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
+              onClick={toggleDropdown}
+            />
+          )}
         </div>
 
-        {dropdownOpen && (
-          <div className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50">
-            <div className="border-b-2 border-black p-2">
+        {dropdownOpen && isSidebarOpen && (
+          <div
+            onMouseLeave={() => setDropdownOpen(false)}
+            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50"
+          >
+            <div className="border-b-2 border-gray-600 p-2">
               <h3 className="text-md text-black">Workspaces</h3>
             </div>
-            <div className="p-2 hover:bg-gray-200 cursor-pointer">
-              <h3 className="text-sm text-black">Workspace 1</h3>
-            </div>
-            <div className="p-2 hover:bg-gray-200 cursor-pointer">
-              <h3 className="text-sm text-black">Workspace 2</h3>
-            </div>
+            {workspace.length > 0 ? (
+              workspace.map((data, key) => (
+                <div key={key} className="p-2 hover:bg-gray-200 cursor-pointer">
+                  <h3 className="text-sm text-black">{data.name}</h3>
+                </div>
+              ))
+            ) : (
+              <div className="p-2">No workspaces available</div>
+            )}
             <div className="flex items-center justify-center p-2 hover:bg-gray-100 cursor-pointer">
               <FaPlus className="mr-2" />
-              <span>Add New</span>
+              <AddSpaceBtn isRender={isRender} />
             </div>
           </div>
         )}
@@ -89,22 +120,38 @@ const Sidebar: React.FC = () => {
       <div className="flex-1 bg-gray-200 rounded-md mt-3 flex flex-col">
         <div className="p-4">
           {sidebarItems.map((item, index) => (
-            <Link href={item.href} key={index}>
-              <div className="flex items-center p-2 hover:border-l-4 border-black cursor-pointer">
-                {item.icon}
-                <h2 className="font-base text-black">{item.label}</h2>
+            <div
+              key={index}
+              className={`flex items-center p-2 cursor-pointer ${
+                activeRoute === item.href
+                  ? "border-l-4 border-black "
+                  : "hover:border-l-4 border-transparent"
+              }`}
+              onClick={() => handleRouteChange(item.href)}
+            >
+              <div className="flex items-center">
+                <div>{item.icon}</div>
+                {isSidebarOpen && (
+                  <h2 className="ml-3 text-black h-5 overflow-hidden">
+                    {item.label}
+                  </h2>
+                )}
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 
         <div className="flex-1 overflow-y-auto hide-scrollbar max-h-64 p-4">
-          <Spaces />
+          {isSidebarOpen && <Spaces />}
         </div>
 
-        <div className="mt-auto flex items-center p-2 hover:bg-gray-300 rounded-lg cursor-pointer">
-          <FiSettings className="text-xl text-black mr-3" />
-          <h1 className="font-medium text-black">Settings</h1>
+        <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer">
+          <FiSettings className="text-xl text-black" />
+          {isSidebarOpen && (
+            <h1 className="ml-3 font-medium text-black h-6 overflow-hidden">
+              Settings
+            </h1>
+          )}
         </div>
       </div>
     </div>

@@ -7,19 +7,19 @@ interface MessageProps {
   hasNotification?: boolean;
 }
 
-function ChatList({ name, hasNotification }: MessageProps) {
+function ChatList({ name, image, hasNotification }: MessageProps) {
   return (
     <div className="flex flex-col items-center relative">
       <div className="relative">
-        <Avatar>
-          <AvatarImage src="" alt="Project Icon" />
-          <AvatarFallback />
+        <Avatar className="w-12 h-12">
+          <AvatarImage src={image} alt={`${name}'s Avatar`} />
+          <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
         {hasNotification && (
-          <div className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></div>
+          <div className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full border border-white"></div>
         )}
       </div>
-      <p className="text-sm font-semibold mt-1">{name}</p>
+      <p className="text-xs font-semibold mt-1 text-center truncate w-full">{name}</p>
     </div>
   );
 }
@@ -36,8 +36,8 @@ export default function GroupChat() {
 
   return (
     <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2">
-      <div className="text-sm font-semibold text-gray-600 ">Message</div>
-      <div className="grid grid-cols-3 gap-1">
+      <div className="text-sm font-semibold text-gray-600">Message</div>
+      <div className="grid grid-cols-3 gap-4">
         {messages.map((message, index) => (
           <ChatList
             key={index}
