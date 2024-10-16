@@ -24,6 +24,6 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Apply middleware to all routes except public ones like /signin, /signup, /home
-    "/((?!signin|home|_next|favicon.ico).*)",
+    "/((?!signin|home|_next|favicon.ico|reset-password|forgot-password|verify-otp).*)",
   ],
 };
