@@ -9,9 +9,9 @@ import React, {
 } from "react";
 import axios, { AxiosError } from "axios";
 import { useUser } from "./user-context";
+import { useWorkSpaceContext } from "./workspace-context";
 
 type Message = {
-  data: {
     _id: string;
     messages: [
       {
@@ -24,8 +24,7 @@ type Message = {
         };
       }
     ];
-  };
-};
+}; 
 
 type MessageContextType = {
   messages: Message | null;
@@ -37,22 +36,20 @@ type MessageContextType = {
 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
 
-
 export const MessageProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Message | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [trigger, setTrigger] = useState<boolean>(false);
-  const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== 'undefined' ? navigator.onLine : true);
-  const {loggedUser} = useUser()
-  const [workSpaceId, setWorkSpaceId] = useState<string | null>(null)
+  const [isOnline, setIsOnline] = useState<boolean>(
+    typeof navigator !== "undefined" ? navigator.onLine : true
+  );
+  const { loggedUser } = useUser();
+  const {workSpaceId} = useWorkSpaceContext()
 
-  useEffect(()=> {
+  setInterval(()=>{
+    setTrigger(!trigger)
+  },60000)
 
-    const workSpace = localStorage.getItem("workSpace")
-    if (workSpace) {
-      setWorkSpaceId(JSON.parse(workSpace))
-    }
-  },[loggedUser?.id])
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -70,26 +67,28 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setError(false);
     if (!isOnline) return;
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        setMessages(response.data);
-      } catch (err) {
-        if (err instanceof AxiosError && err.status === 404)
-          return setMessages(null);
-        setError(true);
-        console.log(err);
-      } 
-    };
-    fetchData();
-  }, [trigger, isOnline]);
+    if (workSpaceId && loggedUser?.token) {
+      const fetchData = async () => {
+        try {
+          const {data} = await axios.get(
+            `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
+            {
+              headers: {
+                Authorization: `Bearer ${loggedUser?.token}`,
+              },
+            }
+          );          
+          setMessages(data.data);
+        } catch (err) {
+          if (err instanceof AxiosError && err.status === 404)
+            return setMessages(null);
+          setError(true);
+          console.log(err);
+        }
+      };
+      fetchData();
+    }
+  }, [trigger, isOnline,workSpaceId,loggedUser?.token]);
 
   const addMessage = async (text: string) => {
     try {

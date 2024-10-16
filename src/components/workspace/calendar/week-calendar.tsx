@@ -47,7 +47,7 @@ const WeekCalendar: React.FC = () => {
   };
 
   return (
-    <div className="w-[855px] h-[500px] py-1 rounded-lg shadow-md border border-gray-300 bg-white">
+    <div className="w-[855px] h-[450px]  rounded-lg shadow-md border border-gray-300 bg-white">
       <div className="flex justify-end p-4 bg-white shadow-lg rounded-t-lg">
         <button
           onClick={handlePreviousWeek}
@@ -70,7 +70,7 @@ const WeekCalendar: React.FC = () => {
         </button>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100%-64px)] hide-scrollbar">
+      <div className="overflow-y-auto h-[calc(100%-64px)] ">
         <div className="grid grid-cols-[50px,repeat(7,1fr)] border-t border-gray-300">
           <div className="border border-gray-300 bg-gray-100"></div>
 

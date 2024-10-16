@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { CalenderContextProvider } from "@/contexts/CalenderContext";
+import { WorkSpactContextProvider } from "@/contexts/workspace-context";
 import "./globals.css";
 import UserContextProvider from "@/contexts/user-context";
 import { MessageProvider } from "@/contexts/message-context";
@@ -26,9 +26,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <UserContextProvider>
-          <MessageProvider>
-            <CalenderContextProvider>{children}</CalenderContextProvider>
-          </MessageProvider>
+          <WorkSpactContextProvider>
+            <MessageProvider>{children}</MessageProvider>
+          </WorkSpactContextProvider>
         </UserContextProvider>
         <Toaster />
       </body>

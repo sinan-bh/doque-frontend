@@ -10,6 +10,9 @@ import { sidebarItems } from "@/consts/sidebar-icons";
 import axios from "axios";
 import { AddSpaceBtn } from "../ui/add-space";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/user-context";
+
+
 interface Workspace {
   name: string;
 }
@@ -20,30 +23,30 @@ const Sidebar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [workspace, setWorkspace] = useState<Workspace[]>([]);
   const [activeRoute, setActiveRoute] = useState<string>("");
+  const { userProfile, loggedUser } = useUser();
 
   const router = useRouter();
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3MjZmM2IyNmQzZDAwYzliMWRkZSIsImlhdCI6MTcyODg4MTQyOCwiZXhwIjoxNzMxNDczNDI4fQ.R2o9Jk1ptrz8UJEvsMNfp2fePrTPR1_tTEkjsTMAZjg";
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await axios.get(
-          "https://daily-grid-rest-api.onrender.com/api/workspace",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setWorkspace(resp.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [render]);
+    if (loggedUser?.token) {
+      const fetchData = async () => {
+        try {
+          const {data} = await axios.get(
+            "https://daily-grid-rest-api.onrender.com/api/workspace",
+            {
+              headers: {
+                Authorization: `Bearer ${loggedUser?.token}`,
+              },
+            }
+          );
+          setWorkspace(data.data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }
+  }, [render,loggedUser?.token]);
 
   useEffect(() => {
     setActiveRoute(window.location.pathname);
@@ -70,10 +73,7 @@ const Sidebar: React.FC = () => {
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer">
           <div className="flex items-center h-10 pl-1">
             <Avatar className="h-8 w-8">
-              <AvatarImage
-                src="https://th.bing.com/th/id/OIP.qknTW8EsnyNvPGESKQFnWAHaEK?rs=1&pid=ImgDetMain"
-                alt="Workspace logo"
-              />
+              <AvatarImage src={userProfile?.image} alt="Workspace logo" />
               <AvatarFallback />
             </Avatar>
             {isSidebarOpen && (

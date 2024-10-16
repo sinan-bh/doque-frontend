@@ -6,15 +6,38 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 
+type UserProfile = {
+  _id: string;
+  email?: string;
+  firstName: string;
+  lastName?: string;
+  image: string;
+  activeWorkspace?: [];
+};
+
 interface UserContextType {
   loggedUser: loginUser | null;
   loading: boolean;
-  loginUser: (email: string, password: string) => Promise<{ statusCode: number | null, error: string | null }>;
+  userProfile: UserProfile | null;
+  loginUser: (
+    email: string,
+    password: string
+  ) => Promise<{ statusCode: number | null; error: string | null }>;
   logout: () => void;
-  signup: (userData: User) => Promise<{ statusCode: number | null, error: string | null }>;
-  verifyOtp: (email: string, otp: string) => Promise<{ statusCode: number | null, error: string | null }>;
-  forgotPassword: (email: string) => Promise<{ statusCode: number | null, error: string | null }>;
-  resetPassword: (token: string, newPassword: string) => Promise<{ statusCode: number | null, error: string | null }>;
+  signup: (
+    userData: User
+  ) => Promise<{ statusCode: number | null; error: string | null }>;
+  verifyOtp: (
+    email: string,
+    otp: string
+  ) => Promise<{ statusCode: number | null; error: string | null }>;
+  forgotPassword: (
+    email: string
+  ) => Promise<{ statusCode: number | null; error: string | null }>;
+  resetPassword: (
+    token: string,
+    newPassword: string
+  ) => Promise<{ statusCode: number | null; error: string | null }>;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -27,9 +50,14 @@ export const useUser = () => {
   return context;
 };
 
-export default function UserContextProvider({ children }: { children: React.ReactNode }) {
+export default function UserContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [loggedUser, setLoggedUser] = useState<loginUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,7 +75,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/login", { email, password });
+      const response = await axios.post(
+        "https://daily-grid-rest-api.onrender.com/api/login",
+        { email, password }
+      );
       const { statusCode, message, data, token } = response.data;
 
       if (statusCode === 200) {
@@ -66,7 +97,9 @@ export default function UserContextProvider({ children }: { children: React.Reac
       if (error instanceof AxiosError) {
         if (error.response) {
           result.statusCode = error.response.status;
-          result.error = error.response.data.message || "An error occurred. Please try again.";
+          result.error =
+            error.response.data.message ||
+            "An error occurred. Please try again.";
         } else {
           result.error = error.message;
         }
@@ -93,7 +126,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/register", userData);
+      const response = await axios.post(
+        "https://daily-grid-rest-api.onrender.com/api/register",
+        userData
+      );
       const { statusCode } = response.data;
       result.statusCode = statusCode;
     } catch (error) {
@@ -120,7 +156,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/verifyotp", { email, otp });
+      const response = await axios.post(
+        "https://daily-grid-rest-api.onrender.com/api/verifyotp",
+        { email, otp }
+      );
       const { statusCode, message } = response.data;
       console.log(message);
 
@@ -152,7 +191,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
     const result = { statusCode: null, error: null } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/forgotpassword", { email });
+      const response = await axios.post(
+        "https://daily-grid-rest-api.onrender.com/api/forgotpassword",
+        { email }
+      );
       const { statusCode, message } = response.data;
       result.statusCode = statusCode;
       result.error = message;
@@ -160,7 +202,9 @@ export default function UserContextProvider({ children }: { children: React.Reac
       if (error instanceof AxiosError) {
         if (error.response) {
           result.statusCode = error.response.status;
-          result.error = error.response.data.message || "An error occurred. Please try again.";
+          result.error =
+            error.response.data.message ||
+            "An error occurred. Please try again.";
         } else {
           result.error = error.message;
         }
@@ -177,7 +221,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
     const result = { statusCode: null, error: null } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.patch(`https://daily-grid-rest-api.onrender.com/api/reset-password/${token}`, { newPassword });
+      const response = await axios.patch(
+        `https://daily-grid-rest-api.onrender.com/api/reset-password/${token}`,
+        { newPassword }
+      );
       const { statusCode, message } = response.data;
       result.statusCode = statusCode;
 
@@ -188,7 +235,9 @@ export default function UserContextProvider({ children }: { children: React.Reac
       if (error instanceof AxiosError) {
         if (error.response) {
           result.statusCode = error.response.status;
-          result.error = error.response.data.message || "An error occurred. Please try again.";
+          result.error =
+            error.response.data.message ||
+            "An error occurred. Please try again.";
         } else {
           result.error = error.message;
         }
@@ -201,7 +250,38 @@ export default function UserContextProvider({ children }: { children: React.Reac
     return result;
   };
 
-  const values = { loggedUser, loading, loginUser, logout, signup, verifyOtp, forgotPassword, resetPassword };
+  useEffect(() => {
+    if (loggedUser?.token) {
+      const fetchData = async () => {
+        try {
+          const { data } = await axios.get(
+            `https://daily-grid-rest-api.onrender.com/api/userprofile/${loggedUser?.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${loggedUser?.token}`,
+              },
+            }
+          );
+          setUserProfile(data.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchData();
+    }
+  }, [loggedUser?.token]);
+
+  const values = {
+    loggedUser,
+    loading,
+    userProfile,
+    loginUser,
+    logout,
+    signup,
+    verifyOtp,
+    forgotPassword,
+    resetPassword,
+  };
 
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 }

@@ -17,7 +17,7 @@ function Page() {
   });
 
   return (
-    <div className="bg-gray-100 flex justify-center">
+    <div className="bg-gray-100 flex justify-center h-full">
       <div>
         <div className="py-3 w-full flex justify-between">
           <div>

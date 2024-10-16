@@ -1,55 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Usercards from "@/components/user-profile/user-cards";
-import axios from "axios";
 import { useUser } from "@/contexts/user-context";
-import { useParams } from "next/navigation";
 
-
-  type UserProfile = {
-    data: {
-      email: string;
-      firstName: string;
-      lastName: string;
-      image: string;
-      activeWorkspace?:[];
-    };
-  };
-  
 
 export default function Page() {
-  const [data, setData] = useState<UserProfile | null >(null);
   const [activeTab, setActiveTab] = useState<"activity" | "cards">("activity");
-  const {loggedUser} = useUser()
-  const {userId} : {userId: string} = useParams()
+  const {userProfile} = useUser()
 
   const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://daily-grid-rest-api.onrender.com/api/userprofile/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        setData(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchData();
-  }, [userId]);
-  
-  console.log(data);
   
 
   return (
@@ -58,14 +21,14 @@ export default function Page() {
         <div className="flex items-center space-x-4">
           <Avatar className="w-16 h-16">
             <AvatarImage
-              src={data?.data.image}
+              src={userProfile?.image}
               alt="User Profile"
             />
             <AvatarFallback />
           </Avatar>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">{data?.data.firstName} {data?.data.lastName}</h1>
-            <h3 className="text-sm text-gray-600">{data?.data.email}</h3>
+            <h1 className="text-xl font-bold text-gray-800">{userProfile?.firstName} {userProfile?.lastName}</h1>
+            <h3 className="text-sm text-gray-600">{userProfile?.email}</h3>
           </div>
         </div>
         <div className="text-start">

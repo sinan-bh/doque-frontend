@@ -6,21 +6,15 @@ import MessageInput from "./chat-input";
 import MessageIcon from "./chat-icon";
 import DeleteButton from "./delete-button";
 import { useMessageContext } from "@/contexts/message-context";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 
 
 export default function Chat() {
   const [isVisible, setIsVisible] = useState(false);
   const { deleteMessage } = useMessageContext();
   const chatRef = useRef<HTMLDivElement>(null);
-  const [workSpaceId, setWorkSpaceId] = useState<string>("")
+  const {workSpaceId} = useWorkSpaceContext()
 
-  useEffect(()=> {
-
-    const workSpace = localStorage.getItem("workSpace")
-    if (workSpace) {
-      setWorkSpaceId(JSON.parse(workSpace))
-    }
-  },[])
 
   const toggleChatVisibility = () => {
     setIsVisible((prev) => !prev);

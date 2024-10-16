@@ -1,6 +1,6 @@
 "use client"; 
 
-import { useCalendarContext } from "@/contexts/CalenderContext";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 import { FC, useState } from "react";
 
 type TimeSlot = string; 
@@ -20,7 +20,7 @@ const generateTimeSlots = (): TimeSlot[] => {
 };
 
 const DayCalendar: FC = () => {
-  const { chosenDate } = useCalendarContext(); 
+  const { chosenDate } = useWorkSpaceContext(); 
 
   const times: TimeSlot[] = generateTimeSlots();
   const [tasks, setTasks] = useState<Tasks>({});
@@ -97,11 +97,11 @@ const DayCalendar: FC = () => {
   };
 
   return (
-    <div>
+    <div className="h-[400px]">
       <h2 className="text-2xl font-bold mb-4 underline">
         {displayedDate.toLocaleDateString("en-US", { weekday: "long" })}
       </h2>
-      <div className="space-y-4 w-[500px] h-[450px] overflow-hidden overflow-y-scroll hide-scrollbar">
+      <div className="space-y-4 w-[500px] h-[380px] overflow-hidden overflow-y-scroll ">
         {times.map((time, idx) => (
           <div key={idx} className="relative hover:bg-gray-100 transition">
             <div className={`flex items-center cursor-pointer`} onClick={() => openAddModal(time)}>

@@ -28,6 +28,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
   },[loggedUser?.id])
 
   useEffect(() => {
+    if (loggedUser?.token) {
     const handleReady = async () => {
       try {
         await axios.post(
@@ -73,7 +74,8 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
     };
 
     handleReady();
-  }, [workSpaceId]);
+  }
+  }, [workSpaceId,loggedUser?.token]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

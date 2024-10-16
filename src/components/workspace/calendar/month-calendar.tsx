@@ -53,7 +53,7 @@ const MonthCalendar: React.FC = () => {
   };
 
   return (
-    <div className="w-[855px] h-[500px]   border-2  overflow-y-scroll hide-scrollbar bg-white">
+    <div className="w-[855px] h-[450px]   border-2  overflow-y-scroll hide-scrollbar bg-white">
       <div className="flex items-center justify-end p-4 bg-white shadow-md rounded-t-lg">
         <button
           onClick={handlePreviousMonth}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useCalendarContext } from "@/contexts/CalenderContext";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 import {
   format,
   addMonths,
@@ -25,7 +25,7 @@ type calendar = {
 }
 
 const CalendarSmall: React.FC<calendar> = ({ className }) => {
-  const { chosenDate, setChosenDate } = useCalendarContext();
+  const { chosenDate, setChosenDate } = useWorkSpaceContext();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isYearPickerOpen, setYearPickerOpen] = useState(false);
   const [isMonthPickerOpen, setMonthPickerOpen] = useState(false);
@@ -204,7 +204,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   };
 
   return (
-    <div className={`${className} p-4 bg-white rounded-lg shadow-md`}>
+    <div className={`${className} p-4 bg-white rounded-lg`}>
       {renderHeader()}
       {renderDays()}
       {renderCells()}

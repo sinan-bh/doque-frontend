@@ -1,4 +1,4 @@
-import { AiFillHome, AiFillMessage } from "react-icons/ai";
+import { AiFillHome } from "react-icons/ai";
 import { RiDashboardFill } from "react-icons/ri";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FaCalendar } from "react-icons/fa";
@@ -30,10 +30,5 @@ export const sidebarItems: SidebarIcon[] = [
       icon: <FaCalendar className="text-xl text-black mt-1" />,
       label: "Calendar",
       href: "/w/id/calendar",
-    },
-    {
-      icon: <AiFillMessage className="text-xl text-black mt-1" />,
-      label: "Message",
-      href: "",
-    },
+    }
   ];
