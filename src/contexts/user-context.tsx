@@ -4,6 +4,7 @@ import { User, loginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 
 interface UserContextType {
   loggedUser: loginUser | null;
@@ -32,7 +33,7 @@ export default function UserContextProvider({ children }: { children: React.Reac
   const router = useRouter();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = Cookies.get("user");
     if (user) {
       setLoggedUser(JSON.parse(user));
     }
@@ -48,15 +49,14 @@ export default function UserContextProvider({ children }: { children: React.Reac
     try {
       const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/login", { email, password });
       const { statusCode, message, data, token } = response.data;
-      console.log(data);
-      
+
       if (statusCode === 200) {
         const user: loginUser = {
           email: data.email,
           token: token,
-          id: data._id
+          id: data._id,
         };
-        localStorage.setItem("user", JSON.stringify(user));
+        Cookies.set("user", JSON.stringify(user), { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
         setLoggedUser(user);
         router.push("/");
       }
@@ -80,9 +80,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
+    Cookies.remove("user");
     setLoggedUser(null);
     router.push("/signin");
+    window.location.reload();
   };
 
   const signup = async (userData: User) => {
@@ -90,6 +91,7 @@ export default function UserContextProvider({ children }: { children: React.Reac
       statusCode: null,
       error: null,
     } as { statusCode: number | null; error: string | null };
+
     try {
       const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/register", userData);
       const { statusCode } = response.data;
@@ -120,9 +122,9 @@ export default function UserContextProvider({ children }: { children: React.Reac
     try {
       const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/verifyotp", { email, otp });
       const { statusCode, message } = response.data;
-      result.statusCode = statusCode;
       console.log(message);
 
+      result.statusCode = statusCode;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response) {
@@ -143,12 +145,11 @@ export default function UserContextProvider({ children }: { children: React.Reac
         result.error = "Something went wrong.";
       }
     }
-
     return result;
   };
 
   const forgotPassword = async (email: string) => {
-    const result = { statusCode: null, error: null, } as { statusCode: number | null; error: string | null };
+    const result = { statusCode: null, error: null } as { statusCode: number | null; error: string | null };
 
     try {
       const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/forgotpassword", { email });
@@ -170,10 +171,10 @@ export default function UserContextProvider({ children }: { children: React.Reac
       }
     }
     return result;
-  }
+  };
 
   const resetPassword = async (token: string, newPassword: string) => {
-    const result = { statusCode: null, error: null, } as { statusCode: number | null; error: string | null };
+    const result = { statusCode: null, error: null } as { statusCode: number | null; error: string | null };
 
     try {
       const response = await axios.patch(`https://daily-grid-rest-api.onrender.com/api/reset-password/${token}`, { newPassword });
@@ -198,7 +199,7 @@ export default function UserContextProvider({ children }: { children: React.Reac
       }
     }
     return result;
-  }
+  };
 
   const values = { loggedUser, loading, loginUser, logout, signup, verifyOtp, forgotPassword, resetPassword };
 

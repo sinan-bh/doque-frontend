@@ -25,11 +25,11 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); 
+    setError(null);
 
     const result = await login(email, password);
     if (result.statusCode === 200) {
-      router.push("/home");
+      router.push("/u/home");
     } else {
       setError(result.error);
     }
@@ -37,12 +37,12 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     console.log("Logging in with Google...");
-    router.push("/home");
+    router.push("/u/home");
   };
 
   const handleGithubLogin = () => {
     console.log("Logging in with GitHub...");
-    router.push("/home");
+    router.push("/u/home");
   };
 
   const togglePasswordVisibility = () => {
@@ -91,11 +91,11 @@ export default function Login() {
               {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </div>
           </div>
-          <div className="text-right text-sm">
-            <Link
-              href="/forgot-password"
-              className="text-[#5E6061] hover:text-[#333]"
-            >
+          <div className="flex justify-between text-sm">
+            <Link href="/signup" className="text-[#5E6061] hover:text-[#333]">
+              Don&apos;t have an account?
+            </Link>
+            <Link href="/forgot-password" className="text-[#5E6061] hover:text-[#333]">
               Forgot password?
             </Link>
           </div>

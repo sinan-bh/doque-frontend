@@ -122,10 +122,10 @@ export default function ProfileSection() {
           </div>
 
           <div className="flex justify-between gap-2 mt-2">
-            <Button className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]">
+            <Link href="/u/1/settings" className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]">
               <FiSettings className="mr-1" />
               Settings
-            </Button>
+            </Link>
             <Button
               onClick={handleLogout}
               className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]"
