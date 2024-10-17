@@ -40,7 +40,7 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     isRender(true);
-    setIsOpen(false)
+    setIsOpen(false);
     e.preventDefault();
 
     try {
@@ -56,7 +56,7 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
           },
         }
       );
-      
+
       if (resp.status == 201) {
         toast({
           title: "Created",
@@ -64,7 +64,6 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
         });
       }
     } catch (error) {
-      console.log(error);
       toast({
         variant: "destructive",
         title: "Error",

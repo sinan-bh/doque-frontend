@@ -28,8 +28,9 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<TaskRow | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [movingTask, setMovingTask] = useState<boolean>(false);
 
-  const { spaceId } = useParams();
+  const { spaceId }: { spaceId: string } = useParams();
 
   const {
     tasks,
@@ -37,7 +38,6 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
     columns,
     createColumn,
     deleteColumn,
-    createTask,
     moveColumn,
     moveTaskToColumn,
     swapTasksInSameColumn,
@@ -50,7 +50,7 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
   useEffect(() => {
     populateBoardData(spaceData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spaceData]); //do not include populate function inside dependency!!
+  }, []); //do not include populate function inside dependency!!
 
   const columnsIds = useMemo(
     () => columns.map((column) => column.id),
@@ -96,15 +96,17 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
 
       if (currentListId !== newListId) {
         debouncedApiMoveTask(
-          spaceId[0],
+          spaceId,
           currentListId!,
           activeId.toString(),
           newListId?.toString() || "",
           setTasks,
           prevState,
+          setMovingTask,
           (msg) => setError(msg)
         );
       }
+      return;
     }
 
     if (activeId === overId) return;
@@ -177,7 +179,7 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
             disabled={loading === "createCol"}
             onClick={() => {
               setError(null);
-              createColumn(spaceId[0], (error) => setError(error));
+              createColumn(spaceId, (error) => setError(error));
             }}
             size="sm"
             variant="outline"
@@ -188,6 +190,7 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
             {loading === "createCol" && <p>Creating..</p>}
             {loading === "deleteCol" && <p>Deleting List..</p>}
             {loading === "createTask" && <p>Creating task...</p>}
+            {movingTask && <p>Moving task...</p>}
             {error && <p>Error: {error}</p>}
           </div>
         </div>
@@ -198,13 +201,9 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
             {columns.map((section) => (
               <SectionContainer
                 key={section.id}
-                createTask={() => {
-                  setError(null);
-                  createTask(spaceId[0], section.id, (msg) => setError(msg));
-                }}
                 deleteSection={(listId) => {
                   setError(null);
-                  deleteColumn(spaceId[0], listId, (error) => {
+                  deleteColumn(spaceId, listId, (error) => {
                     setError(error);
                   });
                 }}

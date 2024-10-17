@@ -8,21 +8,14 @@ import {
   CardTitle,
 } from "../ui/card";
 import StackedAvatars from "../ui/stacked-avatars";
-import { TbCheckbox } from "react-icons/tb";
 import { TaskRow } from "@/types/spaces";
-import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { FaRegClock } from "react-icons/fa6";
-import { Button } from "../ui/button";
-import { FaTrash } from "react-icons/fa";
-import { useBoards } from "@/contexts/boards-context";
-import { useState } from "react";
 
-const members = [{}, {}, {}];
+import Link from "next/link";
+import clsx from "clsx";
 
 export default function TaskCard({ task }: { task: TaskRow }) {
-  const [error, setError] = useState<string | null>(null);
-
   const {
     setNodeRef,
     isDragging,
@@ -38,10 +31,7 @@ export default function TaskCard({ task }: { task: TaskRow }) {
     },
   });
 
-  const { deleteTask } = useBoards();
-
   const pathName = usePathname();
-  const { spaceId } = useParams();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -52,46 +42,52 @@ export default function TaskCard({ task }: { task: TaskRow }) {
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
       <Card className={`overflow-hidden ${isDragging && "opacity-50"}`}>
         <div
-          className="h-5"
-          style={{ backgroundColor: task.color || "#FEE485" }}></div>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <Link href={`${pathName}/${task.id}`}>
-              <CardTitle className="hover:bg-zinc-200 px-4 py-2 rounded-md">
-                {task.title}
-              </CardTitle>
-            </Link>
-            {/* Delete button */}
-            <Button
-              title="Delete task"
-              variant="outline"
-              size="icon"
-              className="hover:text-red-700 h-6 w-6 z-50"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent triggering the Link
-                setError(null);
-                deleteTask(spaceId[0], task.column, task.id, () => {
-                  setError(error);
-                });
-              }}>
-              <FaTrash size={10} />
-            </Button>
-          </div>
-          <CardDescription className="text-xs text-ellipsis overflow-hidden whitespace-nowrap">
-            {task.description}
-          </CardDescription>
-        </CardHeader>
-        <CardFooter className="flex justify-between">
-          <p className="flex items-center gap-2">
-            <FaRegClock className="text-zinc-500 hover:opacity-0 transition-opacity duration-300" />
-            <span className="text-xs">14 oct</span>
-          </p>
-          <p className="flex gap-2 items-center">
-            <TbCheckbox className="text-zinc-500" />{" "}
-            <span className="text-xs">0/3</span>
-          </p>
-          <StackedAvatars members={members} size="sm" max={3} />
-        </CardFooter>
+          className={clsx("h-5", {
+            "bg-red-300": task?.priority === "high",
+            "bg-yellow-300": task?.priority === "medium",
+            "bg-green-300": task?.priority === "low",
+          })}></div>
+        <Link href={`${pathName}?task=${task.id}&list=${task.column}`}>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle className="py-2 rounded-md">{task.title}</CardTitle>
+            </div>
+            <CardDescription className="text-xs text-ellipsis overflow-hidden whitespace-nowrap">
+              <p>{task.description}</p>
+            </CardDescription>
+          </CardHeader>
+          <CardFooter className="flex justify-between">
+            {task?.priority && (
+              <p
+                className={clsx(
+                  "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
+                  {
+                    "text-red-700": task?.priority === "high",
+                    "text-yellow-700": task?.priority === "medium",
+                    "text-green-700": task?.priority === "low",
+                  }
+                )}>
+                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+              </p>
+            )}
+            {task.dueDate && (
+              <p className="flex items-center gap-2">
+                <FaRegClock className="text-zinc-500" />
+                <span className="text-xs">
+                  {new Date(task.dueDate).toLocaleDateString()}
+                </span>
+              </p>
+            )}
+
+            {task.assignedTo?.length ? (
+              <StackedAvatars
+                members={task.assignedTo.map(() => ({}))}
+                size="sm"
+                max={3}
+              />
+            ) : null}
+          </CardFooter>
+        </Link>
       </Card>
     </div>
   );

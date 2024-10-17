@@ -5,7 +5,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "../ui/button";
-import { FaPlus, FaTrash } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa6";
 import { useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Column, TaskRow } from "@/types/spaces";
@@ -14,17 +14,17 @@ import { useBoards } from "@/contexts/boards-context";
 import { MdOutlineFormatColorFill } from "react-icons/md";
 import { useParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { NewTaskButton } from "./new-task-button";
+import { AlertConfirm } from "../ui/alert-confirm";
 
 export default function SectionContainer({
   section,
   deleteSection = () => {},
-  createTask = () => {},
   tasks,
   isOverLay = false,
 }: {
   section: Column;
   deleteSection?: (id: string) => void;
-  createTask?: () => void;
   isOverLay?: boolean;
   tasks: TaskRow[];
 }) {
@@ -33,7 +33,7 @@ export default function SectionContainer({
 
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
-  const { spaceId } = useParams();
+  const { spaceId }: { spaceId: string } = useParams();
 
   const { loading, updateList } = useBoards();
 
@@ -63,7 +63,7 @@ export default function SectionContainer({
   };
 
   const handleUpdateTitle = async () => {
-    await updateList(spaceId[0], section.id, { name: value }, () => {
+    await updateList(spaceId, section.id, { name: value }, () => {
       toast({ value: "Failed to update section title" });
     });
     setEditMode(false);
@@ -104,25 +104,24 @@ export default function SectionContainer({
           <Button variant="outline" size="icon" className="h-6 w-6">
             <MdOutlineFormatColorFill size={16} />
           </Button>
-          <Button
-            onClick={() => {
+          <AlertConfirm
+            message="Are you sure you want to delete this section?"
+            description="All tasks in this section will be deleted!!"
+            confirmText="Delete"
+            onConfirm={() => {
               deleteSection(section.id);
-            }}
-            variant="outline"
-            size="icon"
-            className="hover:text-red-700 h-6 w-6">
-            <FaTrash />
-          </Button>
+            }}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="hover:text-red-700 h-6 w-6">
+              <FaTrash />
+            </Button>
+          </AlertConfirm>
         </div>
       </div>
 
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={createTask}
-        className="flex gap-2 items-center my-2 ">
-        Create new task <FaPlus size={10} />
-      </Button>
+      <NewTaskButton listId={section.id} />
 
       <div className="flex flex-col gap-2 ">
         <SortableContext

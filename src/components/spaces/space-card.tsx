@@ -7,11 +7,36 @@ import {
 } from "@/components/ui/card";
 import { Space } from "@/types/spaces";
 import Link from "next/link";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { Button } from "../ui/button";
+import { EditSpace } from "./edit-space";
 
-export default function SpaceCard({ space }: { space: Space }) {
+export default function SpaceCard({
+  space,
+  setSpaces,
+}: {
+  space: Space;
+  setSpaces: React.Dispatch<React.SetStateAction<Space[]>>;
+}) {
   return (
-    <Link href={`spaces/${space._id}`}>
-      <Card className="h-full hover:bg-zinc-50">
+    <Card className="h-full relative">
+      <EditSpace
+        initialData={{
+          name: space.name,
+          description: space.description,
+        }}
+        spaceId={space._id}
+        setSpaces={setSpaces}>
+        <Button
+          title="Edit space"
+          size="icon"
+          variant="ghost"
+          className="absolute right-2 top-4 ">
+          <BsThreeDotsVertical />
+        </Button>
+      </EditSpace>
+
+      <Link href={`spaces/${space._id}`}>
         <CardHeader>
           <CardTitle>{space.name}</CardTitle>
           <CardDescription>{space.description}</CardDescription>
@@ -28,7 +53,7 @@ export default function SpaceCard({ space }: { space: Space }) {
             </div>
           ))}
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

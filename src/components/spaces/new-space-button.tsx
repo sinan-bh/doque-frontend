@@ -17,8 +17,15 @@ import { createNewSpace } from "@/utils/taskUtils";
 import { FormEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
+import { Space } from "@/types/spaces";
 
-export function NewSpaceButton({ workSpaceId }: { workSpaceId: string }) {
+export function NewSpaceButton({
+  workSpaceId,
+  setSpaces,
+}: {
+  workSpaceId: string;
+  setSpaces: React.Dispatch<React.SetStateAction<Space[]>>;
+}) {
   const [spaceName, setSpaceName] = useState("New space");
   const [spaceDesc, setSpaceDesc] = useState("Space description");
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +47,7 @@ export function NewSpaceButton({ workSpaceId }: { workSpaceId: string }) {
     setIsOpen(false);
 
     if (res.data) {
+      setSpaces((prev) => [...prev!, res.data!]);
       toast({
         draggable: true,
         title: "Space created",

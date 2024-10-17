@@ -1,12 +1,20 @@
 "use client";
 
-import { Space, TaskRow, Column } from "@/types/spaces";
+import {
+  Space,
+  TaskRow,
+  Column,
+  TaskFormValues,
+  Task,
+  ApiResponse,
+} from "@/types/spaces";
 import {
   apiCreateList,
   apiCreateTask,
   apiDeleteTask,
   apiListDelete,
   apiUpdateList,
+  apiUpdateTask,
 } from "@/utils/taskUtils";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -44,6 +52,7 @@ type ContextType = {
   createTask: (
     spaceId: string,
     listId: string,
+    data: TaskFormValues,
     onError: (msg: string) => void
   ) => Promise<void>;
   updateList: (
@@ -70,6 +79,12 @@ type ContextType = {
     taskId: string,
     onError: (msg: string) => void
   ) => Promise<void>;
+  updateTask: (
+    spaceId: string,
+    listId: string,
+    taskId: string,
+    taskDetails: TaskFormValues
+  ) => Promise<ApiResponse<Task>>;
 };
 
 const BoardsContext = createContext<ContextType | null>(null);
@@ -134,13 +149,11 @@ export default function BoardsProvider({
   const createTask = async (
     spaceId: string,
     listId: string,
+    data: TaskFormValues,
     onError: (msg: string) => void
   ) => {
     setLoading("createTask");
-    const res = await apiCreateTask(spaceId, listId, {
-      title: "New",
-      description: "hello this is a new task",
-    });
+    const res = await apiCreateTask(spaceId, listId, data);
     if (res.data) {
       setTasks([
         ...tasks,
@@ -149,6 +162,8 @@ export default function BoardsProvider({
           description: res.data.description,
           id: res.data._id,
           column: listId,
+          priority: res.data.priority,
+          dueDate: res.data.dueDate,
         },
       ]);
     }
@@ -257,6 +272,29 @@ export default function BoardsProvider({
     setSpaces(spaces);
   };
 
+  const updateTask = async (
+    spaceId: string,
+    listId: string,
+    taskId: string,
+    taskDetails: TaskFormValues
+  ) => {
+    const res = await apiUpdateTask(spaceId, listId, taskId, taskDetails);
+    if (res.data) {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => {
+          if (task.id === taskId) {
+            return {
+              ...task,
+              ...taskDetails,
+            };
+          }
+          return task;
+        })
+      );
+    }
+    return res;
+  };
+
   const populateBoardData = (spaceData: Space) => {
     // Populate columns
     const cols: Column[] = spaceData.lists.map((list) => {
@@ -272,6 +310,9 @@ export default function BoardsProvider({
       list.tasks.map((task) => ({
         ...task,
         id: task._id,
+        priority: task.priority,
+        dueDate: task.dueDate,
+        description: task.description,
         column: list._id,
       }))
     );
@@ -295,6 +336,7 @@ export default function BoardsProvider({
     swapTasksInSameColumn,
     moveTaskToColumn,
     deleteTask,
+    updateTask,
     populateSpacesData,
     spaces,
     populateBoardData,

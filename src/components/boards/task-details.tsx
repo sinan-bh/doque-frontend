@@ -1,44 +1,151 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
-import { useBoards } from "@/contexts/boards-context";
-import { FiCreditCard } from "react-icons/fi";
+import { useRouter, usePathname, useParams } from "next/navigation";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { TbCheckbox } from "react-icons/tb";
-import StackedAvatars from "../ui/stacked-avatars";
 import { Button } from "../ui/button";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
-import { CiCirclePlus } from "react-icons/ci";
-import { BsCardText } from "react-icons/bs";
-import { Textarea } from "../ui/textarea";
-import { ImAttachment } from "react-icons/im";
+import { CiEdit } from "react-icons/ci";
+import { Task, TaskFormValues } from "@/types/spaces";
+import { apiGetTaskDetails } from "@/utils/taskUtils";
+import { useToast } from "@/hooks/use-toast";
+import { IoTrashOutline } from "react-icons/io5";
+import clsx from "clsx";
+import { useBoards } from "@/contexts/boards-context";
+import { Input } from "../ui/input";
+import AssignTaskToMembers from "./task-assign-members";
+import TaskDescription from "./task-description";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import DueDatePicker from "./due-date-picker";
+import { AlertConfirm } from "../ui/alert-confirm";
 
-const members = [{}, {}, {}];
+export default function TaskDetails({
+  taskId,
+  listId,
+}: {
+  taskId?: string;
+  listId: string;
+}) {
+  const [data, setData] = useState<Task | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [titleEditOpen, setTitleEditOpen] = useState(false);
+  const [values, setValues] = useState<TaskFormValues | null>(null);
 
-export default function TaskDetails({ taskId }: { taskId?: string }) {
-  const { tasks } = useBoards();
+  const changesMade = useMemo(() => {
+    return (
+      JSON.stringify({
+        title: data?.title,
+        description: data?.description,
+        assignedTo: data?.assignedTo,
+        priority: data?.priority,
+      }) !== JSON.stringify(values)
+    );
+  }, [data, values]);
+
+  const { toast } = useToast();
+
   const router = useRouter();
+  const { spaceId }: { spaceId: string } = useParams();
+  const pathname = usePathname();
+  const { deleteTask, updateTask } = useBoards();
 
-  const { workSpaceId, spaceId, boardId } = useParams();
+  useEffect(() => {
+    // When the user clicks outside or press escape key
+    // remove the taskId from the URL so the user can navigate back (close the popup)
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        router.push(pathname);
+      }
+    }
 
-  if (!taskId) return null;
-  const task = tasks.find((task) => task.id === taskId);
-  if (!task) return null;
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setInitialLoading(true);
+    async function fetchData() {
+      if (taskId && listId) {
+        // fetch task details
+        const { data, error } = await apiGetTaskDetails(
+          spaceId,
+          listId,
+          taskId
+        );
+        setInitialLoading(false);
+        if (error) {
+          toast({ description: "Error fetching task details!!" });
+          router.push(pathname);
+        } else if (data) {
+          setData(data);
+          setValues({
+            title: data.title,
+            description: data.description,
+            assignedTo: data.assignedTo,
+            priority: data.priority,
+            dueDate: data.dueDate,
+          });
+        }
+      }
+    }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskId, listId]);
+
+  const handleUpdateTask = async () => {
+    toast({ title: "Saving Changes.." });
+    const { error } = await updateTask(spaceId, listId, taskId!, values!);
+    if (error) {
+      toast({
+        title: "Error saving changes",
+        description: error,
+      });
+    } else {
+      toast({ title: "Changes saved successfully" });
+    }
+  };
 
   const handleClickOutside = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
 
-    if (!target.closest("#task-card")) {
+    if (!target.closest(".task-details-section")) {
       // Remove the taskId from the URL so the user can navigate back (close the popup
-      router.replace(`/w/${workSpaceId}/${spaceId}/${boardId[0]}`);
+      router.push(pathname);
+    }
+  };
+
+  const handleTaskDelete = async () => {
+    if (taskId && listId) {
+      let success = true;
+      toast({ title: "Deleting Task.." });
+      await deleteTask(spaceId, listId, taskId, (msg) => {
+        success = false;
+        toast({
+          title: "Error while deleting task",
+          description: msg,
+        });
+      });
+      if (success) {
+        toast({ title: "Task deleted successfully" });
+        router.push(pathname);
+      }
     }
   };
 
@@ -47,114 +154,138 @@ export default function TaskDetails({ taskId }: { taskId?: string }) {
       onClick={handleClickOutside}
       className="fixed bg-black top-0 left-0 h-screen w-screen bg-opacity-50 z-40">
       <div className="absolute w-full h-full flex justify-center items-center">
-        <Card id="task-card" className="overflow-hidden w-[600px]">
-          <div
-            className="h-16 flex justify-end items-end p-2"
-            style={{ backgroundColor: task.color || "#FEE485" }}>
-            <Button size="xs" variant="outline" className="rounded-full">
-              Cover
-            </Button>
-          </div>
-
-          <CardHeader>
-            <CardTitle className="flex gap-4 items-center text-2xl">
-              <FiCreditCard className="mt-1" /> {task.title}
-            </CardTitle>
-            <div className="h-0.5 bg-zinc-400 rounded-full"></div>
-
-            <CardDescription>
-              <div className="flex gap-8">
-                <div>
-                  <p>Members</p>
-                  <div className="flex items-center gap-2">
-                    <StackedAvatars members={members} size="sm" max={5} />
-                    <Button variant="ghost" size="icon">
-                      <CiCirclePlus size={20} />
-                    </Button>
-                  </div>
-                </div>
-                <div>
-                  <p>Due Date</p>
-                  <div className="flex items-center gap-2">
-                    <FaRegClock className="text-zinc-500" />
-                    <span>14 oct</span>
-                  </div>
+        {initialLoading && <p className="text-white">Loading...</p>}
+        {data && (
+          <Card className="task-details-section overflow-hidden w-[600px]">
+            <div
+              className={clsx("h-16 flex justify-between items-end p-2", {
+                "bg-red-300": values?.priority === "high",
+                "bg-yellow-200": values?.priority === "medium",
+                "bg-green-300": values?.priority === "low",
+              })}>
+              <div>
+                <p className="text-zinc-700 text-xs">Created At</p>
+                <div className="flex items-center gap-2 text-sm">
+                  <FaRegClock />
+                  {data.createdAt && (
+                    <span>{new Date(data.createdAt).toLocaleDateString()}</span>
+                  )}
                 </div>
               </div>
-            </CardDescription>
-          </CardHeader>
+              <AlertConfirm
+                confirmText="Delete Task"
+                onConfirm={handleTaskDelete}
+                message="Are you sure you want to delete this task?"
+                description="This action is permanent and cannot be undone">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className=" hover:border-red-600 hover:bg-red-300 h-8 w-8 ">
+                  <IoTrashOutline />
+                </Button>
+              </AlertConfirm>
+            </div>
 
-          <CardContent>
-            <TaskDescription />
-            <TaskAttachments />
+            <CardHeader>
+              <CardTitle className="flex gap-4 items-center text- xl">
+                <div onClick={() => setTitleEditOpen(true)}>
+                  {!titleEditOpen && (
+                    <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 h-9 hover:border rounded-md px-3 py-1 text-sm">
+                      {data.title} <CiEdit className="text-zinc-800" />
+                    </h2>
+                  )}
+                  {titleEditOpen && (
+                    <Input
+                      className="bg-white"
+                      type="text"
+                      autoFocus
+                      value={values?.title}
+                      onChange={(e) => {
+                        setValues((prev) => ({
+                          ...prev!,
+                          title: e.target.value,
+                        }));
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") setTitleEditOpen(false);
+                      }}
+                      onBlur={() => setTitleEditOpen(false)}
+                    />
+                  )}
+                </div>
+              </CardTitle>
+              <div className="h-0.5 bg-zinc-400 rounded-full"></div>
+            </CardHeader>
+
+            <CardContent className="max-h-[350px] overflow-y-auto">
+              <TaskDescription values={values} setValues={setValues} />
+              <AssignTaskToMembers
+                existingMembers={values?.assignedTo || []}
+                setValues={setValues}
+              />
+            </CardContent>
+
             <div className="h-0.5 bg-zinc-300 my-2 rounded-full"></div>
-          </CardContent>
 
-          <CardFooter className="flex justify-between">
-            <p className="flex items-center gap-2">
-              <FaRegClock className="text-zinc-500 hover:opacity-0 transition-opacity duration-300" />
-              <span className="text-xs">14 oct</span>
-            </p>
-            <p className="flex gap-2 items-center">
-              <TbCheckbox className="text-zinc-500" />
-              <span className="text-xs"> 0/3</span>
-            </p>
-            <StackedAvatars members={members} size="sm" max={3} />
-          </CardFooter>
-        </Card>
+            <CardFooter className="grid grid-cols-4 mt-4">
+              <div>
+                <p>Priority</p>
+
+                <Select
+                  value={values?.priority}
+                  onValueChange={(value) => {
+                    setValues((prev) => ({
+                      ...prev!,
+                      priority: value,
+                    }));
+                  }}>
+                  <SelectTrigger
+                    className={clsx(
+                      "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
+                      {
+                        "text-red-700": values?.priority === "high",
+                        "text-yellow-700": values?.priority === "medium",
+                        "text-green-700": values?.priority === "low",
+                      }
+                    )}>
+                    <SelectValue>
+                      {values?.priority && (
+                        <>
+                          {values.priority.charAt(0).toUpperCase() +
+                            values.priority.slice(1)}
+                        </>
+                      )}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="task-details-section">
+                    <SelectGroup>
+                      <SelectLabel>Priority</SelectLabel>
+                      <SelectItem className="text-green-800" value="low">
+                        Low
+                      </SelectItem>
+                      <SelectItem className="text-yellow-700" value="medium">
+                        Medium
+                      </SelectItem>
+                      <SelectItem className="text-red-700" value="high">
+                        High
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <DueDatePicker dueDate={values?.dueDate} setValues={setValues} />
+              <Button
+                onClick={handleUpdateTask}
+                size="sm"
+                disabled={!changesMade}
+                className="col-start-4 w-fit  ">
+                Save Changes
+              </Button>
+            </CardFooter>
+          </Card>
+        )}
       </div>
-    </div>
-  );
-}
-
-function TaskDescription({ description }: { description?: string }) {
-  const [editOpen, setEditOpen] = useState(false);
-  const [value, setValue] = useState(description);
-
-  return (
-    <div>
-      <span className="flex items-center text-lg gap-2">
-        <BsCardText className="mt-1" /> <h2>Description</h2>
-        <Button
-          onClick={() => setEditOpen(!editOpen)}
-          size="xs"
-          variant="secondary"
-          className="w-16 border text-zinc-600 rounded-sm">
-          Edit
-        </Button>
-      </span>
-      {editOpen || !value ? (
-        <Textarea
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={() => {
-            setEditOpen(false);
-          }}
-          disabled={!editOpen}
-          className="my-2 disabled:cursor-default"
-          placeholder="Add description here"
-          value={value}
-        />
-      ) : (
-        <pre className="border bg-zinc-100 text-zinc-800 px-4 py-2 min-h-16 rounded-md my-2 font-normal font-sans text-sm">
-          {value}
-        </pre>
-      )}
-    </div>
-  );
-}
-
-function TaskAttachments() {
-  return (
-    <div>
-      <span className="flex items-center text-lg gap-2">
-        <ImAttachment className="mt-1" /> <h2>Attachments</h2>
-        <Button
-          size="xs"
-          variant="secondary"
-          className="w-16 border text-zinc-600 rounded-sm">
-          Add
-        </Button>
-      </span>
     </div>
   );
 }

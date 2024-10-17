@@ -11,13 +11,25 @@ import {
 } from "../ui/dropdown-menu";
 import { useParams } from "next/navigation";
 import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
-import { useBoards } from "@/contexts/boards-context";
+import { useEffect, useState } from "react";
+import { getAllSpaces } from "@/utils/taskUtils";
+import { Space } from "@/types/spaces";
 
 export default function SpacesMenu() {
-  const { spaces } = useBoards();
-  const { workSpaceId, spaceId } = useParams();
+  const [spaces, setSpaces] = useState<Space[] | null>([]);
+  const { workSpaceId, spaceId }: { workSpaceId: string; spaceId: string } =
+    useParams();
   const spaceDetails =
-    spaces && spaceId ? spaces.find((space) => space._id === spaceId[0]) : null;
+    spaces && spaceId ? spaces.find((space) => space._id === spaceId) : null;
+
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      const { data: spaces } = await getAllSpaces(workSpaceId);
+      setSpaces(spaces);
+    };
+    fetchSpaces();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
