@@ -33,8 +33,7 @@ interface CalendarContextType {
   workSpaceId: string | string[];
   users: any[];
   workSpace: Workspace[];
-  setWorkSpacesId: React.Dispatch<React.SetStateAction<string>>;
-  setChosenDate: React.Dispatch<React.SetStateAction<Date | string | number>>;
+  setWorkSpacesId: React.Dispatch<React.SetStateAction<string>>;  setChosenDate: React.Dispatch<React.SetStateAction<Date | string | number>>;
   handleNext: (previousSpaceName: string) => Promise<void>;
 }
 
