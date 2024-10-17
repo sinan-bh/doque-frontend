@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,13 +24,18 @@ export default function Login() {
   const { loginUser: login } = useUser();
   const router = useRouter();
 
+  const { workSpace } = useWorkSpaceContext();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     const result = await login(email, password);
     if (result.statusCode === 200) {
-      router.push("/u/home");
+      if (!workSpace || workSpace.length === 0) {
+        router.push("/onboarding");
+      } else {
+        router.push("/u/home");
+      }
     } else {
       setError(result.error);
     }

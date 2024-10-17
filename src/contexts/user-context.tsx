@@ -8,11 +8,13 @@ import Cookies from "js-cookie";
 
 type UserProfile = {
   _id: string;
-  email?: string;
+  email: string;
   firstName: string;
   lastName?: string;
   image: string;
   activeWorkspace?: [];
+  description: string;
+  name?: string;
 };
 
 interface UserContextType {

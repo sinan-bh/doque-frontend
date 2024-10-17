@@ -1,16 +1,26 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useUser } from '@/contexts/user-context';
 
 const ProfileSettings: React.FC = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [description, setDescription] = useState('');
 
+    const { userProfile } = useUser();
+
+    useEffect(() => {
+        if (userProfile) {
+            setName(userProfile.firstName + ' ' + userProfile.lastName);
+            setEmail(userProfile.email);
+            setDescription(userProfile.description);
+        }
+        
+    }, [userProfile]);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Profile updated:', { name, email, password, description });
+        console.log('Profile updated:', { name, email, description });
     };
 
     return (
@@ -26,7 +36,7 @@ const ProfileSettings: React.FC = () => {
                         <div className="flex items-center">
                             <div className="mr-6 z-10">
                                 <Image
-                                    src="https://i.pravatar.cc/300"
+                                    src="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
                                     alt="Profile"
                                     className="rounded-full object-cover border-4 border-white"
                                     width={120}
@@ -63,17 +73,8 @@ const ProfileSettings: React.FC = () => {
                                     required
                                 />
                             </div>
-                            <div className="flex flex-col">
-                                <label className="text-sm font-medium text-gray-700">Password</label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
-                                />
-                            </div>
                             <div className="mt-2">
-                                <a href="#" className="text-sm text-blue-500 flex justify-end hover:underline">Change Password</a>
+                                <a href="reset-password" className="text-sm text-blue-500 flex justify-end hover:underline">Change Password</a>
                             </div>
                         </div>
                         <div className="flex-1 flex flex-col justify-between space-y-4">
@@ -91,7 +92,7 @@ const ProfileSettings: React.FC = () => {
                                     type="submit"
                                     className="px-6 py-2 mr-2 bg-[#F6F8FA] float-end text-black border border-gray-500 rounded-lg shadow-lg hover:bg-gray-100 transition duration-200"
                                 >
-                                    Save 
+                                    Save
                                 </button>
                             </div>
                         </div>
