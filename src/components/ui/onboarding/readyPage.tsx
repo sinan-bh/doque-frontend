@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import Spinner from "../spinner/spinner";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 
 type readyPage = {
   spaceName: string;
@@ -16,23 +17,18 @@ type readyPage = {
 };
 
 export default function ReadyPage({ spaceName, listName }: readyPage) {
-  const [workSpaceId, setWorkSpaceId] = useState<string | null>(null)
   const { loggedUser} = useUser()
+  const { workSpacesId} = useWorkSpaceContext()
   const router = useRouter();  
 
-  useEffect(()=> {
-    const workSpace = localStorage.getItem("workSpace")
-    if (workSpace) {
-      setWorkSpaceId(JSON.parse(workSpace))
-    }
-  },[loggedUser?.id])
+  
 
   useEffect(() => {
     if (loggedUser?.token) {
     const handleReady = async () => {
       try {
-        await axios.post(
-          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
+        const {data} = await axios.post(
+          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpacesId}`,
           { name: spaceName },
           {
             headers: {
@@ -40,8 +36,11 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
             },
           }
         );
+        const spaceId = data.data._id
+        console.log(data);
+        
         await axios.post(
-          "https://daily-grid-rest-api.onrender.com/api/space/670798ab898cba87ae9c7ca4/lists",
+          `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
           { name: listName.todo },
           {
             headers: {
@@ -50,7 +49,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
           }
         );
         await axios.post(
-          "https://daily-grid-rest-api.onrender.com/api/space/670798ab898cba87ae9c7ca4/lists",
+          `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
           { name: listName.doing },
           {
             headers: {
@@ -59,7 +58,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
           }
         );
         await axios.post(
-          "https://daily-grid-rest-api.onrender.com/api/space/670798ab898cba87ae9c7ca4/lists",
+          `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
           { name: listName.completed },
           {
             headers: {
@@ -67,7 +66,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
             },
           }
         );
-        router.push("/w/1/1");
+        router.push(`w/${workSpacesId}/spaces/${spaceId}`);
       } catch (error) {
         console.log(error);
       }
@@ -75,7 +74,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
 
     handleReady();
   }
-  }, [workSpaceId,loggedUser?.token]);
+  }, [workSpacesId,loggedUser?.token]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

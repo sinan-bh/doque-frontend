@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import axios from "axios";
-import { useUser } from "@/contexts/user-context";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 
 interface TaskNameStepProps {
   previousSpaceName: string;
@@ -32,26 +31,11 @@ export default function TaskNameStep({
     onTaskCategoryChange(name, value);
   };
 
-  const {loggedUser} = useUser()
+  const {handleNext} = useWorkSpaceContext()
 
-  const handleNext = async () => {
+  const handleCreateWorkSpace = async () => {
     const currentBoardName = taskCategories.todo;
-
-    try {
-     const res = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/workspace",
-        { name: previousSpaceName },
-        {
-          headers: {
-            Authorization: `Bearer ${loggedUser?.token}`,
-          },
-        }
-      );
-      localStorage.setItem("workSpace",JSON.stringify(res.data.data._id))
-    } catch (error) {
-      console.log(error);
-    }
-
+    handleNext(previousSpaceName)
     onNext(currentBoardName);
   };
 
@@ -116,7 +100,7 @@ export default function TaskNameStep({
               className={`text-indigo-600 font-semibold hover:underline ${
                 !allFieldsFilled ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              onClick={handleNext}
+              onClick={handleCreateWorkSpace}
               disabled={!allFieldsFilled}
             >
               Next

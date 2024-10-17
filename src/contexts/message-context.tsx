@@ -78,6 +78,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
               },
             }
           );          
+          
           setMessages(data.data);
         } catch (err) {
           if (err instanceof AxiosError && err.status === 404)

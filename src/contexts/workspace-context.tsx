@@ -8,23 +8,22 @@ import React, {
   useEffect,
 } from "react";
 import { useUser } from "./user-context";
+import { useParams } from "next/navigation";
 
 interface Project {
-
-    
-      _id: string;
-      name: string;
-      description: string;
-    
-  
+  _id: string;
+  name: string;
+  description: string;
 }
-
 
 interface CalendarContextType {
   chosenDate: Date | string | number;
-  workSpaceId: string;
   projects: Project[] | null;
+  workSpacesId: string;
+  workSpaceId: string | string[];
+  setWorkSpacesId: React.Dispatch<React.SetStateAction<string>>;
   setChosenDate: React.Dispatch<React.SetStateAction<Date | string | number>>;
+  handleNext: (previousSpaceName: string) => Promise<void>;
 }
 
 const WorkSpaceContext = createContext<CalendarContextType | undefined>(
@@ -38,23 +37,32 @@ type ContextProps = {
 const WorkSpactContextProvider = ({ children }: ContextProps) => {
   const [chosenDate, setChosenDate] = useState<Date | string | number>("");
   const [projects, setProjects] = useState<Project[] | null>(null);
-  const [workSpaceId, setWorkSpaceId] = useState<string>("");
+  const [workSpacesId, setWorkSpacesId] = useState<string>("");
   const { loggedUser } = useUser();
+  const { workSpaceId } = useParams();
 
-  console.log(projects);
-
-  useEffect(() => {
-    const workSpace = localStorage.getItem("workSpace");
-    if (workSpace) {
-      setWorkSpaceId(JSON.parse(workSpace));
+  const handleNext = async (previousSpaceName: string) => {
+    try {
+      const res = await axios.post(
+        "https://daily-grid-rest-api.onrender.com/api/workspace",
+        { name: previousSpaceName },
+        {
+          headers: {
+            Authorization: `Bearer ${loggedUser?.token}`,
+          },
+        }
+      );
+      setWorkSpacesId(res.data.data._id);
+    } catch (error) {
+      console.log(error);
     }
-  }, [loggedUser?.id]);
+  };
 
   useEffect(() => {
     if (loggedUser?.token) {
       const fetchData = async () => {
         try {
-          const {data} = await axios.get(
+          const { data } = await axios.get(
             `https://daily-grid-rest-api.onrender.com/api/space`,
             {
               headers: {
@@ -62,6 +70,7 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
               },
             }
           );
+          console.log(data);
 
           setProjects(data.data);
         } catch (err) {
@@ -90,7 +99,7 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
   //         );
 
   //         console.log(data.data);
-          
+
   //       } catch (err) {
   //         if (err instanceof AxiosError && err.response?.status === 404) {
   //           console.error("Projects not found");
@@ -105,15 +114,20 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
 
   return (
     <WorkSpaceContext.Provider
-      value={{ chosenDate, workSpaceId, projects, setChosenDate }}
+      value={{
+        chosenDate,
+        workSpacesId,
+        workSpaceId,
+        projects,
+        setChosenDate,
+        handleNext,
+        setWorkSpacesId,
+      }}
     >
       {children}
     </WorkSpaceContext.Provider>
   );
 };
-
-
-
 
 const useWorkSpaceContext = () => {
   const context = useContext(WorkSpaceContext);

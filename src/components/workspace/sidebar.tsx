@@ -6,15 +6,27 @@ import { FaPlus } from "react-icons/fa6";
 import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { sidebarItems } from "@/consts/sidebar-icons";
+// import { sidebarItems } from "@/consts/sidebar-icons";
 import axios from "axios";
 import { AddSpaceBtn } from "../ui/add-space";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { AiFillHome } from "react-icons/ai";
+import { RiDashboardFill } from "react-icons/ri";
+import { BsFillPeopleFill } from "react-icons/bs";
+import { FaCalendar } from "react-icons/fa";
+import { ReactNode } from "react";
 
 
 interface Workspace {
   name: string;
+}
+
+interface SidebarIcon{
+  icon:ReactNode,
+  label:string,
+  href:string
 }
 
 const Sidebar: React.FC = () => {
@@ -24,6 +36,30 @@ const Sidebar: React.FC = () => {
   const [workspace, setWorkspace] = useState<Workspace[]>([]);
   const [activeRoute, setActiveRoute] = useState<string>("");
   const { userProfile, loggedUser } = useUser();
+  const {workSpaceId} = useWorkSpaceContext()
+
+  const sidebarItems: SidebarIcon[] = [
+    {
+      icon: <AiFillHome className="text-xl text-black mt-1" />,
+      label: "Home",
+      href: "/home",
+    },
+    {
+      icon: <RiDashboardFill className="text-xl text-black  mt-1" />,
+      label: "Dashboard",
+      href: `/w/${workSpaceId}/dashboard`,
+    },
+    {
+      icon: <BsFillPeopleFill className="text-xl text-black mt-1" />,
+      label: "Members",
+      href: `/w/${workSpaceId}/members`,
+    },
+    {
+      icon: <FaCalendar className="text-xl text-black mt-1" />,
+      label: "Calendar",
+      href: `/w/${workSpaceId}/calendar`,
+    }
+  ];
 
   const router = useRouter();
 
