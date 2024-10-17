@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { WorkSpactContextProvider } from "@/contexts/workspace-context";
+import { WorkSpaceContextProvider } from "@/contexts/workspace-context";
 import "./globals.css";
 import UserContextProvider from "@/contexts/user-context";
 import { MessageProvider } from "@/contexts/message-context";
@@ -29,15 +29,15 @@ export default function RootLayout({
       <body className={poppins.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <AdminProvider>
             <UserContextProvider>
-              <WorkSpactContextProvider>
+              <WorkSpaceContextProvider>
                 <MessageProvider>{children}</MessageProvider>
-              </WorkSpactContextProvider>
+              </WorkSpaceContextProvider>
             </UserContextProvider>
             <Toaster />
           </AdminProvider>

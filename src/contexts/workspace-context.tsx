@@ -14,6 +14,7 @@ interface Project {
   _id: string;
   name: string;
   description: string;
+  workspace: string;
 }
 
 interface Member {
@@ -26,12 +27,20 @@ interface Workspace {
 
 }
 
+export type Users = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  image: string;
+  isActive: boolean;
+}
+
 interface CalendarContextType {
   chosenDate: Date | string | number;
   projects: Project[] | null;
   workSpacesId: string;
   workSpaceId: string | string[];
-  users: any[];
+  users: Users[];
   workSpace: Workspace[];
   setWorkSpacesId: React.Dispatch<React.SetStateAction<string>>;  setChosenDate: React.Dispatch<React.SetStateAction<Date | string | number>>;
   handleNext: (previousSpaceName: string) => Promise<void>;
@@ -45,12 +54,12 @@ type ContextProps = {
   children: ReactNode;
 };
 
-const WorkSpactContextProvider = ({ children }: ContextProps) => {
+const WorkSpaceContextProvider = ({ children }: ContextProps) => {
   const [chosenDate, setChosenDate] = useState<Date | string | number>("");
   const [workSpace, setWorkspace] = useState<Workspace[]>([]);
   const [projects, setProjects] = useState<Project[] | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<Users[]>([]);
   const [workSpacesId, setWorkSpacesId] = useState<string>("");
   const { loggedUser } = useUser();
   const { workSpaceId } = useParams();
@@ -77,15 +86,13 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
       const fetchData = async () => {
         try {
           const { data } = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/space`,
+            `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,
               },
             }
           );
-          console.log(data);
-
           setProjects(data.data);
         } catch (err) {
           if (err instanceof AxiosError && err.response?.status === 404) {
@@ -108,9 +115,7 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
             {
               headers: { Authorization: `Bearer ${loggedUser?.token}` },
             }
-          );
-          console.log(data.data);
-          
+          );          
           setWorkspace(data.data);
         } catch (error) {
           console.log(error);
@@ -120,46 +125,18 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
     }
   }, [loggedUser?.token]);
 
-  // useEffect(() => {
-  //   if (loggedUser?.token && workSpaceId) {
-  //     const fetchData = async () => {
-  //       try {
-  //         const {data} = await axios.get(
-  //           `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${loggedUser?.token}`,
-  //             },
-  //           }
-  //         );
-
-  //         console.log(data.data);
-
-  //       } catch (err) {
-  //         if (err instanceof AxiosError && err.response?.status === 404) {
-  //           console.error("Projects not found");
-  //         } else {
-  //           console.error(err);
-  //         }
-  //       }
-  //     };
-  //     fetchData();
-  //   }
-  // }, [loggedUser?.token, workSpaceId]);
-
   useEffect(() => {
     if (loggedUser?.token) {
       const fetchWorkspaceMembers = async () => {
         if (!workSpaceId) return;
-
         try {
-          const resp = await axios.get(
+          const {data} = await axios.get(
             `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`,
             {
               headers: { Authorization: `Bearer ${loggedUser?.token}` },
             }
           );
-          setMembers(resp.data.data.members);
+          setMembers(data.data.members);          
         } catch (error) {
           console.log(error);
         }
@@ -167,7 +144,7 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
 
       fetchWorkspaceMembers();
     }
-  }, [workSpaceId]);
+  }, [workSpaceId,loggedUser?.token]);
 
   useEffect(() => {
     if (loggedUser?.token) {
@@ -185,7 +162,8 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
 
           const userResponses = await Promise.all(userPromises);
           const fetchedUsers = userResponses.map((resp) => resp.data);
-          setUsers(fetchedUsers);
+          const users = fetchedUsers.map(u=> u.data)          
+          setUsers(users);
         } catch (error) {
           console.log(error);
         }
@@ -193,7 +171,7 @@ const WorkSpactContextProvider = ({ children }: ContextProps) => {
 
       fetchUserProfiles();
     }
-  }, [members]);
+  }, [members,loggedUser?.token]);
 
   return (
     <WorkSpaceContext.Provider
@@ -222,4 +200,4 @@ const useWorkSpaceContext = () => {
   return context;
 };
 
-export { useWorkSpaceContext, WorkSpactContextProvider };
+export { useWorkSpaceContext, WorkSpaceContextProvider };

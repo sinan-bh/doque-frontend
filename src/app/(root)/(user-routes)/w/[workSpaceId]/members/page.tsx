@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import MembersGrid from "@/components/workspace/members-views/member-grid";
 import MembersList from "@/components/workspace/members-views/member-list";
 import TeamsGrid from "@/components/workspace/members-views/team-grid";
 import TeamsList from "@/components/workspace/members-views/team-list";
-import { members, teams } from "@/consts/members-datas";
+import { teams } from "@/consts/members-datas";
 import { IoGrid, IoList } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { useWorkSpaceContext } from "@/contexts/workspace-context";

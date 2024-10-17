@@ -6,7 +6,6 @@ import { FaPlus } from "react-icons/fa6";
 import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-// import { sidebarItems } from "@/consts/sidebar-icons";
 import axios from "axios";
 import { AddSpaceBtn } from "../ui/add-space";
 import { useRouter } from "next/navigation";

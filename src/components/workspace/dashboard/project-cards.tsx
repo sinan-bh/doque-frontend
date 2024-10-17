@@ -8,10 +8,7 @@ const ProjectCard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Select the first project by default if available
-    if (projects && projects.length > 0) {
-      console.log(projects);
-      
+    if (projects && projects.length > 0) {      
       setSelectedProjectId(projects[0]._id);
     }
   }, [projects]);
