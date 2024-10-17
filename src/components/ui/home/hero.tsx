@@ -29,7 +29,7 @@ export default function Home() {
 
         <section className="relative text-center pt-32 pb-10 animate-fadeIn">
           <div className="relative z-10 m-16">
-            <h1 className="text-9xl font-bold">
+            <h1 className="text-9xl font-bold text-black">
               DO
               <span className="relative inline-block">
                 <span

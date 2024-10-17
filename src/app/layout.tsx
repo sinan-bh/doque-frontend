@@ -5,6 +5,8 @@ import "./globals.css";
 import UserContextProvider from "@/contexts/user-context";
 import { MessageProvider } from "@/contexts/message-context";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/dark-mode/theme-provider";
+import { AdminProvider } from "@/contexts/admin-context";
 
 export const metadata: Metadata = {
   title: "DOQUE",
@@ -23,14 +25,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
-        <UserContextProvider>
-          <WorkSpactContextProvider>
-            <MessageProvider>{children}</MessageProvider>
-          </WorkSpactContextProvider>
-        </UserContextProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AdminProvider>
+            <UserContextProvider>
+              <WorkSpactContextProvider>
+                <MessageProvider>{children}</MessageProvider>
+              </WorkSpactContextProvider>
+            </UserContextProvider>
+            <Toaster />
+          </AdminProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

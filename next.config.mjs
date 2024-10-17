@@ -18,9 +18,19 @@ const nextConfig = {
         port: "",
       },
       {
-        protocol: 'https',
-        hostname: 'imgv3.fotor.com', 
-        port: '',
+        protocol: "https",
+        hostname: "imgv3.fotor.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "img.freepik.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
       },
     ],
   },
