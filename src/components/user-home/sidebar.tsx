@@ -1,38 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { AiOutlineHome } from "react-icons/ai";
 import { HiOutlineTemplate } from "react-icons/hi";
 import { FiSettings } from "react-icons/fi";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useWorkSpaceContext } from "@/contexts/workspace-context";
 
 const Sidebar = () => {
-  const [activePath, setActivePath] = useState<string>("/u/home"); 
+  const [activePath, setActivePath] = useState<string>("/u/home");
+  const { workSpace } = useWorkSpaceContext();
 
   const sidebarItems = [
-    {
-      icon: <AiOutlineHome className="text-2xl" />,
-      label: "Home",
-      link: "/u/home",
-    },
-    {
-      icon: <HiOutlineTemplate className="text-2xl" />,
-      label: "Templates",
-      link: "/u/home/templates",
-    },
-  ];
-
-  const workspaceItems = [
-    { name: "Alixa's", link: "https://i.pravatar.cc/300" },
-    { name: "Guest's", link: "https://i.pravatar.cc/300" },
+    { icon: <AiOutlineHome className="text-2xl" />, label: "Home", link: "/u/home" },
+    { icon: <HiOutlineTemplate className="text-2xl" />, label: "Templates", link: "/u/home/templates" },
   ];
 
   const activeLink = (path: string) => {
-    setActivePath(path); 
+    setActivePath(path);
   };
 
   return (
-    <div className="w-full h-auto sm:w-1/4 md:w-1/5 bg-[#EDF1F4] p-4 flex flex-col">
+    <div className="w-full min-h-[calc(100vh-4rem)] sm:w-1/4 md:w-1/5 bg-[#EDF1F4] p-4 flex flex-col">
       <div className="flex-1">
         {sidebarItems.map((item, index) => (
           <Link key={index} href={item.link} onClick={() => activeLink(item.link)}>
@@ -50,23 +38,18 @@ const Sidebar = () => {
         <hr className="my-2 border-gray-500 h-1" />
         <h2 className="font-semibold text-sm mt-1 text-gray-600">Workspaces</h2>
 
-        {workspaceItems.map((workspace, index) => (
-          <Link href="/w/1/dashboard" key={index}>
-            <div className="flex items-center ml-1 mt-3">
-            <Avatar className="w-10 h-10">
-                <AvatarImage
-                  src={workspace.link}
-                  alt="User Profile"
-                />
-                <AvatarFallback />
-              </Avatar>
-              <div className="flex flex-col py-1">
-                <span className="font-semibold text-sm">{workspace.name}</span>
-                <span className="font-medium text-sm">Workspace</span>
+        <div className="max-h-[360px] overflow-y-auto">
+          {workSpace?.map((workspace, index) => (
+            <Link href={`/w/${workspace.WorkspaceId}/dashboard`} key={index}>
+              <div className="flex items-center ml-1 mt-3">
+                <div className="flex flex-col py-1">
+                  <span className="font-semibold text-sm">{workspace.name}</span>
+                  <span className="font-medium text-sm">Workspace</span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
 
       <Link href="">

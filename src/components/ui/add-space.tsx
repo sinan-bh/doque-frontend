@@ -12,20 +12,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 interface ChildCompProps {
   isRender: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDc3MjZmM2IyNmQzZDAwYzliMWRkZSIsImlhdCI6MTcyODYzMDM0NiwiZXhwIjoxNzMxMjIyMzQ2fQ.WwZ5Qi7gmuJirc-jNMR-YAxi6zHNTMSHSkWCUYMqC04";
+  const { toast } = useToast();
 
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MGNjNDQ3OGNmZDdjNzI5MWFmNThhNSIsImlhdCI6MTcyOTE0MDc2MiwiZXhwIjoxNzMxNzMyNzYyfQ.tcXc7sUP-8nan0LDqbfUfW_lKq_5N5idKQ-1VDFnqmw";
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -35,11 +39,12 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    isRender(true)
+    isRender(true);
+    setIsOpen(false)
     e.preventDefault();
 
     try {
-      await axios.post(
+      const resp = await axios.post(
         "https://daily-grid-rest-api.onrender.com/api/workspace",
         {
           name: formData.name,
@@ -51,18 +56,27 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
           },
         }
       );
+      
+      if (resp.status == 201) {
+        toast({
+          title: "Created",
+          description: "Workspace Created Successfully",
+        });
+      }
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: axiosErrorCatch(error),
+      });
     }
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="hover:bg-transparent"
-        >
+        <Button variant="ghost" className="hover:bg-transparent">
           Add space
         </Button>
       </DialogTrigger>

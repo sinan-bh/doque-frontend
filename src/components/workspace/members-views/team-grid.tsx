@@ -4,9 +4,12 @@ import { FaEdit } from "react-icons/fa";
 import { MdPeopleAlt } from "react-icons/md";
 
 interface Team {
+  id: number;
+  img: string;
   name: string;
   email: string;
-  img: string;
+  role?: string;
+  online?: boolean;
 }
 
 const TeamsGrid: React.FC<{ teams: Team[] }> = ({ teams }) => {

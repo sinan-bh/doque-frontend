@@ -12,7 +12,7 @@ interface Space {
 const Spaces: React.FC = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [showSpaces, setShowSpaces] = useState(true);
-  const [activeSpaceId, setActiveSpaceId] = useState<number | null>(null); // Track which space is active for actions
+  const [activeSpaceId, setActiveSpaceId] = useState<number | null>(null);
 
   const addSpace = () => {
     const newSpaceId = spaces.length + 1;
@@ -26,7 +26,6 @@ const Spaces: React.FC = () => {
   };
 
   const handleSpaceActions = (spaceId: number) => {
-    // Toggle the active space ID
     setActiveSpaceId((prevId) => (prevId === spaceId ? null : spaceId));
   };
 
