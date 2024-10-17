@@ -8,7 +8,7 @@ import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import axios from "axios";
 import { AddSpaceBtn } from "../ui/add-space";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
 import { useWorkSpaceContext } from "@/contexts/workspace-context";
 import { AiFillHome } from "react-icons/ai";
@@ -16,16 +16,18 @@ import { RiDashboardFill } from "react-icons/ri";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FaCalendar } from "react-icons/fa";
 import { ReactNode } from "react";
-
+import Link from "next/link";
+import axiosInstance from "@/utils/axios";
 
 interface Workspace {
   name: string;
+  WorkspaceId: string;
 }
 
-interface SidebarIcon{
-  icon:ReactNode,
-  label:string,
-  href:string
+interface SidebarIcon {
+  icon: ReactNode;
+  label: string;
+  href: string;
 }
 
 const Sidebar: React.FC = () => {
@@ -35,7 +37,7 @@ const Sidebar: React.FC = () => {
   const [workspace, setWorkspace] = useState<Workspace[]>([]);
   const [activeRoute, setActiveRoute] = useState<string>("");
   const { userProfile, loggedUser } = useUser();
-  const {workSpaceId} = useWorkSpaceContext()
+  const { workSpaceId } = useWorkSpaceContext();
 
   const sidebarItems: SidebarIcon[] = [
     {
@@ -57,22 +59,16 @@ const Sidebar: React.FC = () => {
       icon: <FaCalendar className="text-xl text-black mt-1" />,
       label: "Calendar",
       href: `/w/${workSpaceId}/calendar`,
-    }
+    },
   ];
 
   const router = useRouter();
 
   useEffect(() => {
-    if (loggedUser?.token) {
       const fetchData = async () => {
         try {
-          const {data} = await axios.get(
+          const { data } = await axiosInstance.get(
             "https://daily-grid-rest-api.onrender.com/api/workspace",
-            {
-              headers: {
-                Authorization: `Bearer ${loggedUser?.token}`,
-              },
-            }
           );
           setWorkspace(data.data);
         } catch (error) {
@@ -80,8 +76,8 @@ const Sidebar: React.FC = () => {
         }
       };
       fetchData();
-    }
-  }, [render,loggedUser?.token]);
+    
+  }, [render, loggedUser?.token]);
 
   useEffect(() => {
     setActiveRoute(window.location.pathname);
@@ -96,9 +92,11 @@ const Sidebar: React.FC = () => {
     router.push(route);
   };
 
+  const main = workspace.find((val) => val.WorkspaceId === workSpaceId);
+
   return (
     <div
-      className={`relative h-full p-2 flex-shrink-0 bg-gray-100 flex flex-col transition-all duration-300 ${
+      className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 ${
         isSidebarOpen ? "w-64" : "w-20"
       }`}
       onMouseEnter={() => setIsSidebarOpen(true)}
@@ -113,7 +111,7 @@ const Sidebar: React.FC = () => {
             </Avatar>
             {isSidebarOpen && (
               <h2 className="text-md text-black ml-2 h-5 overflow-hidden">
-                Alixa workspace
+                {main?.name}
               </h2>
             )}
           </div>
@@ -137,9 +135,14 @@ const Sidebar: React.FC = () => {
             </div>
             {workspace.length > 0 ? (
               workspace.map((data, key) => (
-                <div key={key} className="p-2 hover:bg-gray-200 cursor-pointer">
-                  <h3 className="text-sm text-black">{data.name}</h3>
-                </div>
+                <Link href={`/w/${data.WorkspaceId}/dashboard`}>
+                  <div
+                    key={key}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                  >
+                    <h3 className="text-sm text-black">{data.name}</h3>
+                  </div>
+                </Link>
               ))
             ) : (
               <div className="p-2">No workspaces available</div>

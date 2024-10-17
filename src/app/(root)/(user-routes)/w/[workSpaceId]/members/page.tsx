@@ -17,6 +17,7 @@ export default function Page() {
   const handleViewSwitch = (view: "grid" | "list") => setViewType(view);
 
   const { users } = useWorkSpaceContext()
+  
 
   const renderContent = () => {
     if (activeTab === "members") {
