@@ -6,9 +6,8 @@ import { FaPlus } from "react-icons/fa6";
 import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import axios from "axios";
 import { AddSpaceBtn } from "../ui/add-space";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
 import { useWorkSpaceContext } from "@/contexts/workspace-context";
 import { AiFillHome } from "react-icons/ai";
@@ -135,9 +134,8 @@ const Sidebar: React.FC = () => {
             </div>
             {workspace.length > 0 ? (
               workspace.map((data, key) => (
-                <Link href={`/w/${data.WorkspaceId}/dashboard`}>
+                <Link href={`/w/${data.WorkspaceId}/dashboard`} key={key}>
                   <div
-                    key={key}
                     className="p-2 hover:bg-gray-200 cursor-pointer"
                   >
                     <h3 className="text-sm text-black">{data.name}</h3>

@@ -89,7 +89,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
       };
       fetchData();
     }
-  }, [trigger, isOnline,workSpaceId,loggedUser?.token]);
+  }, [trigger,workSpaceId,loggedUser?.token]);
 
   const addMessage = async (text: string) => {
     try {

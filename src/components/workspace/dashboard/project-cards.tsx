@@ -30,6 +30,7 @@ const ProjectCard: React.FC = () => {
     (project) => project._id !== selectedProjectId
   ) || [];
 
+
   return (
     <div className="relative w-full bg-white border border-gray-200 rounded-lg shadow-md p-4">
       {displayedProject ? (

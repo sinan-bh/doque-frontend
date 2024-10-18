@@ -87,7 +87,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
     const fetchData = async () => {
       try {
         const { data } = await axiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/space`
+          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`
         );
 
         setProjects(data.data);
@@ -172,24 +172,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
         console.log(error);
       }
     };
-    if (loggedUser?.token) {
-      const fetchWorkspaceMembers = async () => {
-        if (!workSpaceId) return;
-        try {
-          const {data} = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`,
-            {
-              headers: { Authorization: `Bearer ${loggedUser?.token}` },
-            }
-          );
-          setMembers(data.data.members);          
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
       fetchWorkspaceMembers();
-    }
   }, [workSpaceId,loggedUser?.token]);
 
   useEffect(() => {
