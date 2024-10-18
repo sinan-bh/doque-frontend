@@ -1,5 +1,5 @@
 import { useDispatch, useSelector, useStore } from "react-redux";
-import type { AppDispatch, AppStore, RootState } from "@/lib/store";
+import type { AppDispatch, AppStore, RootState } from "./";
 
 
 
