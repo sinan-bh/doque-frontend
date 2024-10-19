@@ -7,7 +7,6 @@ export const makeStore = () => {
   return configureStore({
     reducer: {
       space: spaceSlice,
-
       workspace: workspaceReducer,
       message: messageReducer,
     },

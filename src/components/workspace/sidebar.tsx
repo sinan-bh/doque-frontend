@@ -7,7 +7,7 @@ import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AddSpaceBtn } from "../ui/add-space";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
 import { AiFillHome } from "react-icons/ai";
 import { RiDashboardFill } from "react-icons/ri";
@@ -15,9 +15,9 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaCalendar } from "react-icons/fa";
 import { ReactNode } from "react";
 import Link from "next/link";
-import axiosInstance from "@/utils/axios";import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-
+import axiosInstance from "@/utils/axios";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 
 interface Workspace {
   name: string;
@@ -37,7 +37,10 @@ const Sidebar: React.FC = () => {
   const [workspace, setWorkspace] = useState<Workspace[]>([]);
   const [activeRoute, setActiveRoute] = useState<string>("");
   const { userProfile, loggedUser } = useUser();
-  const {workSpaceId} = useSelector((state: RootState)=> state.workspace)
+
+  const { workSpaceId }: { workSpaceId: string } = useParams();
+
+  const dispatch = useAppDispatch();
 
   const sidebarItems: SidebarIcon[] = [
     {
@@ -65,18 +68,17 @@ const Sidebar: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const { data } = await axiosInstance.get(
-            "https://daily-grid-rest-api.onrender.com/api/workspace",
-          );
-          setWorkspace(data.data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchData();
-    
+    const fetchData = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          "https://daily-grid-rest-api.onrender.com/api/workspace"
+        );
+        setWorkspace(data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, [render, loggedUser?.token]);
 
   useEffect(() => {
@@ -94,14 +96,18 @@ const Sidebar: React.FC = () => {
 
   const main = workspace.find((val) => val.WorkspaceId === workSpaceId);
 
+  useEffect(() => {
+    dispatch(fetchSpacesData(workSpaceId)); // populate spaces when workspace changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workSpaceId]);
+
   return (
     <div
       className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 ${
         isSidebarOpen ? "w-64" : "w-20"
       }`}
       onMouseEnter={() => setIsSidebarOpen(true)}
-      onMouseLeave={() => setIsSidebarOpen(false)}
-    >
+      onMouseLeave={() => setIsSidebarOpen(false)}>
       <div className="relative">
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer">
           <div className="flex items-center h-10 pl-1">
@@ -128,17 +134,14 @@ const Sidebar: React.FC = () => {
         {dropdownOpen && isSidebarOpen && (
           <div
             onMouseLeave={() => setDropdownOpen(false)}
-            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50"
-          >
+            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50">
             <div className="border-b-2 border-gray-600 p-2">
               <h3 className="text-md text-black">Workspaces</h3>
             </div>
             {workspace.length > 0 ? (
               workspace.map((data, key) => (
                 <Link href={`/w/${data.WorkspaceId}/dashboard`} key={key}>
-                  <div
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                  >
+                  <div className="p-2 hover:bg-gray-200 cursor-pointer">
                     <h3 className="text-sm text-black">{data.name}</h3>
                   </div>
                 </Link>
@@ -164,8 +167,7 @@ const Sidebar: React.FC = () => {
                   ? "border-l-4 border-black "
                   : "hover:border-l-4 border-transparent"
               }`}
-              onClick={() => handleRouteChange(item.href)}
-            >
+              onClick={() => handleRouteChange(item.href)}>
               <div className="flex items-center">
                 <div>{item.icon}</div>
                 {isSidebarOpen && (
