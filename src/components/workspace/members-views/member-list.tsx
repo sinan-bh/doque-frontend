@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
-import {Users} from "@/contexts/workspace-context"
+import { Users } from "@/lib/store/features/workspace-slice";
 
 const MembersList: React.FC<{ members: Users[] }> = ({ members }) => {
   return (

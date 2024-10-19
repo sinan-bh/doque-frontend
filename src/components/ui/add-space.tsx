@@ -10,24 +10,24 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
-import { useUser } from "@/contexts/user-context";
+import { AppDispatch, RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { createWorkSpace, fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
 
-interface ChildCompProps {
-  isRender: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
-export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
+
+export const AddWorkSpaceBtn: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const {workSpaceId} = useSelector((state: RootState)=> state.workspace)
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
 
-  const {loggedUser} = useUser()
 
   const { toast } = useToast();
 
@@ -40,31 +40,17 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    isRender(true);
     setIsOpen(false)
     e.preventDefault();
-
     try {
-      const resp = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/workspace",
-        {
-          name: formData.name,
-          description: formData.description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${loggedUser?.token}`,
-          },
-        }
-      );
-    
-      
-      if (resp.status == 201) {
+      await dispatch(createWorkSpace({name: formData.name, description: formData.description}))
+      if (workSpaceId) {
         toast({
           title: "Created",
           description: "Workspace Created Successfully",
         });
       }
+      dispatch(fetchWorkspaceData()) 
     } catch (error) {
       console.log(error);
       toast({

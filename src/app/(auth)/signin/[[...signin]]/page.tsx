@@ -32,7 +32,7 @@ export default function Login() {
 
     const result = await login(email, password);
     if (result.statusCode === 200) {
-      if (!workSpace || workSpace.length === 0) {
+      if (!workSpace || workSpace.length < 1) {
         router.push("/onboarding");
       } else {
         router.push("/u/home");

@@ -5,7 +5,7 @@ import Spinner from "../spinner/spinner";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
-import { onReadyPage } from "@/lib/store/features/workspace-slice";
+import { createList, createSpace } from "@/lib/store/features/workspace-slice";
 
 type readyPage = {
   spaceName: string;
@@ -17,18 +17,35 @@ type readyPage = {
 };
 
 export default function ReadyPage({ spaceName, listName }: readyPage) {
-  const dispatch = useDispatch<AppDispatch>()
-  const { workSpaceId, spaceId} = useSelector((state: RootState)=> state.workspace)
-  const router = useRouter();  
+  const dispatch = useDispatch<AppDispatch>();
+  const { workSpaceId, spaceId } = useSelector(
+    (state: RootState) => state.workspace
+  );
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleSpace = async () => {
+      await dispatch(
+        createSpace({ workSpaceId, spaceName })
+      );
+    }
+    handleSpace()
+
+   
+  }, [workSpaceId]);
 
   useEffect(() => {
     const handleReady = async () => {
-      dispatch(onReadyPage({workSpaceId,spaceName,listName}))
-      router.push(`w/${workSpaceId}/spaces/${spaceId}`);
+      await dispatch(createList({ spaceId, listName }));
+      if (spaceId) {
+        router.push(`w/${workSpaceId}/spaces/${spaceId}`);
+      }
     };
 
     handleReady();
-  }, [workSpaceId,spaceId]);
+
+   
+  }, [spaceId]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

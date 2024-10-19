@@ -2,16 +2,17 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import AxiosInstance from "@/utils/axios";
 
-interface Project {
+export interface Project {
   _id: string;
   name: string;
   description: string;
   workspace: string;
 }
 
-interface Member {
+ export interface Member {
   user: string;
 }
+
 
 interface Workspace {
   WorkspaceId: string;
@@ -19,6 +20,7 @@ interface Workspace {
 }
 
 export type Users = {
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -32,6 +34,7 @@ interface WorkspaceState {
   workSpaceId: string;
   spaceId: string;
   users: Users[];
+  user: "";
   workSpace: Workspace[];
   members: Member[];
   loading: boolean;
@@ -43,6 +46,7 @@ const initialState: WorkspaceState = {
   projects: null,
   workSpaceId: "",
   spaceId: "",
+  user: "",
   users: [],
   workSpace: [],
   members: [],
@@ -51,8 +55,9 @@ const initialState: WorkspaceState = {
 };
 
 type readyPage = {
-  workSpaceId: string;
-  spaceName: string;
+  workSpaceId?: string;
+  spaceId?: string;
+  spaceName?: string;
   listName: {
     todo: string;
     doing: string;
@@ -62,13 +67,10 @@ type readyPage = {
 
 export const fetchWorkspaceData = createAsyncThunk(
   "workspace/fetchWorkspaceData",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const { data } = await AxiosInstance.get(
-        "https://daily-grid-rest-api.onrender.com/api/workspace",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        "https://daily-grid-rest-api.onrender.com/api/workspace"
       );
       return data.data;
     } catch (error) {
@@ -80,19 +82,19 @@ export const fetchWorkspaceData = createAsyncThunk(
 
 export const createWorkSpace = createAsyncThunk<
   string,
-  { previousSpaceName: string },
+  { name: string,  description?: string },
   { rejectValue: string }
 >(
   "workspace/createWorkSpace",
   async (
-    { previousSpaceName }: { previousSpaceName: string },
+    { name, description }: { name: string, description?: string },
     { rejectWithValue }
-  ) => {
+  ) => {    
     try {
       const { data } = await AxiosInstance.post(
         "https://daily-grid-rest-api.onrender.com/api/workspace",
-        { name: previousSpaceName }
-      );
+        { name, description }
+      );            
       return data.data._id;
     } catch (error) {
       console.log(error);
@@ -104,18 +106,35 @@ export const createWorkSpace = createAsyncThunk<
   }
 );
 
-export const onReadyPage = createAsyncThunk(
-  "workspace/onReadyPage",
+export const createSpace = createAsyncThunk(
+  "workspace/createSpace",
   async (
-    { workSpaceId, spaceName, listName }: readyPage,
+    { workSpaceId, spaceName }: {workSpaceId: string; spaceName: string;},
     { rejectWithValue }
-  ) => {
+  ) => {    
     try {
       const { data } = await AxiosInstance.post(
         `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
         { name: spaceName }
       );
-      const spaceId = data.data._id;
+      return data.data._id;
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError && error.response?.status === 404) {
+        return rejectWithValue("createSpace not found");
+      }
+      return rejectWithValue("Failed to fetch projects");
+    }
+  }
+);
+
+export const createList = createAsyncThunk(
+  "workspace/createSpace",
+  async (
+    { spaceId, listName }: readyPage,
+    { rejectWithValue }
+  ) => {    
+    try {
       await AxiosInstance.post(
         `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
         { name: listName.todo }
@@ -128,29 +147,29 @@ export const onReadyPage = createAsyncThunk(
         `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
         { name: listName.completed }
       );
-      return spaceId;
+      console.log('list');
+      
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
-        return rejectWithValue("onReadyPage not found");
+        return rejectWithValue("createSpace not found");
       }
       return rejectWithValue("Failed to fetch projects");
     }
   }
 );
 
+
+
 export const fetchProjects = createAsyncThunk(
   "workspace/fetchProjects",
   async (
-    { token, workSpaceId }: { token: string; workSpaceId: string },
+    { workSpaceId }: { workSpaceId: string },
     { rejectWithValue }
   ) => {
     try {
       const { data } = await AxiosInstance.get(
-        `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`
       );
       return data.data;
     } catch (error) {
@@ -167,16 +186,16 @@ export const fetchProjects = createAsyncThunk(
 export const fetchWorkspaceMembers = createAsyncThunk(
   "workspace/fetchMembers",
   async (
-    { token, workSpaceId }: { token: string; workSpaceId: string },
+    { workSpaceId }: { workSpaceId: string },
     { rejectWithValue }
   ) => {
     try {
       const { data } = await AxiosInstance.get(
-        `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`
       );
+
+      console.log(data);
+      
       return data.data.members;
     } catch (error) {
       console.log(error);
@@ -189,16 +208,13 @@ export const fetchWorkspaceMembers = createAsyncThunk(
 export const fetchUserProfiles = createAsyncThunk(
   "workspace/fetchUserProfiles",
   async (
-    { token, members }: { token: string; members: Member[] },
+    { members }: { members: Member[] },
     { rejectWithValue }
   ) => {
     try {
       const userPromises = members.map((member) => {
         return AxiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/userprofile/${member.user}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          `https://daily-grid-rest-api.onrender.com/api/userprofile/${member.user}`
         );
       });
       const userResponses = await Promise.all(userPromises);
@@ -248,7 +264,7 @@ const workspaceSlice = createSlice({
       .addCase(createWorkSpace.fulfilled, (state, action) => {
         state.workSpaceId = action.payload;
       })
-      .addCase(onReadyPage.fulfilled, (state, action) => {
+      .addCase(createSpace.fulfilled, (state, action) => {
         state.spaceId = action.payload;
       });
   },

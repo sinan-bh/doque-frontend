@@ -13,13 +13,16 @@ export default function SpaceNameStep({
 }: SpaceNameStepProps) {
   const [spaceName, setSpaceName] = useState<string>(initialName);
 
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSpaceName(event.target.value);
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     onNext(spaceName);
   };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-10">
