@@ -5,16 +5,25 @@ import MessageList from "./chat-list";
 import MessageInput from "./chat-input";
 import MessageIcon from "./chat-icon";
 import DeleteButton from "./delete-button";
-import { useMessageContext } from "@/contexts/message-context";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
-
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import {
+  deleteMessage,
+  fetchMessages,
+} from "@/lib/store/features/message-slice";
+import { setWorkSpaceId } from "@/lib/store/features/workspace-slice";
 
 export default function Chat() {
+  const dispatch = useDispatch<AppDispatch>();
   const [isVisible, setIsVisible] = useState(false);
-  const { deleteMessage } = useMessageContext();
   const chatRef = useRef<HTMLDivElement>(null);
-  const {workSpaceId} = useWorkSpaceContext()
+  const { workSpaceId } = useSelector((state: RootState) => state.workspace);
 
+  const handleDelete = async () => {
+    dispatch(setWorkSpaceId(workSpaceId));
+    await dispatch(deleteMessage());
+    dispatch(fetchMessages());
+  };
 
   const toggleChatVisibility = () => {
     setIsVisible((prev) => !prev);
@@ -46,7 +55,7 @@ export default function Chat() {
         >
           <div className="flex justify-between items-center mt-4 border-b pb-2 px-6">
             <h2 className="text-lg font-semibold text-gray-900">Messages</h2>
-            <DeleteButton onDelete={() => deleteMessage(workSpaceId)} />
+            <DeleteButton onDelete={() => handleDelete()} />
           </div>
 
           <div className="flex-grow max-h-[calc(100vh-8rem)] overflow-y-auto">

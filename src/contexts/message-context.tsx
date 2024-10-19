@@ -9,7 +9,8 @@ import React, {
 } from "react";
 import axios, { AxiosError } from "axios";
 import { useUser } from "./user-context";
-import { useWorkSpaceContext } from "./workspace-context";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 type Message = {
     _id: string;
@@ -44,7 +45,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
     typeof navigator !== "undefined" ? navigator.onLine : true
   );
   const { loggedUser } = useUser();
-  const {workSpaceId} = useWorkSpaceContext()
+  const {workSpaceId} = useSelector((state: RootState)=> state.workspace)
 
   setInterval(()=>{
     setTrigger(!trigger)

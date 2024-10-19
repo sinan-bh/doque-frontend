@@ -1,10 +1,17 @@
+"use client";
 import React, { useState } from "react";
-import { useMessageContext } from "@/contexts/message-context";
+import { useDispatch, useSelector } from "react-redux";
+import { addMessage, fetchMessages } from "@/lib/store/features/message-slice";
+import { AppDispatch, RootState } from "@/lib/store";
+import { setWorkSpaceId } from "@/lib/store/features/workspace-slice";
 
 export default function MessageInput() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { workSpaceId }: { workSpaceId: string } = useSelector(
+    (state: RootState) => state.workspace
+  );
   const [text, setText] = useState("");
   const [rows, setRows] = useState(1);
-  const { addMessage } = useMessageContext();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -13,10 +20,12 @@ export default function MessageInput() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
-      addMessage(text);
+      dispatch(setWorkSpaceId(workSpaceId));
+      await dispatch(addMessage(text));
+      dispatch(fetchMessages());
       setText("");
     }
   };

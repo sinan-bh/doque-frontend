@@ -7,6 +7,7 @@ import { MessageProvider } from "@/contexts/message-context";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/dark-mode/theme-provider";
 import { AdminProvider } from "@/contexts/admin-context";
+import StoreProvider from "@/lib/store/store-provider";
 
 export const metadata: Metadata = {
   title: "DOQUE",
@@ -27,21 +28,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AdminProvider>
-            <UserContextProvider>
-              <WorkSpaceContextProvider>
-                <MessageProvider>{children}</MessageProvider>
-              </WorkSpaceContextProvider>
-            </UserContextProvider>
-            <Toaster />
-          </AdminProvider>
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AdminProvider>
+              <UserContextProvider>
+                <WorkSpaceContextProvider>
+                  <MessageProvider>{children}</MessageProvider>
+                </WorkSpaceContextProvider>
+              </UserContextProvider>
+              <Toaster />
+            </AdminProvider>
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );
