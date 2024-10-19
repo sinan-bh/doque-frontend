@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const ProjectCard: React.FC = () => {
-  const { projects } = useWorkSpaceContext();
+  const { projects } = useSelector((state: RootState)=> state.workspace);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 

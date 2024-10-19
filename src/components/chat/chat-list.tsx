@@ -1,9 +1,11 @@
-import { useMessageContext } from "@/contexts/message-context";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { format } from "date-fns"; 
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function MessageList() {
-  const { messages, error, isOnline } = useMessageContext();
+  
+  const { messages, error, isOnline } = useSelector((state: RootState)=> state.message);
 
   function formatTimestamp(timestamp: string): string {
     const messageDate = new Date(timestamp);
