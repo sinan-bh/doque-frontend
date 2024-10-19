@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import axios from "axios";
 import Spinner from "../spinner/spinner";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { onReadyPage } from "@/lib/store/features/workspace-slice";
 
 type readyPage = {
   spaceName: string;
@@ -17,64 +17,18 @@ type readyPage = {
 };
 
 export default function ReadyPage({ spaceName, listName }: readyPage) {
-  const { loggedUser} = useUser()
-  const { workSpacesId} = useWorkSpaceContext()
+  const dispatch = useDispatch<AppDispatch>()
+  const { workSpaceId, spaceId} = useSelector((state: RootState)=> state.workspace)
   const router = useRouter();  
 
-  
-
   useEffect(() => {
-    if (loggedUser?.token) {
     const handleReady = async () => {
-      try {
-        const {data} = await axios.post(
-          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpacesId}`,
-          { name: spaceName },
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        const spaceId = data.data._id
-        console.log(data);
-        
-        await axios.post(
-          `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
-          { name: listName.todo },
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        await axios.post(
-          `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
-          { name: listName.doing },
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        await axios.post(
-          `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
-          { name: listName.completed },
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        router.push(`w/${workSpacesId}/spaces/${spaceId}`);
-      } catch (error) {
-        console.log(error);
-      }
+      dispatch(onReadyPage({workSpaceId,spaceName,listName}))
+      router.push(`w/${workSpaceId}/spaces/${spaceId}`);
     };
 
     handleReady();
-  }
-  }, [workSpacesId,loggedUser?.token]);
+  }, [workSpaceId,spaceId]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

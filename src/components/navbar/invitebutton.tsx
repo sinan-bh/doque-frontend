@@ -1,5 +1,5 @@
 "use client";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +14,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useUser } from "@/contexts/user-context";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
+import { useToast } from "@/hooks/use-toast";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 type UserEmail = {
   email: string;
@@ -22,12 +25,13 @@ type UserEmail = {
 
 export default function InviteButton() {
   const { loggedUser } = useUser();
-  const { workSpaceId } = useWorkSpaceContext();
+  const { workSpaceId } = useSelector((state: RootState)=> state.workspace);
   const [formData, setFormData] = useState({
     email: "",
   });
   const [suggestions, setSuggestions] = useState<UserEmail[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,11 +51,11 @@ export default function InviteButton() {
           }
         );
         const filteredSuggestions = data.data.filter((user: UserEmail) =>
-            user.email.toLowerCase().includes(value.toLowerCase())
-          );
-  
-          setSuggestions(filteredSuggestions);
-          setShowSuggestions(true);
+          user.email.toLowerCase().includes(value.toLowerCase())
+        );
+
+        setSuggestions(filteredSuggestions);
+        setShowSuggestions(true);
         setShowSuggestions(true);
       } catch (error) {
         console.log("Error fetching suggestions", error);
@@ -67,9 +71,12 @@ export default function InviteButton() {
     setShowSuggestions(false);
   };
 
+  const {toast} = useToast()
+
   const handleSend = async () => {
+    setIsOpen(false)
     try {
-      await axios.post(
+      const resp =await axios.post(
         `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}/invite`,
         { email: formData.email },
         {
@@ -78,18 +85,28 @@ export default function InviteButton() {
           },
         }
       );
+  
+      if (resp.status == 200) {
+        toast({
+          title: "Sent",
+          description: "Invitation Send Successfully",
+        });
+      }
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: axiosErrorCatch(error),
+      });
     }
   };
-
-
 
   if (!workSpaceId) return null;
   else {
     return (
       <div>
-        <Dialog>
+        <Dialog onOpenChange={setIsOpen} open={isOpen}>
           <DialogTrigger asChild>
             <Button
               variant="ghost"
@@ -123,7 +140,9 @@ export default function InviteButton() {
                         <li
                           key={index}
                           className="p-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => handleSelectSuggestion(suggestion?.email)}
+                          onClick={() =>
+                            handleSelectSuggestion(suggestion?.email)
+                          }
                         >
                           {suggestion?.email}
                         </li>

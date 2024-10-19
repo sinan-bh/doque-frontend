@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useDispatch } from "react-redux";
+import { createWorkSpace } from "@/lib/store/features/workspace-slice";
+import { AppDispatch } from "@/lib/store";
 
 interface TaskNameStepProps {
   previousSpaceName: string;
@@ -31,7 +33,13 @@ export default function TaskNameStep({
     onTaskCategoryChange(name, value);
   };
 
-  const {handleNext} = useWorkSpaceContext()
+  const dispatch = useDispatch<AppDispatch>()
+
+  const handleNext = async (previousSpaceName: string) => {
+    console.log('sss');
+    
+      dispatch(createWorkSpace({previousSpaceName}))
+  };
 
   const handleCreateWorkSpace = async () => {
     const currentBoardName = taskCategories.todo;

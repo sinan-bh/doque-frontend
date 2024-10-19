@@ -1,7 +1,8 @@
 "use client"; 
 
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { RootState } from "@/lib/store";
 import { FC, useState } from "react";
+import { useSelector } from "react-redux";
 
 type TimeSlot = string; 
 type Tasks = { [key: string]: string[] }; 
@@ -20,7 +21,7 @@ const generateTimeSlots = (): TimeSlot[] => {
 };
 
 const DayCalendar: FC = () => {
-  const { chosenDate } = useWorkSpaceContext(); 
+  const { chosenDate } = useSelector((state: RootState)=> state.workspace); 
 
   const times: TimeSlot[] = generateTimeSlots();
   const [tasks, setTasks] = useState<Tasks>({});

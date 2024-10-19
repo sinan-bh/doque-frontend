@@ -1,8 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
+import workspaceReducer from "@/lib/store/features/workspace-slice";
+import messageReducer from "@/lib/store/features/message-slice";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {
+      workspace: workspaceReducer,
+      message: messageReducer,
+    },
   });
 };
 

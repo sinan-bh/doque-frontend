@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
 import {
   format,
   addMonths,
@@ -14,6 +13,9 @@ import {
   isSameDay,
   isToday,
 } from "date-fns";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { setChosenDate } from "@/lib/store/features/workspace-slice";
 
 const months = [
   "January", "February", "March", "April", "May", "June",
@@ -25,7 +27,8 @@ type calendar = {
 }
 
 const CalendarSmall: React.FC<calendar> = ({ className }) => {
-  const { chosenDate, setChosenDate } = useWorkSpaceContext();
+  const dispatch = useDispatch<AppDispatch>()
+  const { chosenDate } = useSelector((state: RootState)=> state.workspace);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isYearPickerOpen, setYearPickerOpen] = useState(false);
   const [isMonthPickerOpen, setMonthPickerOpen] = useState(false);
@@ -48,7 +51,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   const onYearSelect = (year: number) => {
     const newDate = new Date(year, currentMonth.getMonth(), 1);
     setCurrentMonth(newDate);
-    setChosenDate(newDate);
+    dispatch(setChosenDate(newDate));
     setYearPickerOpen(false);
   };
 
@@ -186,7 +189,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
                 ? "bg-blue-500 text-white rounded-full"
                 : "text-gray-700 hover:bg-gray-200 rounded-full"
             }`}
-            onClick={() => setChosenDate(cloneDay)}
+            onClick={() => dispatch(setChosenDate(cloneDay))}
           >
             <span>{formattedDate}</span>
           </div>

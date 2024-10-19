@@ -8,18 +8,17 @@ type Invite = {
 }
 
 export default function Acceptinvitation({ token }: { token: string | null }) {
-    const [data,setData] = useState<Invite | null>(null)
+    const [invite,setInvite] = useState<Invite | null>(null)
   const { loggedUser } = useUser();
 
-  console.log(data?.redirectUrl);
+  console.log(invite);
   
-//   const value = data?.redirectUrl.split("=")[1]
 
   useEffect(() => {
     if (token && loggedUser?.id) {
       const fetchData = async () => {
         try {
-          const res  = await axios.get(
+          const {data}  = await axios.get(
             `https://daily-grid-rest-api.onrender.com/api/accept-invitation?token=${token}`,
             {
               headers: {
@@ -27,8 +26,7 @@ export default function Acceptinvitation({ token }: { token: string | null }) {
               },
             }
           );
-          console.log(res);
-          setData(data)
+          setInvite(data)
         } catch (err) {
           if (err instanceof AxiosError && err.response?.status === 404) {
             console.error("Token  not found");

@@ -1,14 +1,15 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { AiOutlineHome } from "react-icons/ai";
 import { HiOutlineTemplate } from "react-icons/hi";
 import { FiSettings } from "react-icons/fi";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const Sidebar = () => {
   const [activePath, setActivePath] = useState<string>("/u/home");
-  const { workSpace } = useWorkSpaceContext();
+  const { workSpace } = useSelector((state: RootState)=> state.workspace)
 
   const sidebarItems = [
     { icon: <AiOutlineHome className="text-2xl" />, label: "Home", link: "/u/home" },

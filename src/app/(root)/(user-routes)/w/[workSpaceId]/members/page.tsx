@@ -8,15 +8,15 @@ import TeamsList from "@/components/workspace/members-views/team-list";
 import { teams } from "@/consts/members-datas";
 import { IoGrid, IoList } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"members" | "teams">("members");
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
   const handleTabSwitch = (tab: "members" | "teams") => setActiveTab(tab);
   const handleViewSwitch = (view: "grid" | "list") => setViewType(view);
-
-  const { users } = useWorkSpaceContext()
+  const {users} = useSelector((state: RootState)=> state.workspace)
 
   const renderContent = () => {
     if (activeTab === "members") {

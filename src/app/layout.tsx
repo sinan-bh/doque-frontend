@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { WorkSpaceContextProvider } from "@/contexts/workspace-context";
 import "./globals.css";
 import UserContextProvider from "@/contexts/user-context";
-import { MessageProvider } from "@/contexts/message-context";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/dark-mode/theme-provider";
 import { AdminProvider } from "@/contexts/admin-context";
@@ -37,9 +35,7 @@ export default function RootLayout({
           >
             <AdminProvider>
               <UserContextProvider>
-                <WorkSpaceContextProvider>
-                  <MessageProvider>{children}</MessageProvider>
-                </WorkSpaceContextProvider>
+                {children}
               </UserContextProvider>
               <Toaster />
             </AdminProvider>

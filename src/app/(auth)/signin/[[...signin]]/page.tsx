@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +25,7 @@ export default function Login() {
   const { loginUser: login } = useUser();
   const router = useRouter();
 
-  const { workSpace } = useWorkSpaceContext();
+  const {workSpace} = useSelector((state: RootState)=> state.workspace)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);

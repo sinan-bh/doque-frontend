@@ -14,6 +14,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
+import { useUser } from "@/contexts/user-context";
 
 interface ChildCompProps {
   isRender: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,10 +27,10 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
     description: "",
   });
 
+  const {loggedUser} = useUser()
+
   const { toast } = useToast();
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MGNjNDQ3OGNmZDdjNzI5MWFmNThhNSIsImlhdCI6MTcyOTE0MDc2MiwiZXhwIjoxNzMxNzMyNzYyfQ.tcXc7sUP-8nan0LDqbfUfW_lKq_5N5idKQ-1VDFnqmw";
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -40,7 +41,7 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     isRender(true);
-    setIsOpen(false);
+    setIsOpen(false)
     e.preventDefault();
 
     try {
@@ -52,11 +53,12 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${loggedUser?.token}`,
           },
         }
       );
-
+    
+      
       if (resp.status == 201) {
         toast({
           title: "Created",
@@ -64,6 +66,7 @@ export const AddSpaceBtn: React.FC<ChildCompProps> = ({ isRender }) => {
         });
       }
     } catch (error) {
+      console.log(error);
       toast({
         variant: "destructive",
         title: "Error",
