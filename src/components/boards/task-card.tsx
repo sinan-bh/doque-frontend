@@ -53,7 +53,7 @@ export default function TaskCard({ task }: { task: TaskRow }) {
               <CardTitle className="py-2 rounded-md">{task.title}</CardTitle>
             </div>
             <CardDescription className="text-xs text-ellipsis overflow-hidden whitespace-nowrap">
-              <p>{task.description}</p>
+              {task.description}
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-between">
