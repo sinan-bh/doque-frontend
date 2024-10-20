@@ -158,7 +158,7 @@ export const deleteTask = createAsyncThunk(
       listId: string;
       taskId: string;
       onSuccess: () => void;
-      onError: () => void;
+      onError: (error: string) => void;
     },
     { rejectWithValue }
   ) => {
@@ -169,7 +169,7 @@ export const deleteTask = createAsyncThunk(
       onSuccess();
       return { taskId };
     } catch (error) {
-      onError();
+      onError(axiosErrorCatch(error));
       return rejectWithValue(axiosErrorCatch(error));
     }
   }
@@ -200,8 +200,48 @@ export const updateTask = createAsyncThunk(
         `/space/${spaceId}/lists/${listId}/tasks/${taskId}`,
         taskData
       );
+      if (taskData.status) {
+        await axiosInstance.patch(
+          `/space/${spaceId}/lists/${listId}/tasks/${taskId}`,
+          { targetListId: taskData.status }
+        );
+      }
       onSuccess();
-      return { taskId, taskData };
+      return { taskId, taskData, status: taskData.status };
+    } catch (error) {
+      onError(axiosErrorCatch(error));
+      return rejectWithValue(axiosErrorCatch(error));
+    }
+  }
+);
+
+export const moveTask = createAsyncThunk(
+  "tasks/moveTask",
+  async (
+    {
+      spaceId,
+      listId,
+      taskId,
+      targetListId,
+      onSuccess,
+      onError,
+    }: {
+      spaceId: string;
+      listId: string;
+      taskId: string;
+      targetListId: string;
+      onSuccess: () => void;
+      onError: (error: string) => void;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      await axiosInstance.patch(
+        `/space/${spaceId}/lists/${listId}/tasks/${taskId}`,
+        { targetListId }
+      );
+      onSuccess();
+      return { taskId, targetListId };
     } catch (error) {
       onError(axiosErrorCatch(error));
       return rejectWithValue(axiosErrorCatch(error));

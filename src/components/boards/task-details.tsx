@@ -13,7 +13,6 @@ import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { Task, TaskFormValues } from "@/types/spaces";
-import { apiGetTaskDetails } from "@/utils/taskUtils";
 import { useToast } from "@/hooks/use-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import clsx from "clsx";
@@ -34,6 +33,8 @@ import { AlertConfirm } from "../ui/alert-confirm";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { deleteTask, updateTask } from "@/lib/store/thunks/tasks-thunks";
 import { ToastAction } from "../ui/toast";
+import axiosInstance from "@/utils/axios";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export default function TaskDetails({
   taskId,
@@ -47,6 +48,8 @@ export default function TaskDetails({
   const [titleEditOpen, setTitleEditOpen] = useState(false);
   const [values, setValues] = useState<TaskFormValues | null>(null);
 
+  const { lists } = useAppSelector((state) => state.tasks);
+
   const changesMade = useMemo(() => {
     return (
       JSON.stringify({
@@ -55,6 +58,7 @@ export default function TaskDetails({
         assignedTo: data?.assignedTo,
         dueDate: data?.dueDate,
         priority: data?.priority,
+        status: data?.status,
       }) !== JSON.stringify(values)
     );
   }, [data, values]);
@@ -70,31 +74,34 @@ export default function TaskDetails({
 
   useEffect(() => {
     setInitialLoading(true);
-    async function fetchData() {
-      if (taskId && listId) {
-        // fetch task details
-        const { data, error } = await apiGetTaskDetails(
-          spaceId,
-          listId,
-          taskId
+
+    const getTaskDetails = async () => {
+      try {
+        const { data: responseData } = await axiosInstance.get(
+          `/space/${spaceId}/lists/${listId}/tasks/${taskId}`
         );
+        const data = responseData.data;
+        setData(data);
+        setValues({
+          title: data.title,
+          description: data.description,
+          assignedTo: data.assignedTo,
+          priority: data.priority,
+          dueDate: data.dueDate,
+          status: data.status,
+        });
+      } catch (error) {
+        toast({
+          title: "Error fetching task details!!",
+          description: axiosErrorCatch(error),
+        });
+        router.push(pathname);
+      } finally {
         setInitialLoading(false);
-        if (error) {
-          toast({ description: "Error fetching task details!!" });
-          router.push(pathname);
-        } else if (data) {
-          setData(data);
-          setValues({
-            title: data.title,
-            description: data.description,
-            assignedTo: data.assignedTo,
-            priority: data.priority,
-            dueDate: data.dueDate,
-          });
-        }
       }
-    }
-    fetchData();
+    };
+
+    getTaskDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskId, listId]);
 
@@ -135,6 +142,9 @@ export default function TaskDetails({
         onSuccess() {
           setData((prev) => ({ ...prev!, ...values }));
           toast({ title: "Task updated successfully" });
+          if (values?.status !== data?.status) {
+            router.push(`${pathname}?task=${taskId}&list=${values?.status}`);
+          }
         },
         onError(error) {
           toast({
@@ -161,10 +171,10 @@ export default function TaskDetails({
           toast({ title: "Task deleted successfully" });
           router.push(pathname);
         },
-        onError() {
+        onError(error) {
           toast({
             title: "Error deleting task",
-            description: "An error occurred while deleting the task",
+            description: error,
             action: (
               <ToastAction onClick={handleTaskDelete} altText="Try again">
                 Try again
@@ -255,6 +265,104 @@ export default function TaskDetails({
 
             <CardContent className="max-h-[350px] overflow-y-auto">
               <TaskDescription values={values} setValues={setValues} />
+              <div className="flex justify-between my-4">
+                <DueDatePicker
+                  dueDate={values?.dueDate}
+                  setValues={setValues}
+                />
+
+                <div>
+                  <p>Priority</p>
+
+                  <Select
+                    value={values?.priority}
+                    onValueChange={(value) => {
+                      setValues((prev) => ({
+                        ...prev!,
+                        priority: value,
+                      }));
+                    }}>
+                    <SelectTrigger
+                      className={clsx(
+                        "text-sm flex items-center gap-2 cursor-pointer w-[120px]",
+                        {
+                          "text-red-700 border-red-700":
+                            values?.priority === "high",
+                          "text-yellow-700 border-yellow-700":
+                            values?.priority === "medium",
+                          "text-green-700 border-green-700":
+                            values?.priority === "low",
+                        }
+                      )}>
+                      <SelectValue>
+                        {values?.priority && (
+                          <>
+                            {values.priority.charAt(0).toUpperCase() +
+                              values.priority.slice(1)}
+                          </>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="task-details-section">
+                      <SelectGroup>
+                        <SelectLabel>Priority</SelectLabel>
+                        <SelectItem className="text-green-800" value="low">
+                          Low
+                        </SelectItem>
+                        <SelectItem className="text-yellow-700" value="medium">
+                          Medium
+                        </SelectItem>
+                        <SelectItem className="text-red-700" value="high">
+                          High
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <p>Status</p>
+
+                  <Select
+                    value={values?.status}
+                    onValueChange={(value) => {
+                      setValues((prev) => ({
+                        ...prev!,
+                        status: value,
+                      }));
+                    }}>
+                    <SelectTrigger className="text-sm flex items-center gap-2 cursor-pointer  w-[120px]">
+                      <SelectValue
+                        style={{
+                          color: lists.find(
+                            (list) => list.id === values?.status
+                          )?.color,
+                          borderColor: lists.find(
+                            (list) => list.id === values?.status
+                          )?.color,
+                        }}>
+                        {
+                          lists.find((list) => list.id === values?.status)
+                            ?.title
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="task-details-section">
+                      <SelectGroup>
+                        {lists.map((list) => (
+                          <SelectItem
+                            key={list.id}
+                            value={list.id}
+                            style={{
+                              color: list.color,
+                            }}>
+                            {list.title}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
               <AssignTaskToMembers
                 existingMembers={values?.assignedTo || []}
                 setValues={setValues}
@@ -263,54 +371,7 @@ export default function TaskDetails({
 
             <div className="h-0.5 bg-zinc-300 my-2 rounded-full"></div>
 
-            <CardFooter className="grid grid-cols-4 mt-4">
-              <div>
-                <p>Priority</p>
-
-                <Select
-                  value={values?.priority}
-                  onValueChange={(value) => {
-                    setValues((prev) => ({
-                      ...prev!,
-                      priority: value,
-                    }));
-                  }}>
-                  <SelectTrigger
-                    className={clsx(
-                      "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
-                      {
-                        "text-red-700": values?.priority === "high",
-                        "text-yellow-700": values?.priority === "medium",
-                        "text-green-700": values?.priority === "low",
-                      }
-                    )}>
-                    <SelectValue>
-                      {values?.priority && (
-                        <>
-                          {values.priority.charAt(0).toUpperCase() +
-                            values.priority.slice(1)}
-                        </>
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="task-details-section">
-                    <SelectGroup>
-                      <SelectLabel>Priority</SelectLabel>
-                      <SelectItem className="text-green-800" value="low">
-                        Low
-                      </SelectItem>
-                      <SelectItem className="text-yellow-700" value="medium">
-                        Medium
-                      </SelectItem>
-                      <SelectItem className="text-red-700" value="high">
-                        High
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <DueDatePicker dueDate={values?.dueDate} setValues={setValues} />
+            <CardFooter className="flex justify-end items-end mt-4">
               <Button
                 onClick={handleUpdateTask}
                 size="sm"

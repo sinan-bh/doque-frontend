@@ -6,6 +6,7 @@ import {
   deleteList,
   deleteTask,
   getSpace,
+  moveTask,
   updateList,
   updateTask,
 } from "../thunks/tasks-thunks";
@@ -23,6 +24,7 @@ interface TasksState {
     updateTask: boolean;
     deleteTask: boolean;
     createTask: boolean;
+    moveTask: boolean;
   };
   error: {
     getSpaceDetails: string | null;
@@ -33,6 +35,7 @@ interface TasksState {
     updateTask: string | null;
     deleteTask: string | null;
     createTask: string | null;
+    moveTask: string | null;
   };
 }
 
@@ -49,6 +52,7 @@ const initialState: TasksState = {
     updateTask: false,
     deleteTask: false,
     createTask: false,
+    moveTask: false,
   },
   error: {
     getSpaceDetails: null,
@@ -59,6 +63,7 @@ const initialState: TasksState = {
     updateTask: null,
     deleteTask: null,
     createTask: null,
+    moveTask: null,
   },
 };
 
@@ -160,6 +165,7 @@ const tasksSlice = createSlice({
         state.tasks[index] = {
           ...state.tasks[index],
           ...action.payload.taskData,
+          column: action.payload.taskData.status || state.tasks[index].column,
         };
         state.loading.updateTask = false;
       })
@@ -182,6 +188,27 @@ const tasksSlice = createSlice({
       .addCase(deleteTask.rejected, (state, action) => {
         state.loading.deleteTask = false;
         state.error.deleteTask = action.payload as string;
+      })
+
+      //move task
+      .addCase(moveTask.pending, (state, action) => {
+        state.loading.moveTask = true;
+        state.error.moveTask = null;
+        const findIndex = state.tasks.findIndex((task) => {
+          return task.id === action.meta.arg.taskId;
+        });
+        state.tasks[findIndex].column = action.meta.arg.targetListId;
+      })
+      .addCase(moveTask.fulfilled, (state) => {
+        state.loading.moveTask = false;
+      })
+      .addCase(moveTask.rejected, (state, action) => {
+        state.loading.moveTask = false;
+        const findIndex = state.tasks.findIndex(
+          (task) => task.id === action.meta.arg.taskId
+        );
+        state.tasks[findIndex].column = action.meta.arg.listId;
+        state.error.moveTask = action.payload as string;
       });
   },
 });

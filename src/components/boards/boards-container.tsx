@@ -22,9 +22,12 @@ import { Column, Space, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
 import { useBoards } from "@/contexts/boards-context";
 import { useParams } from "next/navigation";
-import { debouncedApiMoveTask } from "@/utils/taskUtils";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { createList, getSpace } from "@/lib/store/thunks/tasks-thunks";
+import {
+  createList,
+  getSpace,
+  moveTask,
+} from "@/lib/store/thunks/tasks-thunks";
 import HandleLoading from "../ui/handle-loading";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
@@ -32,12 +35,10 @@ import { ToastAction } from "../ui/toast";
 export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<TaskRow | null>(null);
-  const [movingTask, setMovingTask] = useState<boolean>(false);
 
   const { spaceId }: { spaceId: string } = useParams();
 
   const {
-    setTasks,
     moveColumn,
     moveTaskToColumn,
     swapTasksInSameColumn,
@@ -97,17 +98,19 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
           : null;
 
       if (currentListId !== newListId) {
-        debouncedApiMoveTask(
-          spaceId,
-          currentListId!,
-          activeId.toString(),
-          newListId?.toString() || "",
-          setTasks,
-          prevState,
-          setMovingTask,
-          (msg) => {
-            console.log(msg);
-          }
+        dispatch(
+          moveTask({
+            spaceId,
+            listId: currentListId!,
+            taskId: activeId.toString(),
+            targetListId: newListId?.toString() || "",
+            onSuccess() {
+              toast({ description: "Task moved" });
+            },
+            onError(error) {
+              toast({ title: "Error moving task", description: error });
+            },
+          })
         );
       }
       return;
@@ -220,7 +223,7 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
             {loading.deleteList && <p>Deleting List..</p>}
             {loading.createTask && <p>Creating task..</p>}
             {loading.updateList && <p>Updating list..</p>}
-            {movingTask && <p>Moving task...</p>}
+            {loading.moveTask && <p>Moving task...</p>}
           </div>
         </div>
         <HandleLoading
