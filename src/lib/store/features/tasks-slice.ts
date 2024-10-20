@@ -2,9 +2,12 @@ import { Column, Space, TaskRow } from "@/types/spaces";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createList,
+  createTask,
   deleteList,
+  deleteTask,
   getSpace,
   updateList,
+  updateTask,
 } from "../thunks/tasks-thunks";
 
 interface TasksState {
@@ -129,6 +132,56 @@ const tasksSlice = createSlice({
       .addCase(updateList.rejected, (state, action) => {
         state.loading.updateList = false;
         state.error.updateList = action.payload as string;
+      })
+
+      // create task
+      .addCase(createTask.pending, (state) => {
+        state.loading.createTask = true;
+        state.error.createTask = null;
+      })
+      .addCase(createTask.fulfilled, (state, action) => {
+        state.tasks.push(action.payload.task);
+        state.loading.createTask = false;
+      })
+      .addCase(createTask.rejected, (state, action) => {
+        state.loading.createTask = false;
+        state.error.createTask = action.payload as string;
+      })
+
+      // update task
+      .addCase(updateTask.pending, (state) => {
+        state.loading.updateTask = true;
+        state.error.updateTask = null;
+      })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const index = state.tasks.findIndex(
+          (task) => task.id === action.payload.taskId
+        );
+        state.tasks[index] = {
+          ...state.tasks[index],
+          ...action.payload.taskData,
+        };
+        state.loading.updateTask = false;
+      })
+      .addCase(updateTask.rejected, (state, action) => {
+        state.loading.updateTask = false;
+        state.error.updateTask = action.payload as string;
+      })
+
+      // delete task
+      .addCase(deleteTask.pending, (state) => {
+        state.loading.deleteTask = true;
+        state.error.deleteTask = null;
+      })
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.tasks = state.tasks.filter(
+          (task) => task.id !== action.payload.taskId
+        );
+        state.loading.deleteTask = false;
+      })
+      .addCase(deleteTask.rejected, (state, action) => {
+        state.loading.deleteTask = false;
+        state.error.deleteTask = action.payload as string;
       });
   },
 });

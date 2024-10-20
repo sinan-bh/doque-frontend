@@ -17,7 +17,6 @@ import { apiGetTaskDetails } from "@/utils/taskUtils";
 import { useToast } from "@/hooks/use-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import clsx from "clsx";
-import { useBoards } from "@/contexts/boards-context";
 import { Input } from "../ui/input";
 import AssignTaskToMembers from "./task-assign-members";
 import TaskDescription from "./task-description";
@@ -32,12 +31,15 @@ import {
 } from "@/components/ui/select";
 import DueDatePicker from "./due-date-picker";
 import { AlertConfirm } from "../ui/alert-confirm";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { deleteTask, updateTask } from "@/lib/store/thunks/tasks-thunks";
+import { ToastAction } from "../ui/toast";
 
 export default function TaskDetails({
   taskId,
   listId,
 }: {
-  taskId?: string;
+  taskId: string;
   listId: string;
 }) {
   const [data, setData] = useState<Task | null>(null);
@@ -51,6 +53,7 @@ export default function TaskDetails({
         title: data?.title,
         description: data?.description,
         assignedTo: data?.assignedTo,
+        dueDate: data?.dueDate,
         priority: data?.priority,
       }) !== JSON.stringify(values)
     );
@@ -61,23 +64,9 @@ export default function TaskDetails({
   const router = useRouter();
   const { spaceId }: { spaceId: string } = useParams();
   const pathname = usePathname();
-  const { deleteTask, updateTask } = useBoards();
 
-  useEffect(() => {
-    // When the user clicks outside or press escape key
-    // remove the taskId from the URL so the user can navigate back (close the popup)
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        router.push(pathname);
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.tasks);
 
   useEffect(() => {
     setInitialLoading(true);
@@ -109,17 +98,82 @@ export default function TaskDetails({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskId, listId]);
 
-  const handleUpdateTask = async () => {
-    toast({ title: "Saving Changes.." });
-    const { error } = await updateTask(spaceId, listId, taskId!, values!);
-    if (error) {
-      toast({
-        title: "Error saving changes",
-        description: error,
-      });
-    } else {
-      toast({ title: "Changes saved successfully" });
+  useEffect(() => {
+    // When the user clicks outside or press escape key
+    // remove the taskId from the URL so the user can navigate back (close the popup)
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        router.push(pathname);
+      }
     }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (loading.updateTask) {
+      toast({ title: "Saving changes.." });
+    }
+
+    if (loading.deleteTask) {
+      toast({ title: "Deleting task.." });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading.updateTask, loading.deleteTask]);
+
+  const handleUpdateTask = async () => {
+    dispatch(
+      updateTask({
+        spaceId,
+        listId,
+        taskId,
+        taskData: values!,
+        onSuccess() {
+          setData((prev) => ({ ...prev!, ...values }));
+          toast({ title: "Task updated successfully" });
+        },
+        onError(error) {
+          toast({
+            title: "Error deleting task",
+            description: error,
+            action: (
+              <ToastAction onClick={handleUpdateTask} altText="Try again">
+                Try again
+              </ToastAction>
+            ),
+          });
+        },
+      })
+    );
+  };
+
+  const handleTaskDelete = async () => {
+    dispatch(
+      deleteTask({
+        spaceId,
+        listId,
+        taskId,
+        onSuccess() {
+          toast({ title: "Task deleted successfully" });
+          router.push(pathname);
+        },
+        onError() {
+          toast({
+            title: "Error deleting task",
+            description: "An error occurred while deleting the task",
+            action: (
+              <ToastAction onClick={handleTaskDelete} altText="Try again">
+                Try again
+              </ToastAction>
+            ),
+          });
+        },
+      })
+    );
   };
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -128,24 +182,6 @@ export default function TaskDetails({
     if (!target.closest(".task-details-section")) {
       // Remove the taskId from the URL so the user can navigate back (close the popup
       router.push(pathname);
-    }
-  };
-
-  const handleTaskDelete = async () => {
-    if (taskId && listId) {
-      let success = true;
-      toast({ title: "Deleting Task.." });
-      await deleteTask(spaceId, listId, taskId, (msg) => {
-        success = false;
-        toast({
-          title: "Error while deleting task",
-          description: msg,
-        });
-      });
-      if (success) {
-        toast({ title: "Task deleted successfully" });
-        router.push(pathname);
-      }
     }
   };
 
@@ -191,7 +227,7 @@ export default function TaskDetails({
                 <div onClick={() => setTitleEditOpen(true)}>
                   {!titleEditOpen && (
                     <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 h-9 hover:border rounded-md px-3 py-1 text-sm">
-                      {data.title} <CiEdit className="text-zinc-800" />
+                      {values?.title} <CiEdit className="text-zinc-800" />
                     </h2>
                   )}
                   {titleEditOpen && (
@@ -278,9 +314,9 @@ export default function TaskDetails({
               <Button
                 onClick={handleUpdateTask}
                 size="sm"
-                disabled={!changesMade}
-                className="col-start-4 w-fit  ">
-                Save Changes
+                disabled={!changesMade || loading.updateTask}
+                className="col-start-4 self-end">
+                {loading.updateTask ? "Saving.." : "Save changes"}
               </Button>
             </CardFooter>
           </Card>

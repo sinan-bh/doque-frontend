@@ -14,12 +14,16 @@ export default function DueDatePicker({
 
   return (
     <div>
-      <p>Due Date</p>
+      <p>
+        Due Date
+        <span className="text-xs text-gray-600">{!dueDate && "(Not set)"}</span>
+      </p>
 
       <input
         className="task-details-section"
         type="date"
         value={
+          dueDate &&
           new Date(dueDate || new Date().toISOString())
             .toISOString()
             .split("T")[0]

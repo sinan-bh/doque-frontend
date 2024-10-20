@@ -29,7 +29,7 @@ export default function SpaceCard({ space }: { space: Space }) {
         </Button>
       </EditSpace>
 
-      <div className="hover:bg-gray-100">
+      <div className="hover:bg-gray-100 h-full">
         <Link href={`spaces/${space._id}`}>
           <CardHeader>
             <CardTitle>{space.name}</CardTitle>

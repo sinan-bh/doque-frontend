@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/utils/axios";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
-import { Column, List, TaskRow } from "@/types/spaces";
+import { Column, List, TaskFormValues, TaskRow } from "@/types/spaces";
 
 // Fetch Space and transform it into tasks and lists
 export const getSpace = createAsyncThunk(
@@ -107,6 +107,103 @@ export const updateList = createAsyncThunk(
       onSuccess();
       return { listId, listData };
     } catch (error) {
+      return rejectWithValue(axiosErrorCatch(error));
+    }
+  }
+);
+
+export const createTask = createAsyncThunk<
+  { task: TaskRow },
+  {
+    spaceId: string;
+    listId: string;
+    taskData: {
+      description?: string;
+      dueDate?: string;
+      priority?: number;
+      assignedTo?: string;
+      title: string;
+    };
+    onSuccess: () => void;
+  },
+  { rejectValue: string }
+>(
+  "tasks/createTask",
+  async ({ spaceId, listId, taskData, onSuccess }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/space/${spaceId}/lists/${listId}/tasks`,
+        taskData
+      );
+      onSuccess();
+      const resData = data.data;
+      return { task: { ...resData, id: resData._id, column: listId } };
+    } catch (error) {
+      return rejectWithValue(axiosErrorCatch(error));
+    }
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  "tasks/deleteTask",
+  async (
+    {
+      spaceId,
+      listId,
+      taskId,
+      onSuccess,
+      onError,
+    }: {
+      spaceId: string;
+      listId: string;
+      taskId: string;
+      onSuccess: () => void;
+      onError: () => void;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      await axiosInstance.delete(
+        `/space/${spaceId}/lists/${listId}/tasks/${taskId}`
+      );
+      onSuccess();
+      return { taskId };
+    } catch (error) {
+      onError();
+      return rejectWithValue(axiosErrorCatch(error));
+    }
+  }
+);
+
+export const updateTask = createAsyncThunk(
+  "tasks/updateTask",
+  async (
+    {
+      spaceId,
+      listId,
+      taskId,
+      taskData,
+      onSuccess,
+      onError,
+    }: {
+      spaceId: string;
+      listId: string;
+      taskId: string;
+      taskData: TaskFormValues;
+      onSuccess: () => void;
+      onError: (error: string) => void;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      await axiosInstance.put(
+        `/space/${spaceId}/lists/${listId}/tasks/${taskId}`,
+        taskData
+      );
+      onSuccess();
+      return { taskId, taskData };
+    } catch (error) {
+      onError(axiosErrorCatch(error));
       return rejectWithValue(axiosErrorCatch(error));
     }
   }
