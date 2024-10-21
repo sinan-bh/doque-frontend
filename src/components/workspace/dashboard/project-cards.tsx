@@ -1,15 +1,31 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchProjects, Project } from "@/lib/store/features/workspace-slice";
 
 const ProjectCard: React.FC = () => {
-  const { projects } = useSelector((state: RootState)=> state.workspace);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    projects,
+    workSpaceId,
+  }: { projects: Project[] | null; workSpaceId: string } = useSelector(
+    (state: RootState) => state.workspace
+  );
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (projects && projects.length > 0) {      
+      const fetchData = async () => {
+        await dispatch(fetchProjects({ workSpaceId }));
+      };
+      fetchData();
+  }, [workSpaceId]);
+
+  useEffect(() => {
+    if (projects && projects.length > 0) {
       setSelectedProjectId(projects[0]._id);
     }
   }, [projects]);
@@ -20,17 +36,15 @@ const ProjectCard: React.FC = () => {
 
   const handleProjectClick = (projectId: string) => {
     setSelectedProjectId(projectId);
-    setIsOpen(false); 
+    setIsOpen(false);
   };
 
   const displayedProject = projects?.find(
     (project) => project._id === selectedProjectId
   );
 
-  const otherProjects = projects?.filter(
-    (project) => project._id !== selectedProjectId
-  ) || [];
-
+  const otherProjects =
+    projects?.filter((project) => project._id !== selectedProjectId) || [];
 
   return (
     <div className="relative w-full bg-white border border-gray-200 rounded-lg shadow-md p-4">
@@ -38,7 +52,9 @@ const ProjectCard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex-grow">
             <h3 className="text-sm font-medium">{displayedProject.name}</h3>
-            <p className="text-xs text-gray-500">{displayedProject.description}</p>
+            <p className="text-xs text-gray-500">
+              {displayedProject.description}
+            </p>
           </div>
           <button onClick={toggleProjects} className="focus:outline-none">
             {isOpen ? (
@@ -84,7 +100,7 @@ const ProjectCard: React.FC = () => {
             <div
               key={project._id}
               className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b"
-              onClick={() => handleProjectClick(project._id)} 
+              onClick={() => handleProjectClick(project._id)}
             >
               <div className="flex-grow">
                 <p className="text-sm font-medium">{project.name}</p>

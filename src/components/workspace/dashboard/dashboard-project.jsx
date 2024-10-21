@@ -3,15 +3,16 @@ import ProjectCard from './project-cards';
 import TaskList from './task-list';
 import HighPriorityTask from './high-priority-task';
 import CommentsList from './comments-list';
-import TaskSummary from './task-summary';
+// import TaskSummary from './task-summary';
 import { IoMdAddCircleOutline } from "react-icons/io";
 
 export default function DashboardProject() {
+
   return (
     <div className='w-full bg-white border border-gray-200 rounded-lg shadow-md p-4'>
-      <div className='mb-4'>
+      {/* <div className='mb-4'>
         <TaskSummary />
-      </div>
+      </div> */}
       <div className='flex justify-between items-center px-4 mb-4'>
         <div className='font-extrabold text-xl'>
           Project

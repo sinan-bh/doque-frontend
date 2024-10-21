@@ -1,13 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineHome } from "react-icons/ai";
 import { HiOutlineTemplate } from "react-icons/hi";
 import { FiSettings } from "react-icons/fi";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
 
 const Sidebar = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const [activePath, setActivePath] = useState<string>("/u/home");
   const { workSpace } = useSelector((state: RootState)=> state.workspace)
 
@@ -19,6 +21,13 @@ const Sidebar = () => {
   const activeLink = (path: string) => {
     setActivePath(path);
   };
+
+  useEffect(()=> {
+    const fetchData = () => {
+      dispatch(fetchWorkspaceData())
+    }
+    fetchData()
+  },[])
 
   return (
     <div className="w-full min-h-[calc(100vh-4rem)] sm:w-1/4 md:w-1/5 bg-[#EDF1F4] p-4 flex flex-col">

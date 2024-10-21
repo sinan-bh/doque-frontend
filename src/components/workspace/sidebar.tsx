@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa6";
 import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { AddSpaceBtn } from "../ui/add-space";
+import { AddWorkSpaceBtn } from "../ui/add-space";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
 import { AiFillHome } from "react-icons/ai";
@@ -16,7 +16,13 @@ import { FaCalendar } from "react-icons/fa";
 import { ReactNode } from "react";
 import Link from "next/link";
 import axiosInstance from "@/utils/axios";
+import { useDispatch, useSelector } from "react-redux";
 import { useAppDispatch } from "@/lib/store/hooks";
+import { AppDispatch, RootState } from "@/lib/store";
+import {
+  fetchWorkspaceData,
+  setWorkSpaceId,
+} from "@/lib/store/features/workspace-slice";
 import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 
 interface Workspace {
@@ -31,16 +37,13 @@ interface SidebarIcon {
 }
 
 const Sidebar: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { workSpace } = useSelector((state: RootState) => state.workspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [render, isRender] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [workspace, setWorkspace] = useState<Workspace[]>([]);
   const [activeRoute, setActiveRoute] = useState<string>("");
-  const { userProfile, loggedUser } = useUser();
-
+  const { userProfile } = useUser();
   const { workSpaceId }: { workSpaceId: string } = useParams();
-
-  const dispatch = useAppDispatch();
 
   const sidebarItems: SidebarIcon[] = [
     {
@@ -70,16 +73,14 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axiosInstance.get(
-          "https://daily-grid-rest-api.onrender.com/api/workspace"
-        );
-        setWorkspace(data.data);
+        await dispatch(fetchWorkspaceData());
+        dispatch(setWorkSpaceId(workSpaceId));
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, [render, loggedUser?.token]);
+  }, [workSpaceId]);
 
   useEffect(() => {
     setActiveRoute(window.location.pathname);
@@ -94,7 +95,7 @@ const Sidebar: React.FC = () => {
     router.push(route);
   };
 
-  const main = workspace.find((val) => val.WorkspaceId === workSpaceId);
+  const main = workSpace.find((val) => val.WorkspaceId === workSpaceId);
 
   useEffect(() => {
     dispatch(fetchSpacesData(workSpaceId)); // populate spaces when workspace changes
@@ -138,8 +139,8 @@ const Sidebar: React.FC = () => {
             <div className="border-b-2 border-gray-600 p-2">
               <h3 className="text-md text-black">Workspaces</h3>
             </div>
-            {workspace.length > 0 ? (
-              workspace.map((data, key) => (
+            {workSpace.length > 0 ? (
+              workSpace.map((data, key) => (
                 <Link href={`/w/${data.WorkspaceId}/dashboard`} key={key}>
                   <div className="p-2 hover:bg-gray-200 cursor-pointer">
                     <h3 className="text-sm text-black">{data.name}</h3>
@@ -151,7 +152,7 @@ const Sidebar: React.FC = () => {
             )}
             <div className="flex items-center justify-center p-2 hover:bg-gray-100 cursor-pointer">
               <FaPlus className="mr-2" />
-              <AddSpaceBtn isRender={isRender} />
+              <AddWorkSpaceBtn />
             </div>
           </div>
         )}

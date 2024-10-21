@@ -1,9 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
-import {Users} from "@/contexts/workspace-context"
+import { Users } from "@/lib/store/features/workspace-slice";
 
 
 const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {  
+
+
+console.log(members);
+
   
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
