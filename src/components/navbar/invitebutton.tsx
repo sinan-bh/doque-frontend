@@ -13,18 +13,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-import { useUser } from "@/contexts/user-context";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
+import { useAppSelector } from "@/lib/store/hooks";
 
 type UserEmail = {
   email: string;
 };
 
 export default function InviteButton() {
-  const { loggedUser } = useUser();
+  const {loggedUser}= useAppSelector((state)=>state.user)
   const { workSpaceId } = useSelector((state: RootState)=> state.workspace);
   const [formData, setFormData] = useState({
     email: "",

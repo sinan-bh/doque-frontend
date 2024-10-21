@@ -4,28 +4,33 @@ import React, { useState } from 'react';
 import { AiOutlineMail } from 'react-icons/ai';
 import { BiLogIn } from "react-icons/bi";
 import Link from 'next/link';
-// import { useRouter } from 'next/navigation';
-import { useUser } from '@/contexts/user-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { forgotPassword } from '@/lib/store/features/userSlice';
+import { AppDispatch, RootState } from '@/lib/store';
 
 export default function ForgotPassword() {
-    // const router = useRouter();
-    const { forgotPassword } = useUser();
+    const dispatch = useDispatch<AppDispatch>();
+    const { loading, error } = useSelector((state: RootState) => state.user);
     const [email, setEmail] = useState<string>('');
     const [message, setMessage] = useState<string>('');
-    const [error, setError] = useState<string>('');
 
     const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMessage('');
-        setError('');
 
-        const result = await forgotPassword(email);
-        if (result.statusCode === 200) {
-            setMessage(result.error || "Password reset link has been sent to your email.");
-            setTimeout(() => {
-            }, 1000);
+        const resultAction = await dispatch(forgotPassword(email));
+
+        if (forgotPassword.fulfilled.match(resultAction)) {
+            setMessage(resultAction.payload.message);
         } else {
-            setError(result.error || "An error occurred. Please try again.");
+            setMessage(resultAction.payload as string);
+        }
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+        if (message || error) {
+            setMessage(''); 
         }
     };
 
@@ -41,7 +46,7 @@ export default function ForgotPassword() {
                     Forgot Password?
                 </h1>
                 <p className="text-gray-600 text-center mb-8">
-                    Enter your email to receive an link to reset your password.
+                    Enter your email to receive a link to reset your password.
                 </p>
                 {message && <p className="text-green-600 text-center mb-4">{message}</p>}
                 {error && <p className="text-red-600 text-center mb-4">{error}</p>}
@@ -51,17 +56,20 @@ export default function ForgotPassword() {
                         <input
                             type="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={handleEmailChange}
                             placeholder="Enter your email"
                             className="block w-full px-4 py-3 pl-10 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
                             required
+                            aria-label="Email address"
                         />
                     </div>
                     <button
                         type="submit"
                         className="w-full bg-[#8BF376] text-xl text-gray-700 font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-[#6BBE4D] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
+                        disabled={loading}
+                        aria-label="Send reset link"
                     >
-                        Send Link
+                        {loading ? "Sending..." : "Send Link"}
                     </button>
                 </form>
                 <div className="flex justify-center items-center mt-8 text-sm text-gray-700">

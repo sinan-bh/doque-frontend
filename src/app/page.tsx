@@ -1,22 +1,15 @@
-"use client";
 
 import Spinner from "@/components/ui/spinner/spinner";
-import { useUser } from "@/contexts/user-context";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default function RootPage() {
-  const { loggedUser, loading } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (loggedUser) {
-        return router.push("/u/home");
-      }
-      return router.push("/home");
-    }
-  }, [loggedUser, router, loading]);
+  const userToken = JSON.parse(cookies().get("user")?.value || "{}").token;
+  if (userToken) {
+    redirect("/u/home")
+  } else {
+    redirect('/home')
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

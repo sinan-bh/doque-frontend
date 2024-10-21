@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AiOutlineMail,
   AiOutlineLock,
@@ -8,53 +8,41 @@ import {
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
 import { BiLogIn } from "react-icons/bi";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, clearMessages } from "@/lib/store/features/userSlice";
+import { AppDispatch, RootState } from "@/lib/store";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { loginUser: login } = useUser();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const error = useSelector((state: RootState) => state.user.error);
+  const loading = useSelector((state: RootState) => state.user.loading);
 
-  const {workSpace} = useSelector((state: RootState)=> state.workspace)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    // Clear previous error messages
+    dispatch(clearMessages());
+    
+    const result = await dispatch(loginUser({ email, password }));
 
-    const result = await login(email, password);
-    if (result.statusCode === 200) {
-      if (!workSpace || workSpace.length < 1) {
-        router.push("/onboarding");
-      } else {
-        router.push("/u/home");
-      }
-    } else {
-      setError(result.error);
-    }
-  };
-
-  const handleGoogleLogin = () => {
-    console.log("Logging in with Google...");
-    router.push("/u/home");
-  };
-
-  const handleGithubLogin = () => {
-    console.log("Logging in with GitHub...");
-    router.push("/u/home");
+    if (result.payload?.statusCode === 200) {
+      router.push("/u/home");
+    } 
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    dispatch(clearMessages());
+  }, [dispatch, email, password]);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] w-full flex justify-center items-center">
@@ -79,6 +67,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 pl-10 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
               required
+              onFocus={() => dispatch(clearMessages())} 
             />
           </div>
           <div className="relative">
@@ -90,6 +79,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="block w-full px-4 py-3 pl-10 pr-10 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
               required
+              onFocus={() => dispatch(clearMessages())} 
             />
             <div
               className="absolute right-3 top-4 cursor-pointer text-[#5E6061]"
@@ -98,43 +88,27 @@ export default function Login() {
               {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </div>
           </div>
-          <div className="flex justify-between text-sm">
-            <Link href="/signup" className="text-[#5E6061] hover:text-[#333]">
-              Don&apos;t have an account?
-            </Link>
+          <div className="flex justify-end text-sm">
             <Link href="/forgot-password" className="text-[#5E6061] hover:text-[#333]">
               Forgot password?
             </Link>
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-[#8BF376] text-xl text-gray-700 font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-[#6BBE4D] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
           >
-            Get Started
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
         <div className="flex items-center justify-between my-4">
           <hr className="w-full border-t border-gray-500" />
           <span className="mx-2 text-gray-800 text-xs whitespace-nowrap">
-            or sign in with
+            <Link href="/signup">
+              Don&apos;t have an account?
+            </Link>
           </span>
           <hr className="w-full border-t border-gray-500" />
-        </div>
-        <div className="flex justify-between space-x-4 mt-4">
-          <Button
-            onClick={handleGoogleLogin}
-            className="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-900 px-4 py-3 rounded-lg shadow-md hover:bg-[#93D8EE] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-          >
-            <FcGoogle className="text-xl" />
-            <span className="font-semibold text-[#5E6061]">Google</span>
-          </Button>
-          <Button
-            onClick={handleGithubLogin}
-            className="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-900 px-4 py-3 rounded-lg shadow-md hover:bg-[#93D8EE] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-          >
-            <FaGithub className="text-xl" />
-            <span className="font-semibold text-[#5E6061]">GitHub</span>
-          </Button>
         </div>
       </div>
     </div>

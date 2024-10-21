@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import UserContextProvider from "@/contexts/user-context";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/dark-mode/theme-provider";
 import { AdminProvider } from "@/contexts/admin-context";
 import StoreProvider from "@/lib/store/store-provider";
+import UserContextProvider from "@/contexts/user-context";
 
 export const metadata: Metadata = {
   title: "DOQUE",
@@ -34,9 +34,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AdminProvider>
-              <UserContextProvider>
-                {children}
-              </UserContextProvider>
+              <UserContextProvider>{children}</UserContextProvider>
               <Toaster />
             </AdminProvider>
           </ThemeProvider>

@@ -8,9 +8,9 @@ import React, {
   useEffect,
 } from "react";
 import axios, { AxiosError } from "axios";
-import { useUser } from "./user-context";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import { useAppSelector } from "@/lib/store/hooks";
 
 type Message = {
     _id: string;
@@ -44,7 +44,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
   const [isOnline, setIsOnline] = useState<boolean>(
     typeof navigator !== "undefined" ? navigator.onLine : true
   );
-  const { loggedUser } = useUser();
+  const {loggedUser}= useAppSelector((state)=>state.user)
   const {workSpaceId} = useSelector((state: RootState)=> state.workspace)
 
   setInterval(()=>{

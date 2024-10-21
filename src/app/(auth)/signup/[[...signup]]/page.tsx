@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineMail, AiOutlineLock, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { BiLogIn } from "react-icons/bi";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
+import { signup, clearMessages } from "@/lib/store/features/userSlice";
 import { FormikHelpers } from "formik";
-import { User } from "@/types/user";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 interface FormValues {
     email: string;
@@ -20,9 +20,11 @@ interface FormValues {
 
 export default function Signup() {
     const [showPassword, setShowPassword] = useState(false);
-    const [statusMessage, setStatusMessage] = useState<string | null>(null);
-    const { signup } = useUser();
+    const dispatch = useAppDispatch();
     const router = useRouter();
+
+    const { error, successMessage } = useAppSelector((state) => state.user);
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -32,38 +34,33 @@ export default function Signup() {
         lastName: Yup.string().required("Last name is required"),
         email: Yup.string().email("Invalid email").required("Email is required"),
         password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-        confirmPassword: Yup.string().required("Please re-enter your password"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password')], "Passwords must match")
+            .required("Please re-enter your password"),
     });
 
     const handleSubmit = async (
         values: FormValues,
-        { setSubmitting, setErrors }: FormikHelpers<FormValues>
+        { setSubmitting }: FormikHelpers<FormValues>
     ) => {
-        setStatusMessage(null);
-        if (values.password !== values.confirmPassword) {
-            setErrors({ confirmPassword: "Passwords do not match. Please try again." });
-            return;
-        }
-        const user: User = {
+        dispatch(clearMessages());
+
+        const resultAction = await dispatch(signup({
+            email: values.email,
+            password: values.password,
             firstName: values.firstName,
             lastName: values.lastName,
-            email: values.email,
-            image: 'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=',
-            password: values.password,
-        };
+        }));
 
-        const response = await signup(user);
-
-        if (response.error) {
-            setStatusMessage(response.error);
-        } else if (response.statusCode === 200) {
-            setStatusMessage("OTP sent to email. Please verify.");
-            router.push("/verify-otp");
-        } else {
-            setStatusMessage("Something went wrong, please try again later.");
+        if (signup.fulfilled.match(resultAction)) {
+            router.push("/verify-otp?email=" + values.email);
         }
         setSubmitting(false);
     };
+
+    useEffect(() => {
+        dispatch(clearMessages());
+    }, [dispatch]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] w-full flex justify-center items-center">
@@ -75,9 +72,9 @@ export default function Signup() {
                 </div>
                 <h1 className="text-3xl font-bold text-center mb-2">Create Account</h1>
                 <p className="text-gray-600 text-center mb-6">Please fill in the details below to create your account.</p>
-                {statusMessage && (
-                    <div className={`text-center mb-4 ${statusMessage.includes("success") ? "text-green-600" : "text-red-600"}`}>
-                        {statusMessage}
+                {(successMessage || error) && (
+                    <div className={`text-center mb-4 ${successMessage ? "text-green-600" : "text-red-600"}`}>
+                        {successMessage || error}
                     </div>
                 )}
 
