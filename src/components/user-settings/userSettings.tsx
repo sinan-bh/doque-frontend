@@ -1,15 +1,35 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { useUser } from "@/contexts/user-context";
 import instance from "@/utils/axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchUserProfile } from "@/lib/store/features/userSlice";
 
 export default function ProfileSettings() {
-  const { userProfile } = useUser();
+  const dispatch = useAppDispatch();
+  const { userProfile } = useAppSelector((state) => state.user);
+ 
+
+  useEffect(() => {
+    if (!userProfile) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, userProfile]);
   const { toast } = useToast();
   const router = useRouter()
+  useEffect(() => {
+    if (userProfile) {
+      setUserData({
+        firstName: userProfile.firstName,
+        lastName: userProfile.lastName,
+        email: userProfile.email,
+        phoneNumber: userProfile.phoneNumber,
+        image: userProfile.image,
+      });
+    }
+  }, [userProfile]);
 
   const [userData, setUserData] = useState({
     firstName: userProfile?.firstName || "",
@@ -115,7 +135,7 @@ export default function ProfileSettings() {
                 <input
                   type="text"
                   name="lastName"
-                  value={userData.lastName}
+                  defaultValue={userData.lastName}
                   onChange={handleChange}
                   className="p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
                   required

@@ -10,9 +10,8 @@ type UserProfile = {
   _id: string;
   email: string;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   image: string;
-  phoneNumber:string;
   activeWorkspace?: [];
   description: string;
   name?: string;
@@ -78,7 +77,8 @@ export default function UserContextProvider({
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/login",
+      const response = await axios.post(
+        "https://daily-grid-rest-api.onrender.com/api/login",
         { email, password }
       );
       const { statusCode, message, data, token } = response.data;

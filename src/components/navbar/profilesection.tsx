@@ -6,16 +6,23 @@ import { Button } from "../ui/button";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useUser } from "@/contexts/user-context";
 import Link from "next/link";
-
-
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchUserProfile, logout } from "@/lib/store/features/userSlice";
+import { useRouter } from "next/navigation";
 
 export default function ProfileSection() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { userProfile } = useAppSelector((state) => state.user);
 
-  const { logout,userProfile } = useUser();
+  useEffect(() => {
+    if (!userProfile) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -34,9 +41,9 @@ export default function ProfileSection() {
   }, []);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
+    router.push("/signin");
   };
-
 
   return (
     <div className="relative">
@@ -65,7 +72,10 @@ export default function ProfileSection() {
           ref={dropdownRef}
           className="absolute right-0 mt-2 w-64 bg-white/90 rounded-lg border border-gray-200 z-10 shadow-lg backdrop-blur-md p-3"
         >
-          <Link href={`/u/${userProfile?._id}/profile`} onClick={() => setIsOpen(!isOpen)}>
+          <Link
+            href={`/u/${userProfile?._id}/profile`}
+            onClick={() => setIsOpen(!isOpen)}
+          >
             <Button className="flex items-center justify-between bg-[#E5E9EC] rounded-lg w-full hover:bg-[#E5E9EC]/90 h-12 p-2">
               <div className="flex items-center space-x-2">
                 <Avatar className="w-8 h-8">
@@ -83,22 +93,35 @@ export default function ProfileSection() {
             </Button>
           </Link>
 
-          <div className="flex justify-between gap-2 mt-2 border-b border-gray-200 pb-2" >
-            <Button className="flex-1 bg-[#C8AFBE] text-black rounded-2xl h-10 hover:bg-[#C7C3B5]" onClick={() => setIsOpen(!isOpen)}>
+          <div className="flex justify-between gap-2 mt-2 border-b border-gray-200 pb-2">
+            <Button
+              className="flex-1 bg-[#C8AFBE] text-black rounded-2xl h-10 hover:bg-[#C7C3B5]"
+              onClick={() => setIsOpen(!isOpen)}
+            >
               Theme
             </Button>
-            <Button className="flex-1 bg-[#C8AFBE] text-black rounded-2xl h-10 hover:bg-[#C7C3B5]" onClick={() => setIsOpen(!isOpen)}>
+            <Button
+              className="flex-1 bg-[#C8AFBE] text-black rounded-2xl h-10 hover:bg-[#C7C3B5]"
+              onClick={() => setIsOpen(!isOpen)}
+            >
               Templates
             </Button>
           </div>
 
           <div className="flex justify-between gap-2 mt-2">
-            <Link href="/u/1/settings" className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]" onClick={() => setIsOpen(!isOpen)}>
+            <Link
+              href={`/u/${userProfile?._id}/settings`}
+              className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]"
+              onClick={() => setIsOpen(!isOpen)}
+            >
               <FiSettings className="mr-1" />
               Settings
             </Link>
             <Button
-              onClick={()=> {handleLogout(); setIsOpen(!isOpen)}}
+              onClick={() => {
+                handleLogout();
+                setIsOpen(!isOpen);
+              }}
               className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5]"
             >
               <IoLogOutOutline className="mr-1" />

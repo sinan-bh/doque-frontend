@@ -8,7 +8,6 @@ import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AddWorkSpaceBtn } from "../ui/add-space";
 import { useParams, useRouter } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
 import { AiFillHome } from "react-icons/ai";
 import { RiDashboardFill } from "react-icons/ri";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -19,6 +18,8 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
 import { fetchWorkspaceData, setWorkSpaceId } from "@/lib/store/features/workspace-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchUserProfile } from "@/lib/store/features/userSlice";
 
 
 // interface Workspace {
@@ -38,9 +39,15 @@ const Sidebar: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string>("");
-  const { userProfile } = useUser();
-  const {workSpaceId} : {workSpaceId: string} = useParams()
+  const dispatched = useAppDispatch();
+  const { userProfile } = useAppSelector((state) => state.user);
+ 
 
+  useEffect(() => {
+    if (!userProfile) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatched, userProfile]);  const {workSpaceId} : {workSpaceId: string} = useParams()
   const sidebarItems: SidebarIcon[] = [
     {
       icon: <AiFillHome className="text-xl text-black mt-1" />,

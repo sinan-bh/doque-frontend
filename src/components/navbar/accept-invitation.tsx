@@ -1,7 +1,7 @@
-import { useUser } from "@/contexts/user-context";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import Spinner from "../ui/spinner/spinner";
+import { useAppSelector } from "@/lib/store/hooks";
 
 type Invite = {
     redirectUrl: string;
@@ -9,7 +9,7 @@ type Invite = {
 
 export default function Acceptinvitation({ token }: { token: string | null }) {
     const [invite,setInvite] = useState<Invite | null>(null)
-  const { loggedUser } = useUser();
+    const {loggedUser } =useAppSelector((state)=>state.user)
 
   console.log(invite);
   

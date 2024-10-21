@@ -7,9 +7,9 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import { useUser } from "./user-context";
 import { useParams } from "next/navigation";
 import axiosInstance from "@/utils/axios";
+import { useAppSelector } from "@/lib/store/hooks";
 
 interface Project {
   _id: string;
@@ -64,7 +64,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [users, setUsers] = useState<Users[]>([]);
   const [workSpacesId, setWorkSpacesId] = useState<string>("");
-  const { loggedUser } = useUser();
+  const {loggedUser}= useAppSelector((state)=>state.user)
   const { workSpaceId } = useParams();
 
   const handleNext = async (previousSpaceName: string) => {

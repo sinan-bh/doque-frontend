@@ -1,15 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Usercards } from "@/components/user-profile/user-cards";
-import { useUser } from "@/contexts/user-context";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchUserProfile } from "@/lib/store/features/userSlice";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"activity" | "cards">("activity");
-  const { userProfile } = useUser();
+  const dispatch = useAppDispatch();
+  const { userProfile } = useAppSelector((state) => state.user);
+ 
 
-  const handleTabClick = (tab: "activity" | "cards") => {
+  useEffect(() => {
+    if (!userProfile) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, userProfile]);  const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
   };
 
