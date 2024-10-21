@@ -77,8 +77,7 @@ export default function UserContextProvider({
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/login",
+      const response = await axios.post("https://daily-grid-rest-api.onrender.com/api/login",
         { email, password }
       );
       const { statusCode, message, data, token } = response.data;

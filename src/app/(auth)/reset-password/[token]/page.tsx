@@ -1,53 +1,54 @@
 'use client';
 
-import React, {  useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { BiLogIn } from "react-icons/bi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import Link from 'next/link';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import { useUser } from '@/contexts/user-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetPassword, clearMessages } from '@/lib/store/features/userSlice';
+import { AppDispatch, RootState } from '@/lib/store';
 
 export default function ResetPassword() {
-
-    const { resetPassword } = useUser();
+    const dispatch = useDispatch<AppDispatch>();
+    const { loading, error, successMessage } = useSelector((state: RootState) => state.user);
 
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     const router = useRouter();
-
-    const {token}: {token?: string} = useParams()
+    const { token }: { token?: string } = useParams();
 
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            setError('Passwords do not match. Please try again.');
+            dispatch(clearMessages());
             return;
         }
-
-        setError('');
-        setSuccess('');
 
         if (!token) {
-            setError('Token is missing. Please try again.');
+            dispatch(clearMessages());
             return;
         }
 
-        const result = await resetPassword(token, newPassword);
-
-        if (result.statusCode === 200) {
-            setSuccess(result.error || "Password reset successfully.");
-            router.push('/signin');
-        } else {
-            setError(result.error || "An error occurred. Please try again.");
-        }
+        dispatch(resetPassword({ token, newPassword }));
     };
+
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                router.push('/signin');
+            },1000);
+            return () => clearTimeout(timer);
+        }
+        return () => {
+            dispatch(clearMessages());
+        };
+    }, [successMessage, dispatch, router]);
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] w-full flex justify-center items-center">
@@ -66,7 +67,10 @@ export default function ResetPassword() {
                 </p>
 
                 {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-                {success && <p className="text-green-600 text-center mb-4">{success}</p>}
+                {successMessage && <p className="text-green-600 text-center mb-4">{successMessage}</p>}
+                {newPassword !== confirmPassword && confirmPassword && (
+                    <p className="text-red-600 text-center mb-4">Passwords do not match.</p>
+                )}
 
                 <form onSubmit={handleResetPassword} className="space-y-8">
                     <div className="relative">
@@ -75,7 +79,10 @@ export default function ResetPassword() {
                             type={showPassword ? 'text' : 'password'}
                             placeholder="New Password"
                             value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
+                            onChange={(e) => {
+                                setNewPassword(e.target.value);
+                                dispatch(clearMessages());
+                            }}
                             className="block w-full px-4 py-3 pl-10 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
                             required
                         />
@@ -83,6 +90,7 @@ export default function ResetPassword() {
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-4 text-[#5E6061]"
+                            aria-label="Toggle password visibility"
                         >
                             {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                         </button>
@@ -94,7 +102,10 @@ export default function ResetPassword() {
                             type={showConfirmPassword ? 'text' : 'password'}
                             placeholder="Confirm Password"
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onChange={(e) => {
+                                setConfirmPassword(e.target.value);
+                                dispatch(clearMessages());
+                            }}
                             className="block w-full px-4 py-3 pl-10 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
                             required
                         />
@@ -102,6 +113,7 @@ export default function ResetPassword() {
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             className="absolute right-3 top-4 text-[#5E6061]"
+                            aria-label="Toggle confirm password visibility"
                         >
                             {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                         </button>
@@ -110,8 +122,9 @@ export default function ResetPassword() {
                     <button
                         type="submit"
                         className="w-full bg-[#8BF376] text-xl text-gray-700 font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-[#6BBE4D] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
+                        disabled={loading}
                     >
-                        Reset Password
+                        {loading ? "Resetting..." : "Reset Password"}
                     </button>
                 </form>
 

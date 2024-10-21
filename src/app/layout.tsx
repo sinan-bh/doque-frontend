@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import UserContextProvider from "@/contexts/user-context";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/dark-mode/theme-provider";
 import { AdminProvider } from "@/contexts/admin-context";
@@ -34,9 +33,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AdminProvider>
-              <UserContextProvider>
                 {children}
-              </UserContextProvider>
               <Toaster />
             </AdminProvider>
           </ThemeProvider>
