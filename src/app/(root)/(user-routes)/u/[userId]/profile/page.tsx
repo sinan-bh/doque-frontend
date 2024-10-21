@@ -2,40 +2,33 @@
 
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Usercards from "@/components/user-profile/user-cards";
+import { Usercards } from "@/components/user-profile/user-cards";
 import { useUser } from "@/contexts/user-context";
-
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"activity" | "cards">("activity");
-  const {userProfile} = useUser()
+  const { userProfile } = useUser();
 
   const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
   };
-  
 
   return (
     <div className="p-8 min-h-screen bg-[#EDF1F4]">
       <div className="flex justify-around items-center p-4 rounded-lg mb-8">
-        <div className="flex items-center space-x-4">
+        <div className=" items-center">
           <Avatar className="w-16 h-16">
-            <AvatarImage
-              src={userProfile?.image}
-              alt="User Profile"
-            />
+            <AvatarImage src={userProfile?.image} alt="User Profile" />
             <AvatarFallback />
           </Avatar>
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">{userProfile?.firstName} {userProfile?.lastName}</h1>
+          <div className="mt-3">
+            <h1 className="text-xl font-bold text-gray-800">
+              {userProfile?.firstName} {userProfile?.lastName}
+            </h1>
             <h3 className="text-sm text-gray-600">{userProfile?.email}</h3>
           </div>
         </div>
-        <div className="text-start">
-          <h2 className="text-md font-semibold text-gray-800">Bio</h2>
-          <h3 className="text-sm text-gray-500">Add your description...</h3>
-        </div>
-        <div className="bg-lime-400 p-0.5 rounded-lg">
+        <div className="bg-lime-300 p-0.5 rounded-lg">
           <h1 className="text-sm">Online</h1>
         </div>
       </div>
@@ -68,15 +61,12 @@ export default function Page() {
           <div>
             <div className="pl-4 p-3 rounded-lg flex items-center space-x-4">
               <Avatar className="w-10 h-10">
-                <AvatarImage
-                  src="https://imgv3.fotor.com/images/gallery/a-man-profile-picture-with-blue-and-green-background-made-by-LinkedIn-Profile-Picture-Maker.jpg"
-                  alt="User Profile"
-                />
+                <AvatarImage src={userProfile?.image} alt="User Profile" />
                 <AvatarFallback />
               </Avatar>
               <div>
                 <h1 className="text-lg font-bold text-gray-800">
-                  Alixa{" "}
+                  {userProfile?.firstName} {userProfile?.lastName}
                   <span className="text-sm text-gray-500">- activity log</span>
                 </h1>
                 <p className="text-sm text-gray-600">

@@ -10,8 +10,9 @@ type UserProfile = {
   _id: string;
   email: string;
   firstName: string;
-  lastName?: string;
+  lastName: string;
   image: string;
+  phoneNumber:string;
   activeWorkspace?: [];
   description: string;
   name?: string;
