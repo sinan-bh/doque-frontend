@@ -1,6 +1,6 @@
 import DisplaySpaceCards from "@/components/spaces/display-space-cards";
 import Filter from "@/components/spaces/filter";
-import SearchBar from "@/components/spaces/search-bar";
+import SearchBar from "@/components/spaces/search-spaces";
 
 export default function Page() {
   return (

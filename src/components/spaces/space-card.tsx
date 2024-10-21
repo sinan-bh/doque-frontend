@@ -13,7 +13,7 @@ import { EditSpace } from "./edit-space";
 
 export default function SpaceCard({ space }: { space: Space }) {
   return (
-    <Card className="h-full relative overflow-hidden">
+    <Card className="h-full relative overflow-hidden hover:scale-[102%]  transition-transform">
       <EditSpace
         initialData={{
           name: space.name,
@@ -29,7 +29,7 @@ export default function SpaceCard({ space }: { space: Space }) {
         </Button>
       </EditSpace>
 
-      <div className="hover:bg-gray-100 h-full">
+      <div className="hover:bg-zinc-50 h-full dark:hover:bg-zinc-900  ">
         <Link href={`spaces/${space._id}`}>
           <CardHeader>
             <CardTitle>{space.name}</CardTitle>
@@ -40,7 +40,7 @@ export default function SpaceCard({ space }: { space: Space }) {
             <p className="text-sm">Lists: {space.lists.length}</p>
             {space.lists.map((section, i) => (
               <div
-                className="flex gap-2 justify-between mb-2 p-2 bg-zinc-100 rounded-md"
+                className="flex gap-2 justify-between mb-2 p-2 border bg-white dark:bg-zinc-950 rounded-md"
                 key={i}>
                 <p>{section.name}</p>
                 <p>Tasks: {section.tasks.length}</p>

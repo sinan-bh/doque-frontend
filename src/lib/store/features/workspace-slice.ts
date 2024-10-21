@@ -9,10 +9,9 @@ export interface Project {
   workspace: string;
 }
 
- export interface Member {
+export interface Member {
   user: string;
 }
-
 
 interface Workspace {
   WorkspaceId: string;
@@ -66,7 +65,7 @@ type readyPage = {
 };
 
 export const fetchWorkspaceData = createAsyncThunk(
-  "workspace/fetchWorkspaceData",
+  "workspace/ata",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await AxiosInstance.get(
@@ -82,19 +81,19 @@ export const fetchWorkspaceData = createAsyncThunk(
 
 export const createWorkSpace = createAsyncThunk<
   string,
-  { name: string,  description?: string },
+  { name: string; description?: string },
   { rejectValue: string }
 >(
   "workspace/createWorkSpace",
   async (
-    { name, description }: { name: string, description?: string },
+    { name, description }: { name: string; description?: string },
     { rejectWithValue }
-  ) => {    
+  ) => {
     try {
       const { data } = await AxiosInstance.post(
         "https://daily-grid-rest-api.onrender.com/api/workspace",
         { name, description }
-      );            
+      );
       return data.data._id;
     } catch (error) {
       console.log(error);
@@ -109,9 +108,9 @@ export const createWorkSpace = createAsyncThunk<
 export const createSpace = createAsyncThunk(
   "workspace/createSpace",
   async (
-    { workSpaceId, spaceName }: {workSpaceId: string; spaceName: string;},
+    { workSpaceId, spaceName }: { workSpaceId: string; spaceName: string },
     { rejectWithValue }
-  ) => {    
+  ) => {
     try {
       const { data } = await AxiosInstance.post(
         `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
@@ -130,10 +129,7 @@ export const createSpace = createAsyncThunk(
 
 export const createList = createAsyncThunk(
   "workspace/createSpace",
-  async (
-    { spaceId, listName }: readyPage,
-    { rejectWithValue }
-  ) => {    
+  async ({ spaceId, listName }: readyPage, { rejectWithValue }) => {
     try {
       await AxiosInstance.post(
         `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
@@ -147,8 +143,7 @@ export const createList = createAsyncThunk(
         `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
         { name: listName.completed }
       );
-      console.log('list');
-      
+      console.log("list");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
@@ -159,14 +154,9 @@ export const createList = createAsyncThunk(
   }
 );
 
-
-
 export const fetchProjects = createAsyncThunk(
   "workspace/fetchProjects",
-  async (
-    { workSpaceId }: { workSpaceId: string },
-    { rejectWithValue }
-  ) => {
+  async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     try {
       const { data } = await AxiosInstance.get(
         `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`
@@ -185,17 +175,14 @@ export const fetchProjects = createAsyncThunk(
 
 export const fetchWorkspaceMembers = createAsyncThunk(
   "workspace/fetchMembers",
-  async (
-    { workSpaceId }: { workSpaceId: string },
-    { rejectWithValue }
-  ) => {
+  async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     try {
       const { data } = await AxiosInstance.get(
         `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`
       );
 
       console.log(data);
-      
+
       return data.data.members;
     } catch (error) {
       console.log(error);
@@ -207,10 +194,7 @@ export const fetchWorkspaceMembers = createAsyncThunk(
 
 export const fetchUserProfiles = createAsyncThunk(
   "workspace/fetchUserProfiles",
-  async (
-    { members }: { members: Member[] },
-    { rejectWithValue }
-  ) => {
+  async ({ members }: { members: Member[] }, { rejectWithValue }) => {
     try {
       const userPromises = members.map((member) => {
         return AxiosInstance.get(

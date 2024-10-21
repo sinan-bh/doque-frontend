@@ -66,4 +66,12 @@ export type ApiResponse<T> = {
   error: string | null;
 };
 
+export type Member = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  _id: string;
+  image: string;
+};
+
 export type coverColor = { name: string; hex: string };

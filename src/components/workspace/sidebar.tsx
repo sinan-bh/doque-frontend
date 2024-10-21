@@ -15,20 +15,13 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaCalendar } from "react-icons/fa";
 import { ReactNode } from "react";
 import Link from "next/link";
-import axiosInstance from "@/utils/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { useAppDispatch } from "@/lib/store/hooks";
 import { AppDispatch, RootState } from "@/lib/store";
 import {
   fetchWorkspaceData,
   setWorkSpaceId,
 } from "@/lib/store/features/workspace-slice";
 import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
-
-interface Workspace {
-  name: string;
-  WorkspaceId: string;
-}
 
 interface SidebarIcon {
   icon: ReactNode;

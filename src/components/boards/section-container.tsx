@@ -119,7 +119,7 @@ export default function SectionContainer({
     <div
       style={style}
       ref={setNodeRef}
-      className={` w-64 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white
+      className={` w-64 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white dark:bg-zinc-900
        ${isDragging && !isOverLay && "opacity-50"} `}
       {...attributes}>
       <div
