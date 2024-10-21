@@ -10,7 +10,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Column, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
-import { useBoards } from "@/contexts/boards-context";
 import { MdOutlineFormatColorFill } from "react-icons/md";
 import { useParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -32,14 +31,12 @@ export default function SectionContainer({
   const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(section.title);
 
-  const { error } = useAppSelector((state) => state.tasks);
+  const { error, loading } = useAppSelector((state) => state.tasks);
   const dispatch = useAppDispatch();
 
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
   const { spaceId }: { spaceId: string } = useParams();
-
-  const { loading } = useBoards();
 
   const { toast } = useToast();
 
@@ -92,7 +89,7 @@ export default function SectionContainer({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error.deleteList]);
+  }, [error.deleteList, error.updateList]);
 
   const handleUpdateTitle = async () => {
     dispatch(
@@ -134,7 +131,7 @@ export default function SectionContainer({
           {!editMode && section.title}
           {editMode && (
             <Input
-              disabled={loading === "updateCol"}
+              disabled={loading.updateList}
               className="bg-white"
               type="text"
               autoFocus

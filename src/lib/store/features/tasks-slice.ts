@@ -10,6 +10,8 @@ import {
   updateList,
   updateTask,
 } from "../thunks/tasks-thunks";
+import { UniqueIdentifier } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 
 interface TasksState {
   tasks: TaskRow[];
@@ -70,7 +72,71 @@ const initialState: TasksState = {
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
-  reducers: {},
+  reducers: {
+    moveColumn: (
+      state,
+      action: {
+        payload: {
+          activeId: UniqueIdentifier;
+          overId: UniqueIdentifier;
+        };
+      }
+    ) => {
+      const activeColumnIndex = state.lists.findIndex(
+        (column) => column.id === action.payload.activeId
+      );
+      const overColumnIndex = state.lists.findIndex(
+        (column) => column.id === action.payload.overId
+      );
+      console.log(activeColumnIndex, overColumnIndex);
+      state.lists = arrayMove(state.lists, activeColumnIndex, overColumnIndex);
+    },
+
+    swapTasks: (
+      state,
+      action: {
+        payload: {
+          activeId: UniqueIdentifier;
+          overId: UniqueIdentifier;
+        };
+      }
+    ) => {
+      const activeIndex = state.tasks.findIndex(
+        (task) => task.id === action.payload.activeId
+      );
+      const overIndex = state.tasks.findIndex(
+        (task) => task.id === action.payload.overId
+      );
+      if (state.tasks[activeIndex].column !== state.tasks[overIndex].column) {
+        state.tasks[activeIndex].column = state.tasks[overIndex].column;
+      }
+
+      state.tasks = arrayMove(state.tasks, activeIndex, overIndex);
+    },
+
+    moveTaskToColumn: (
+      state,
+      action: {
+        payload: {
+          activeId: UniqueIdentifier;
+          overId: UniqueIdentifier;
+        };
+      }
+    ) => {
+      const activeIndex = state.tasks.findIndex(
+        (task) => task.id === action.payload.activeId
+      );
+      console.log(activeIndex);
+
+      if (activeIndex === -1) {
+        return;
+      }
+      // Update the task's column
+      state.tasks[activeIndex].column = action.payload.overId.toString();
+      state.tasks = arrayMove(state.tasks, activeIndex, activeIndex);
+    },
+  },
+
   extraReducers(builder) {
     builder
       // Get space
@@ -212,5 +278,7 @@ const tasksSlice = createSlice({
       });
   },
 });
+
+export const { moveColumn, moveTaskToColumn, swapTasks } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

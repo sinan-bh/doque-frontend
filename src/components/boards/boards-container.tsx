@@ -18,9 +18,8 @@ import {
 import SectionContainer from "./section-container";
 import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa6";
-import { Column, Space, TaskRow } from "@/types/spaces";
+import { Column, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
-import { useBoards } from "@/contexts/boards-context";
 import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
@@ -31,19 +30,17 @@ import {
 import HandleLoading from "../ui/handle-loading";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
+import {
+  moveColumn,
+  moveTaskToColumn,
+  swapTasks,
+} from "@/lib/store/features/tasks-slice";
 
-export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
+export default function BoardsContainer() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<TaskRow | null>(null);
 
   const { spaceId }: { spaceId: string } = useParams();
-
-  const {
-    moveColumn,
-    moveTaskToColumn,
-    swapTasksInSameColumn,
-    populateBoardData,
-  } = useBoards();
 
   const { toast } = useToast();
   const dispatch = useAppDispatch();
@@ -54,9 +51,8 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
 
   useEffect(() => {
     dispatch(getSpace(spaceId));
-    populateBoardData(spaceData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); //do not include populate function inside dependency!!
+  }, [spaceId]); //do not include populate function inside dependency!!
 
   const columnsIds = useMemo(() => lists.map((column) => column.id), [lists]);
 
@@ -118,7 +114,7 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
 
     if (activeId === overId) return;
 
-    moveColumn(activeId, overId); // move the column if the active item is a column
+    dispatch(moveColumn({ activeId, overId }));
   };
 
   const handleDragOver = (event: DragEndEvent) => {
@@ -141,7 +137,12 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
     if (taskIsActive && isOverATask) {
       // If the active item is a task and the over item is a task, swap the positions of the tasks
       setTimeout(() => {
-        swapTasksInSameColumn(activeId, overId);
+        dispatch(
+          swapTasks({
+            activeId,
+            overId,
+          })
+        );
       }, 10); // This is to prevent the unnecessary re-rendering caused by layout shifts like scrollbar appearing
     }
 
@@ -150,7 +151,7 @@ export default function BoardsContainer({ spaceData }: { spaceData: Space }) {
     if (taskIsActive && isOverAColumn) {
       // If the active item is a task and the over item is a column, move the task to the column
       setTimeout(() => {
-        moveTaskToColumn(activeId, overId);
+        dispatch(moveTaskToColumn({ activeId, overId }));
       }, 10);
     }
   };
