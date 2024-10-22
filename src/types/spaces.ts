@@ -53,8 +53,8 @@ export type Column = {
 };
 
 export type TaskFormValues = {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   assignedTo?: string[];
   dueDate?: string;
   priority?: string;

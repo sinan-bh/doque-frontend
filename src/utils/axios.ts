@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import axios from "axios";
 
-// Create the Axios instance
 const axiosInstance = axios.create({
   baseURL: "https://daily-grid-rest-api.onrender.com/api",
   headers: {

@@ -1,18 +1,22 @@
 import React from "react";
-import { cards, guestCards, recentlyVisitedCards } from "@/consts/user-home-cards"
-import Carousel from "@/components/user-home/carousel";
+import MyWorkSpace from "@/components/user-home/my-workspace";
+import GuestWorkSpaces from "@/components/user-home/guest-workspace";
 
 export default function Workspace() {
   return (
-    <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
-      <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">My Workspaces</h1>
-      <Carousel cards={cards} />
-
-      <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">Guest&apos;s Workspace</h2>
-      <Carousel cards={guestCards} />
-
-      <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">Recently Visited</h2>
-      <Carousel cards={recentlyVisitedCards} />
+    <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar">
+      <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">
+        My Workspaces
+      </h1>
+      <MyWorkSpace />
+      <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">
+        Guest Workspaces
+      </h2>
+      <GuestWorkSpaces />
+      {/* <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">
+        Recently Visited
+      </h2>
+      <Carousel cards={recentlyVisitedCards} /> */}
     </div>
   );
-};
+}

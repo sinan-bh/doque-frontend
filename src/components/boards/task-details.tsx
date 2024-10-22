@@ -133,12 +133,20 @@ export default function TaskDetails({
   }, [loading.updateTask, loading.deleteTask]);
 
   const handleUpdateTask = async () => {
+    const payload = {
+      title: values?.title,
+      description: values?.description,
+      assignedTo: values?.assignedTo,
+      dueDate: values?.dueDate,
+      priority: values?.priority,
+      status: values?.status === data?.status ? undefined : values?.status,
+    };
     dispatch(
       updateTask({
         spaceId,
         listId,
         taskId,
-        taskData: values!,
+        taskData: payload,
         onSuccess() {
           setData((prev) => ({ ...prev!, ...values }));
           toast({ title: "Task updated successfully" });
@@ -148,7 +156,7 @@ export default function TaskDetails({
         },
         onError(error) {
           toast({
-            title: "Error deleting task",
+            title: "Error Updating task",
             description: error,
             action: (
               <ToastAction onClick={handleUpdateTask} altText="Try again">

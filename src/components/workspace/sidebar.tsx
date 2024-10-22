@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa6";
 import Spaces from "./spaces";
 import { FiSettings } from "react-icons/fi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { AddWorkSpaceBtn } from "../ui/add-space";
+import { AddWorkSpaceBtn } from "../ui/add-workspace";
 import { useParams, useRouter } from "next/navigation";
 import { AiFillHome } from "react-icons/ai";
 import { RiDashboardFill } from "react-icons/ri";
