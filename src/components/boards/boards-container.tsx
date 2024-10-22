@@ -35,6 +35,7 @@ import {
   moveTaskToColumn,
   swapTasks,
 } from "@/lib/store/features/tasks-slice";
+import LoadingBox from "./loading-box";
 
 export default function BoardsContainer() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
@@ -219,12 +220,12 @@ export default function BoardsContainer() {
             className="flex gap-2 items-center my-2">
             Add Column <FaPlus size={10} />
           </Button>
-          <div className="text-sm text-gray-700">
-            {loading.createList && <p>Creating..</p>}
-            {loading.deleteList && <p>Deleting List..</p>}
-            {loading.createTask && <p>Creating task..</p>}
-            {loading.updateList && <p>Updating list..</p>}
-            {loading.moveTask && <p>Moving task...</p>}
+          <div className="flex gap-4">
+            <LoadingBox loading={loading.createList} text="Creating.." />
+            <LoadingBox loading={loading.deleteList} text="Deleting List.." />
+            <LoadingBox loading={loading.createTask} text="Creating task.." />
+            <LoadingBox loading={loading.updateList} text="Updating list.." />
+            <LoadingBox loading={loading.moveTask} text="Moving task.." />
           </div>
         </div>
         <HandleLoading

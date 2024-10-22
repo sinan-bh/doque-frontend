@@ -22,6 +22,7 @@ import {
 } from "@/lib/store/features/workspace-slice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchUserProfile } from "@/lib/store/features/userSlice";
+import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 
 // interface Workspace {
 //   name: string;
