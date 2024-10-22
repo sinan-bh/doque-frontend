@@ -129,7 +129,7 @@ export default function UserContextProvider({
 
     try {
       const response = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/register",
+        "/register",
         userData
       );
       const { statusCode } = response.data;
@@ -159,7 +159,7 @@ export default function UserContextProvider({
 
     try {
       const response = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/verifyotp",
+        "/verifyotp",
         { email, otp }
       );
       const { statusCode, message } = response.data;
@@ -194,7 +194,7 @@ export default function UserContextProvider({
 
     try {
       const response = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/forgotpassword",
+        "/forgotpassword",
         { email }
       );
       const { statusCode, message } = response.data;
@@ -224,7 +224,7 @@ export default function UserContextProvider({
 
     try {
       const response = await axios.patch(
-        `https://daily-grid-rest-api.onrender.com/api/reset-password/${token}`,
+        `/reset-password/${token}`,
         { newPassword }
       );
       const { statusCode, message } = response.data;
@@ -257,7 +257,7 @@ export default function UserContextProvider({
       const fetchData = async () => {
         try {
           const { data } = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/userprofile/${loggedUser?.id}`,
+            `/userprofile/${loggedUser?.id}`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,

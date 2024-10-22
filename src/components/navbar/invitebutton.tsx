@@ -43,7 +43,7 @@ export default function InviteButton() {
     if (value.length > 2) {
       try {
         const { data } = await axios.get(
-          `https://daily-grid-rest-api.onrender.com/api/userprofile`,
+          `/userprofile`,
           {
             headers: {
               Authorization: `Bearer ${loggedUser?.token}`,
@@ -77,7 +77,7 @@ export default function InviteButton() {
     setIsOpen(false)
     try {
       const resp =await axios.post(
-        `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}/invite`,
+        `/workspace/${workSpaceId}/invite`,
         { email: formData.email },
         {
           headers: {

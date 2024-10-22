@@ -1,50 +1,38 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
-import { fetchProjects, Project } from "@/lib/store/features/workspace-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { setSelectedProjectId } from "@/lib/store/features/workspace-slice";
 
 const ProjectCard: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const {
-    projects,
-    workSpaceId,
-  }: { projects: Project[] | null; workSpaceId: string } = useSelector(
-    (state: RootState) => state.workspace
-  );
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
-  );
+  const dispatch = useAppDispatch()
+  const { spaces } = useAppSelector((state) => state.space);
+  const { selectedProjectId } = useAppSelector((state) => state.workspace);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-      const fetchData = async () => {
-        await dispatch(fetchProjects({ workSpaceId }));
-      };
-      fetchData();
-  }, [workSpaceId]);
-
-  useEffect(() => {
-    if (projects && projects.length > 0) {
-      setSelectedProjectId(projects[0]._id);
+    if (spaces && spaces.length > 0 && !selectedProjectId) {
+      dispatch(setSelectedProjectId(spaces[0]._id));
     }
-  }, [projects]);
+  }, [spaces,selectedProjectId,dispatch]);
 
   const toggleProjects = () => {
     setIsOpen((prev) => !prev);
   };
 
   const handleProjectClick = (projectId: string) => {
-    setSelectedProjectId(projectId);
+    dispatch(setSelectedProjectId(projectId));
     setIsOpen(false);
   };
 
-  const displayedProject = projects?.find(
+  const displayedProject = spaces?.find(
     (project) => project._id === selectedProjectId
   );
 
   const otherProjects =
-    projects?.filter((project) => project._id !== selectedProjectId) || [];
+    spaces?.filter((project) => project._id !== selectedProjectId) || [];
+
+    console.log(spaces);
+    
 
   return (
     <div className="relative w-full bg-white border border-gray-200 rounded-lg shadow-md p-4">
@@ -95,7 +83,7 @@ const ProjectCard: React.FC = () => {
       )}
 
       {isOpen && otherProjects.length > 0 && (
-        <div className="absolute left-0 w-full h-[300px] mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto  ">
+        <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto  ">
           {otherProjects.map((project) => (
             <div
               key={project._id}

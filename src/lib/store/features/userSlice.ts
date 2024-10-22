@@ -75,7 +75,7 @@ export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
   async (_, { rejectWithValue }) => {
     const userDetails = Cookies.get("user");
-    let user = JSON.parse(userDetails || "");
+    const user = JSON.parse(userDetails || "");
     try {
       const response = await axiosInstance.get(`/userprofile/${user.id}`,{
         headers:{

@@ -40,7 +40,6 @@ export default function VerifyEmail() {
     const handleSubmit = async () => {
         const fullOtp = otp.join('');
 
-
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(email)) {
             setStatusMessage("Invalid email address.");
@@ -59,20 +58,20 @@ export default function VerifyEmail() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] w-full flex justify-center items-center">
-            <div className="bg-gradient-to-br from-[#E0F7FF] to-white p-8 rounded-2xl shadow-gray-300 shadow-lg w-full max-w-md">
-                <div className="flex justify-center mb-8">
-                    <div className="bg-white rounded-lg p-3 flex justify-center items-center shadow-md">
-                        <BiLogIn className="text-4xl text-black" />
+        <div className="min-h-screen bg-gray-100 w-full flex justify-center items-center">
+            <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+                <div className="flex justify-center mb-6">
+                    <div className="bg-green-500 rounded-full p-3 flex justify-center items-center shadow-md">
+                        <BiLogIn className="text-4xl text-white" />
                     </div>
                 </div>
-                <h1 className="text-2xl font-bold text-center mb-4">
+                <h1 className="text-2xl font-bold text-center mb-4 text-green-500">
                     Verify Your Email
                 </h1>
                 <p className="text-gray-600 text-sm text-center mb-6">
                     An OTP has been sent to your email. Please enter the 6-digit OTP to verify your account.
                 </p>
-                <p className="text-sm font-semibold text-left mb-6 text-[#5E6061]">
+                <p className="text-sm font-semibold text-left mb-6 text-gray-800">
                     Enter OTP
                 </p>
                 {statusMessage && (
@@ -87,7 +86,7 @@ export default function VerifyEmail() {
                             maxLength={1}
                             value={digit}
                             onChange={(e) => handleOtpChange(e, index)}
-                            className="w-14 h-14 text-center text-xl border border-gray-400 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
+                            className="w-14 h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
                             onFocus={() => setStatusMessage(null)}
                         />
                     ))}
@@ -96,7 +95,7 @@ export default function VerifyEmail() {
                     type="button"
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="w-full bg-[#8BF376] text-xl text-gray-700 font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-[#6BBE4D] focus:outline-none focus:ring-2 focus:ring-[#93D8EE] mb-8"
+                    className="w-full bg-green-500 text-xl text-white font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 mb-8"
                 >
                     {loading ? 'Verifying...' : 'Submit'}
                 </button>

@@ -39,7 +39,6 @@ const Sidebar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { workSpace } = useSelector((state: RootState) => state.workspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string>("");
   const dispatched = useAppDispatch();
   const { userProfile } = useAppSelector((state) => state.user);
@@ -108,12 +107,9 @@ const Sidebar: React.FC = () => {
   }, [workSpaceId]);
 
   return (
+    // isSidebarOpen ? "w-64" : "w-20"
     <div
-      className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 ${
-        isSidebarOpen ? "w-64" : "w-20"
-      }`}
-      onMouseEnter={() => setIsSidebarOpen(true)}
-      onMouseLeave={() => setIsSidebarOpen(false)}>
+      className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 w-64`}>
       <div className="relative">
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer">
           <div className="flex items-center h-10 pl-1">
@@ -121,23 +117,19 @@ const Sidebar: React.FC = () => {
               <AvatarImage src={userProfile?.image} alt="Workspace logo" />
               <AvatarFallback />
             </Avatar>
-            {isSidebarOpen && (
-              <h2 className="text-md text-black ml-2 h-5 overflow-hidden">
-                {main?.name}
-              </h2>
-            )}
+            <h2 className="text-md text-black ml-2 h-5 overflow-hidden">
+              {main?.name}
+            </h2>
           </div>
-          {isSidebarOpen && (
-            <IoIosArrowDown
-              className={`text-black transform transition-transform duration-300 cursor-pointer ${
-                dropdownOpen ? "rotate-180" : ""
-              }`}
-              onClick={toggleDropdown}
-            />
-          )}
+          <IoIosArrowDown
+            className={`text-black transform transition-transform duration-300 cursor-pointer ${
+              dropdownOpen ? "rotate-180" : ""
+            }`}
+            onClick={toggleDropdown}
+          />
         </div>
 
-        {dropdownOpen && isSidebarOpen && (
+        {dropdownOpen && (
           <div
             onMouseLeave={() => setDropdownOpen(false)}
             className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50">
@@ -176,27 +168,23 @@ const Sidebar: React.FC = () => {
               onClick={() => handleRouteChange(item.href)}>
               <div className="flex items-center">
                 <div>{item.icon}</div>
-                {isSidebarOpen && (
-                  <h2 className="ml-3 text-black h-5 overflow-hidden">
-                    {item.label}
-                  </h2>
-                )}
+                <h2 className="ml-3 text-black h-5 overflow-hidden">
+                  {item.label}
+                </h2>
               </div>
             </div>
           ))}
         </div>
 
         <div className="flex-1 overflow-y-auto hide-scrollbar max-h-64 p-4">
-          {isSidebarOpen && <Spaces />}
+          {<Spaces />}
         </div>
 
         <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer">
           <FiSettings className="text-xl text-black" />
-          {isSidebarOpen && (
-            <h1 className="ml-3 font-medium text-black h-6 overflow-hidden">
-              Settings
-            </h1>
-          )}
+          <h1 className="ml-3 font-medium text-black h-6 overflow-hidden">
+            Settings
+          </h1>
         </div>
       </div>
     </div>

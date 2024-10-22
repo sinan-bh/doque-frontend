@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import AxiosInstance from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 import { RootState } from "@/lib/store/index";
 
 type Message = {
@@ -38,8 +38,8 @@ export const fetchMessages = createAsyncThunk(
     if (!workSpaceId) return rejectWithValue("Invalid data");
 
     try {
-      const { data } = await AxiosInstance.get(
-        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`
+      const { data } = await axiosInstance.get(
+        `/chat/workspaces/${workSpaceId}/messages`
       );
       return data.data;
     } catch (err) {
@@ -59,8 +59,8 @@ export const addMessage = createAsyncThunk(
     if (!workSpaceId) return rejectWithValue("Invalid data");
 
     try {
-      await AxiosInstance.post(
-        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
+      await axiosInstance.post(
+        `/chat/workspaces/${workSpaceId}/messages`,
         { content: text }
       );
     } catch (err) {
@@ -76,8 +76,8 @@ export const deleteMessage = createAsyncThunk(
     const { workSpaceId } = state.workspace;
     if (!workSpaceId) return rejectWithValue("Invalid data");
     try {
-      await AxiosInstance.delete(
-        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/chat`
+      await axiosInstance.delete(
+        `/chat/workspaces/${workSpaceId}/chat`
       );
     } catch (err) {
       return rejectWithValue(err);

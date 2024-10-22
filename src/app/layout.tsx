@@ -5,8 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/dark-mode/theme-provider";
 import { AdminProvider } from "@/contexts/admin-context";
 import StoreProvider from "@/lib/store/store-provider";
-import UserContextProvider from "@/contexts/user-context";
-
 export const metadata: Metadata = {
   title: "DOQUE",
   description: "Task management web application",
@@ -34,7 +32,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AdminProvider>
-              <UserContextProvider>{children}</UserContextProvider>
+              {children}
               <Toaster />
             </AdminProvider>
           </ThemeProvider>
