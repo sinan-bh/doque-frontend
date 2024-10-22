@@ -78,11 +78,11 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   }, []);
 
   const renderHeader = () => (
-    <div className="flex justify-between items-center py-3">
+    <div className="flex justify-between items-center w-[300px] py-5">
       <button onClick={prevMonth} className="text-gray-500 hover:text-black">
         &#x276E;
       </button>
-      <div className="flex space-x-4 items-center">
+      <div className="flex space-x-5 items-center">
         <div className="relative inline-block">
           <div
             className="cursor-pointer p-2 rounded-lg hover:bg-gray-100"
@@ -207,7 +207,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   };
 
   return (
-    <div className={`${className} p-4 bg-white rounded-lg`}>
+    <div className={`${className} p-5 bg-white rounded-lg`}>
       {renderHeader()}
       {renderDays()}
       {renderCells()}

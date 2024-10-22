@@ -19,7 +19,7 @@ export default function Acceptinvitation({ token }: { token: string | null }) {
       const fetchData = async () => {
         try {
           const {data}  = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/accept-invitation?token=${token}`,
+            `/accept-invitation?token=${token}`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,

@@ -98,15 +98,15 @@ const DayCalendar: FC = () => {
   };
 
   return (
-    <div className="h-[400px]">
+    <div className="w-full h-[400px]">
       <h2 className="text-2xl font-bold mb-4 underline">
         {displayedDate.toLocaleDateString("en-US", { weekday: "long" })}
       </h2>
-      <div className="space-y-4 w-[500px] h-[380px] overflow-hidden overflow-y-scroll ">
+      <div className="space-y-4 w-[600px] h-[380px] overflow-y-scroll ">
         {times.map((time, idx) => (
           <div key={idx} className="relative hover:bg-gray-100 transition">
             <div className={`flex items-center cursor-pointer`} onClick={() => openAddModal(time)}>
-              <div className="w-20 text-right pr-3 font-medium">{time}</div>
+              <div className="w-20 text-right  font-medium">{time}</div>
               <div className="flex-grow border-t border-gray-300 relative">
                 <div className="grid grid-cols-3 gap-2">
                   {tasks[time]?.map((task, taskIndex) => (

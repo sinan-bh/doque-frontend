@@ -47,7 +47,7 @@ const WeekCalendar: React.FC = () => {
   };
 
   return (
-    <div className="w-[855px] h-[450px]  rounded-lg shadow-md border border-gray-300 bg-white">
+    <div className="w-[940px] h-full  rounded-lg shadow-md border border-gray-300 bg-white">
       <div className="flex justify-end p-4 bg-white shadow-lg rounded-t-lg">
         <button
           onClick={handlePreviousWeek}

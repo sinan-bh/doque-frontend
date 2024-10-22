@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import AxiosInstance from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 
 export interface Project {
   _id: string;
@@ -34,6 +34,7 @@ interface WorkspaceState {
   spaceId: string;
   users: Users[];
   user: "";
+  selectedProjectId: string | null;
   workSpace: Workspace[];
   members: Member[];
   loading: boolean;
@@ -46,6 +47,7 @@ const initialState: WorkspaceState = {
   workSpaceId: "",
   spaceId: "",
   user: "",
+  selectedProjectId: null,
   users: [],
   workSpace: [],
   members: [],
@@ -68,8 +70,8 @@ export const fetchWorkspaceData = createAsyncThunk(
   "workspace/ata",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await AxiosInstance.get(
-        "https://daily-grid-rest-api.onrender.com/api/workspace"
+      const { data } = await axiosInstance.get(
+        "/workspace"
       );
       return data.data;
     } catch (error) {
@@ -90,8 +92,8 @@ export const createWorkSpace = createAsyncThunk<
     { rejectWithValue }
   ) => {
     try {
-      const { data } = await AxiosInstance.post(
-        "https://daily-grid-rest-api.onrender.com/api/workspace",
+      const { data } = await axiosInstance.post(
+        "/workspace",
         { name, description }
       );
       return data.data._id;
@@ -112,8 +114,8 @@ export const createSpace = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const { data } = await AxiosInstance.post(
-        `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
+      const { data } = await axiosInstance.post(
+        `/space?workspaceId=${workSpaceId}`,
         { name: spaceName }
       );
       return data.data._id;
@@ -131,16 +133,16 @@ export const createList = createAsyncThunk(
   "workspace/createSpace",
   async ({ spaceId, listName }: readyPage, { rejectWithValue }) => {
     try {
-      await AxiosInstance.post(
-        `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
+      await axiosInstance.post(
+        `/space/${spaceId}/lists`,
         { name: listName.todo }
       );
-      await AxiosInstance.post(
-        `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
+      await axiosInstance.post(
+        `/space/${spaceId}/lists`,
         { name: listName.doing }
       );
-      await AxiosInstance.post(
-        `https://daily-grid-rest-api.onrender.com/api/space/${spaceId}/lists`,
+      await axiosInstance.post(
+        `/space/${spaceId}/lists`,
         { name: listName.completed }
       );
       console.log("list");
@@ -158,8 +160,8 @@ export const fetchProjects = createAsyncThunk(
   "workspace/fetchProjects",
   async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     try {
-      const { data } = await AxiosInstance.get(
-        `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`
+      const { data } = await axiosInstance.get(
+        `/space?workspaceId=${workSpaceId}`
       );
       return data.data;
     } catch (error) {
@@ -177,8 +179,8 @@ export const fetchWorkspaceMembers = createAsyncThunk(
   "workspace/fetchMembers",
   async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     try {
-      const { data } = await AxiosInstance.get(
-        `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`
+      const { data } = await axiosInstance.get(
+        `/workspace/${workSpaceId}`
       );
 
       console.log(data);
@@ -197,12 +199,14 @@ export const fetchUserProfiles = createAsyncThunk(
   async ({ members }: { members: Member[] }, { rejectWithValue }) => {
     try {
       const userPromises = members.map((member) => {
-        return AxiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/userprofile/${member.user}`
+        return axiosInstance.get(
+          `/userprofile/${member.user}`
         );
       });
       const userResponses = await Promise.all(userPromises);
       const fetchedUsers = userResponses.map((resp) => resp.data.data);
+      console.log(fetchedUsers);
+      
       return fetchedUsers;
     } catch (error) {
       console.log(error);
@@ -220,6 +224,9 @@ const workspaceSlice = createSlice({
     },
     setWorkSpaceId: (state, action: PayloadAction<string>) => {
       state.workSpaceId = action.payload;
+    },
+    setSelectedProjectId: (state, action: PayloadAction<string | null>) => {
+      state.selectedProjectId = action.payload; // Add selectedProjectId to state
     },
   },
   extraReducers: (builder) => {
@@ -254,5 +261,5 @@ const workspaceSlice = createSlice({
   },
 });
 
-export const { setChosenDate, setWorkSpaceId } = workspaceSlice.actions;
+export const { setChosenDate, setWorkSpaceId, setSelectedProjectId  } = workspaceSlice.actions;
 export default workspaceSlice.reducer;

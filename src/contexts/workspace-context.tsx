@@ -70,7 +70,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
   const handleNext = async (previousSpaceName: string) => {
     try {
       const res = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/workspace",
+        "/workspace",
         { name: previousSpaceName },
         {
           headers: {
@@ -88,7 +88,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
     const fetchData = async () => {
       try {
         const { data } = await axiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`
+          `/space?workspaceId=${workSpaceId}`
         );
 
         setProjects(data.data);
@@ -105,7 +105,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
       const fetchData = async () => {
         try {
           const { data } = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
+            `/space?workspaceId=${workSpaceId}`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,
@@ -129,7 +129,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
     const fetchData = async () => {
       try {
         const { data } = await axiosInstance.get(
-          "https://daily-grid-rest-api.onrender.com/api/workspace"
+          "/workspace"
         );
 
         setWorkspace(data.data);
@@ -142,7 +142,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
       const fetchData = async () => {
         try {
           const {data} = await axios.get(
-            "https://daily-grid-rest-api.onrender.com/api/workspace",
+            "/workspace",
             {
               headers: { Authorization: `Bearer ${loggedUser?.token}` },
             }
@@ -162,7 +162,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
 
       try {
         const resp = await axiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`
+          `/workspace/${workSpaceId}`
         );
 
         const activeMembers = resp.data.data.members.filter(
@@ -182,7 +182,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
       try {
         const userPromises = members.map((member) => {
           return axiosInstance.get(
-            `https://daily-grid-rest-api.onrender.com/api/userprofile/${member.user}`
+            `/userprofile/${member.user}`
           );
         });
 

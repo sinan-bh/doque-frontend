@@ -72,7 +72,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
       const fetchData = async () => {
         try {
           const {data} = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
+            `/chat/workspaces/${workSpaceId}/messages`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,
@@ -95,7 +95,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
   const addMessage = async (text: string) => {
     try {
       await axios.post(
-        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${workSpaceId}/messages`,
+        `/chat/workspaces/${workSpaceId}/messages`,
         { content: text },
         {
           headers: {
@@ -112,7 +112,7 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
   const deleteMessage = async (id: string) => {
     try {
       await axios.delete(
-        `https://daily-grid-rest-api.onrender.com/api/chat/workspaces/${id}/chat`,
+        `/chat/workspaces/${id}/chat`,
         {
           headers: {
             Authorization: `Bearer ${loggedUser?.token}`,
