@@ -20,7 +20,7 @@ export default function MyWorkSpace() {
   return (
     <div className="relative">
       <div ref={carouselRef} className="overflow-hidden">
-        <div className="flex gap-4 py-4 ml-4">
+        <div className="flex ml-4">
           {usersWorkSpaces.map(({ WorkspaceId }, index) => (
             <ProjectCard key={index} workSpaceId={WorkspaceId} />
           ))}

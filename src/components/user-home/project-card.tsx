@@ -40,7 +40,9 @@ export default function ProjectCard({ workSpaceId }: { workSpaceId: string }) {
   }, [workSpaceId]);
 
   return (
-    <Link href={`/w/${workSpaceId}/dashboard`}>
+    <Link
+      href={`/w/${workSpaceId}/dashboard`}
+      className="shrink-0 basis-[250px] mr-4">
       <Card className="w-[250px] h-36 shadow-md hover:bg-purple-50 hover:scale-105 transition-transform">
         <HandleLoading
           error={error}
