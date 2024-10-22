@@ -16,6 +16,12 @@ export interface Member {
 interface Workspace {
   WorkspaceId: string;
   name: string;
+  members: {
+    user: {
+      _id: string;
+    };
+    status: string;
+  }[];
 }
 
 export type Users = {
