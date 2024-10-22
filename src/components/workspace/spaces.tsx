@@ -3,41 +3,35 @@ import { FaPlus } from "react-icons/fa6";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import Link from "next/link";
 import { BsThreeDotsVertical } from "react-icons/bs";
-
-interface Space {
-  id: number;
-  name: string;
-}
+import { useAppSelector } from "@/lib/store/hooks";
+import { NewSpaceButton } from "../spaces/new-space-button";
+import { EditSpace } from "../spaces/edit-space";
+import HandleLoading from "../ui/handle-loading";
+import { useParams } from "next/navigation";
 
 const Spaces: React.FC = () => {
-  const [spaces, setSpaces] = useState<Space[]>([]);
   const [showSpaces, setShowSpaces] = useState(true);
-  const [activeSpaceId, setActiveSpaceId] = useState<number | null>(null);
+  const { spaces, loadingSpaces, error } = useAppSelector(
+    (state) => state.space
+  );
 
-  const addSpace = () => {
-    const newSpaceId = spaces.length + 1;
-    const newSpace: Space = { id: newSpaceId, name: `Space ${newSpaceId}` };
-    setSpaces([...spaces, newSpace]);
-    setShowSpaces(true);
-  };
+  const { workSpaceId }: { workSpaceId: string } = useParams();
 
   const toggleSpaceList = () => {
     setShowSpaces((prev) => !prev);
-  };
-
-  const handleSpaceActions = (spaceId: number) => {
-    setActiveSpaceId((prevId) => (prevId === spaceId ? null : spaceId));
   };
 
   return (
     <div>
       <div className="pb-2">
         <div className="flex items-center justify-between border-b border-gray-500 pb-1">
-          <Link href="/w/id/spaces">
+          <Link href={`/w/${workSpaceId}/spaces`}>
             <h3 className="font-medium text-black">Spaces</h3>
           </Link>
           <div className="flex items-center gap-2">
-            <FaPlus className="text-black cursor-pointer" onClick={addSpace} />
+            <NewSpaceButton>
+              <FaPlus className="text-black cursor-pointer" />
+            </NewSpaceButton>
             {showSpaces ? (
               <IoIosArrowUp
                 className="cursor-pointer"
@@ -53,35 +47,34 @@ const Spaces: React.FC = () => {
         </div>
 
         {showSpaces && (
-          <div className="mt-4">
-            {spaces.map((space) => (
-              <div key={space.id}>
-                <div className="flex justify-between items-center p-1 hover:border-l-8 cursor-pointer">
-                  <Link href={"/w/1/1"}>
-                    <h2 className="font-medium text-md text-black">
-                      {space.name}
-                    </h2>
-                  </Link>
-                  <div className="flex items-center relative">
-                      {activeSpaceId === space.id && (
-                      <div className="flex flex-col items-start bg-white shadow-lg p-2 rounded absolute right-full mr-2">
-                        <button className="text-sm hover:underline">
-                          Edit
-                        </button>
-                        <button className="text-sm hover:underline">
-                          Delete
-                        </button>
-                      </div>
-                    )}
-                    <BsThreeDotsVertical
-                      onClick={() => handleSpaceActions(space.id)} 
-                      className="text-black mr-2 cursor-pointer"
-                    />
+          <HandleLoading
+            errorComponent={
+              <div>
+                <p className="text-sm text-zinc-800">Could not load spaces!!</p>
+                <p className="text-xs text-red-600">{error.getSpaces}</p>
+              </div>
+            }
+            loading={loadingSpaces.getSpaces}
+            error={error.getSpaces}>
+            <div className="mt-4">
+              {spaces.map((space) => (
+                <div key={space._id}>
+                  <div className="flex justify-between items-center p-1 hover:border-l-8 cursor-pointer">
+                    <Link href={`/w/${workSpaceId}/spaces/${space._id}`}>
+                      <h2 className="font-medium text-md text-black">
+                        {space.name}
+                      </h2>
+                    </Link>
+                    <div className="flex items-center relative">
+                      <EditSpace initialData={space} spaceId={space._id}>
+                        <BsThreeDotsVertical className="text-black mr-2 cursor-pointer" />
+                      </EditSpace>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </HandleLoading>
         )}
       </div>
     </div>

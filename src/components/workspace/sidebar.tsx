@@ -14,13 +14,15 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaCalendar } from "react-icons/fa";
 import { ReactNode } from "react";
 import Link from "next/link";
-// import axiosInstance from "@/utils/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
-import { fetchWorkspaceData, setWorkSpaceId } from "@/lib/store/features/workspace-slice";
+import {
+  fetchWorkspaceData,
+  setWorkSpaceId,
+} from "@/lib/store/features/workspace-slice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchUserProfile } from "@/lib/store/features/userSlice";
-
+import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 
 // interface Workspace {
 //   name: string;
@@ -34,20 +36,20 @@ interface SidebarIcon {
 }
 
 const Sidebar: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const {workSpace} = useSelector((state: RootState)=> state.workspace)
+  const dispatch = useDispatch<AppDispatch>();
+  const { workSpace } = useSelector((state: RootState) => state.workspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string>("");
   const dispatched = useAppDispatch();
   const { userProfile } = useAppSelector((state) => state.user);
- 
 
   useEffect(() => {
     if (!userProfile) {
       dispatch(fetchUserProfile());
     }
-  }, [dispatched, userProfile]);  const {workSpaceId} : {workSpaceId: string} = useParams()
+  }, [dispatched, userProfile]);
+  const { workSpaceId }: { workSpaceId: string } = useParams();
   const sidebarItems: SidebarIcon[] = [
     {
       icon: <AiFillHome className="text-xl text-black mt-1" />,
@@ -74,16 +76,15 @@ const Sidebar: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          await dispatch(fetchWorkspaceData())
-          dispatch(setWorkSpaceId(workSpaceId))
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchData();
-    
+    const fetchData = async () => {
+      try {
+        await dispatch(fetchWorkspaceData());
+        dispatch(setWorkSpaceId(workSpaceId));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, [workSpaceId]);
 
   useEffect(() => {
@@ -101,14 +102,18 @@ const Sidebar: React.FC = () => {
 
   const main = workSpace.find((val) => val.WorkspaceId === workSpaceId);
 
+  useEffect(() => {
+    dispatch(fetchSpacesData(workSpaceId)); // populate spaces when workspace changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workSpaceId]);
+
   return (
     <div
       className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 ${
         isSidebarOpen ? "w-64" : "w-20"
       }`}
       onMouseEnter={() => setIsSidebarOpen(true)}
-      onMouseLeave={() => setIsSidebarOpen(false)}
-    >
+      onMouseLeave={() => setIsSidebarOpen(false)}>
       <div className="relative">
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer">
           <div className="flex items-center h-10 pl-1">
@@ -135,17 +140,14 @@ const Sidebar: React.FC = () => {
         {dropdownOpen && isSidebarOpen && (
           <div
             onMouseLeave={() => setDropdownOpen(false)}
-            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50"
-          >
+            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-xl z-50">
             <div className="border-b-2 border-gray-600 p-2">
               <h3 className="text-md text-black">Workspaces</h3>
             </div>
             {workSpace.length > 0 ? (
               workSpace.map((data, key) => (
                 <Link href={`/w/${data.WorkspaceId}/dashboard`} key={key}>
-                  <div
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                  >
+                  <div className="p-2 hover:bg-gray-200 cursor-pointer">
                     <h3 className="text-sm text-black">{data.name}</h3>
                   </div>
                 </Link>
@@ -171,8 +173,7 @@ const Sidebar: React.FC = () => {
                   ? "border-l-4 border-black "
                   : "hover:border-l-4 border-transparent"
               }`}
-              onClick={() => handleRouteChange(item.href)}
-            >
+              onClick={() => handleRouteChange(item.href)}>
               <div className="flex items-center">
                 <div>{item.icon}</div>
                 {isSidebarOpen && (

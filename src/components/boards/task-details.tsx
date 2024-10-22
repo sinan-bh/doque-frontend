@@ -13,11 +13,9 @@ import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { Task, TaskFormValues } from "@/types/spaces";
-import { apiGetTaskDetails } from "@/utils/taskUtils";
 import { useToast } from "@/hooks/use-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import clsx from "clsx";
-import { useBoards } from "@/contexts/boards-context";
 import { Input } from "../ui/input";
 import AssignTaskToMembers from "./task-assign-members";
 import TaskDescription from "./task-description";
@@ -32,12 +30,17 @@ import {
 } from "@/components/ui/select";
 import DueDatePicker from "./due-date-picker";
 import { AlertConfirm } from "../ui/alert-confirm";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { deleteTask, updateTask } from "@/lib/store/thunks/tasks-thunks";
+import { ToastAction } from "../ui/toast";
+import axiosInstance from "@/utils/axios";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export default function TaskDetails({
   taskId,
   listId,
 }: {
-  taskId?: string;
+  taskId: string;
   listId: string;
 }) {
   const [data, setData] = useState<Task | null>(null);
@@ -45,13 +48,17 @@ export default function TaskDetails({
   const [titleEditOpen, setTitleEditOpen] = useState(false);
   const [values, setValues] = useState<TaskFormValues | null>(null);
 
+  const { lists } = useAppSelector((state) => state.tasks);
+
   const changesMade = useMemo(() => {
     return (
       JSON.stringify({
         title: data?.title,
         description: data?.description,
         assignedTo: data?.assignedTo,
+        dueDate: data?.dueDate,
         priority: data?.priority,
+        status: data?.status,
       }) !== JSON.stringify(values)
     );
   }, [data, values]);
@@ -61,7 +68,42 @@ export default function TaskDetails({
   const router = useRouter();
   const { spaceId }: { spaceId: string } = useParams();
   const pathname = usePathname();
-  const { deleteTask, updateTask } = useBoards();
+
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.tasks);
+
+  useEffect(() => {
+    setInitialLoading(true);
+
+    const getTaskDetails = async () => {
+      try {
+        const { data: responseData } = await axiosInstance.get(
+          `/space/${spaceId}/lists/${listId}/tasks/${taskId}`
+        );
+        const data = responseData.data;
+        setData(data);
+        setValues({
+          title: data.title,
+          description: data.description,
+          assignedTo: data.assignedTo,
+          priority: data.priority,
+          dueDate: data.dueDate,
+          status: data.status,
+        });
+      } catch (error) {
+        toast({
+          title: "Error fetching task details!!",
+          description: axiosErrorCatch(error),
+        });
+        router.push(pathname);
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    getTaskDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskId, listId]);
 
   useEffect(() => {
     // When the user clicks outside or press escape key
@@ -80,46 +122,68 @@ export default function TaskDetails({
   }, []);
 
   useEffect(() => {
-    setInitialLoading(true);
-    async function fetchData() {
-      if (taskId && listId) {
-        // fetch task details
-        const { data, error } = await apiGetTaskDetails(
-          spaceId,
-          listId,
-          taskId
-        );
-        setInitialLoading(false);
-        if (error) {
-          toast({ description: "Error fetching task details!!" });
-          router.push(pathname);
-        } else if (data) {
-          setData(data);
-          setValues({
-            title: data.title,
-            description: data.description,
-            assignedTo: data.assignedTo,
-            priority: data.priority,
-            dueDate: data.dueDate,
-          });
-        }
-      }
+    if (loading.updateTask) {
+      toast({ title: "Saving changes.." });
     }
-    fetchData();
+
+    if (loading.deleteTask) {
+      toast({ title: "Deleting task.." });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskId, listId]);
+  }, [loading.updateTask, loading.deleteTask]);
 
   const handleUpdateTask = async () => {
-    toast({ title: "Saving Changes.." });
-    const { error } = await updateTask(spaceId, listId, taskId!, values!);
-    if (error) {
-      toast({
-        title: "Error saving changes",
-        description: error,
-      });
-    } else {
-      toast({ title: "Changes saved successfully" });
-    }
+    dispatch(
+      updateTask({
+        spaceId,
+        listId,
+        taskId,
+        taskData: values!,
+        onSuccess() {
+          setData((prev) => ({ ...prev!, ...values }));
+          toast({ title: "Task updated successfully" });
+          if (values?.status !== data?.status) {
+            router.push(`${pathname}?task=${taskId}&list=${values?.status}`);
+          }
+        },
+        onError(error) {
+          toast({
+            title: "Error deleting task",
+            description: error,
+            action: (
+              <ToastAction onClick={handleUpdateTask} altText="Try again">
+                Try again
+              </ToastAction>
+            ),
+          });
+        },
+      })
+    );
+  };
+
+  const handleTaskDelete = async () => {
+    dispatch(
+      deleteTask({
+        spaceId,
+        listId,
+        taskId,
+        onSuccess() {
+          toast({ title: "Task deleted successfully" });
+          router.push(pathname);
+        },
+        onError(error) {
+          toast({
+            title: "Error deleting task",
+            description: error,
+            action: (
+              <ToastAction onClick={handleTaskDelete} altText="Try again">
+                Try again
+              </ToastAction>
+            ),
+          });
+        },
+      })
+    );
   };
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -128,24 +192,6 @@ export default function TaskDetails({
     if (!target.closest(".task-details-section")) {
       // Remove the taskId from the URL so the user can navigate back (close the popup
       router.push(pathname);
-    }
-  };
-
-  const handleTaskDelete = async () => {
-    if (taskId && listId) {
-      let success = true;
-      toast({ title: "Deleting Task.." });
-      await deleteTask(spaceId, listId, taskId, (msg) => {
-        success = false;
-        toast({
-          title: "Error while deleting task",
-          description: msg,
-        });
-      });
-      if (success) {
-        toast({ title: "Task deleted successfully" });
-        router.push(pathname);
-      }
     }
   };
 
@@ -191,7 +237,7 @@ export default function TaskDetails({
                 <div onClick={() => setTitleEditOpen(true)}>
                   {!titleEditOpen && (
                     <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 h-9 hover:border rounded-md px-3 py-1 text-sm">
-                      {data.title} <CiEdit className="text-zinc-800" />
+                      {values?.title} <CiEdit className="text-zinc-800" />
                     </h2>
                   )}
                   {titleEditOpen && (
@@ -219,6 +265,104 @@ export default function TaskDetails({
 
             <CardContent className="max-h-[350px] overflow-y-auto">
               <TaskDescription values={values} setValues={setValues} />
+              <div className="flex justify-between my-4">
+                <DueDatePicker
+                  dueDate={values?.dueDate}
+                  setValues={setValues}
+                />
+
+                <div>
+                  <p>Priority</p>
+
+                  <Select
+                    value={values?.priority}
+                    onValueChange={(value) => {
+                      setValues((prev) => ({
+                        ...prev!,
+                        priority: value,
+                      }));
+                    }}>
+                    <SelectTrigger
+                      className={clsx(
+                        "text-sm flex items-center gap-2 cursor-pointer w-[120px]",
+                        {
+                          "text-red-700 border-red-700":
+                            values?.priority === "high",
+                          "text-yellow-700 border-yellow-700":
+                            values?.priority === "medium",
+                          "text-green-700 border-green-700":
+                            values?.priority === "low",
+                        }
+                      )}>
+                      <SelectValue>
+                        {values?.priority && (
+                          <>
+                            {values.priority.charAt(0).toUpperCase() +
+                              values.priority.slice(1)}
+                          </>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="task-details-section">
+                      <SelectGroup>
+                        <SelectLabel>Priority</SelectLabel>
+                        <SelectItem className="text-green-800" value="low">
+                          Low
+                        </SelectItem>
+                        <SelectItem className="text-yellow-700" value="medium">
+                          Medium
+                        </SelectItem>
+                        <SelectItem className="text-red-700" value="high">
+                          High
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <p>Status</p>
+
+                  <Select
+                    value={values?.status}
+                    onValueChange={(value) => {
+                      setValues((prev) => ({
+                        ...prev!,
+                        status: value,
+                      }));
+                    }}>
+                    <SelectTrigger className="text-sm flex items-center gap-2 cursor-pointer  w-[120px]">
+                      <SelectValue
+                        style={{
+                          color: lists.find(
+                            (list) => list.id === values?.status
+                          )?.color,
+                          borderColor: lists.find(
+                            (list) => list.id === values?.status
+                          )?.color,
+                        }}>
+                        {
+                          lists.find((list) => list.id === values?.status)
+                            ?.title
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="task-details-section">
+                      <SelectGroup>
+                        {lists.map((list) => (
+                          <SelectItem
+                            key={list.id}
+                            value={list.id}
+                            style={{
+                              color: list.color,
+                            }}>
+                            {list.title}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
               <AssignTaskToMembers
                 existingMembers={values?.assignedTo || []}
                 setValues={setValues}
@@ -227,60 +371,13 @@ export default function TaskDetails({
 
             <div className="h-0.5 bg-zinc-300 my-2 rounded-full"></div>
 
-            <CardFooter className="grid grid-cols-4 mt-4">
-              <div>
-                <p>Priority</p>
-
-                <Select
-                  value={values?.priority}
-                  onValueChange={(value) => {
-                    setValues((prev) => ({
-                      ...prev!,
-                      priority: value,
-                    }));
-                  }}>
-                  <SelectTrigger
-                    className={clsx(
-                      "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
-                      {
-                        "text-red-700": values?.priority === "high",
-                        "text-yellow-700": values?.priority === "medium",
-                        "text-green-700": values?.priority === "low",
-                      }
-                    )}>
-                    <SelectValue>
-                      {values?.priority && (
-                        <>
-                          {values.priority.charAt(0).toUpperCase() +
-                            values.priority.slice(1)}
-                        </>
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="task-details-section">
-                    <SelectGroup>
-                      <SelectLabel>Priority</SelectLabel>
-                      <SelectItem className="text-green-800" value="low">
-                        Low
-                      </SelectItem>
-                      <SelectItem className="text-yellow-700" value="medium">
-                        Medium
-                      </SelectItem>
-                      <SelectItem className="text-red-700" value="high">
-                        High
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <DueDatePicker dueDate={values?.dueDate} setValues={setValues} />
+            <CardFooter className="flex justify-end items-end mt-4">
               <Button
                 onClick={handleUpdateTask}
                 size="sm"
-                disabled={!changesMade}
-                className="col-start-4 w-fit  ">
-                Save Changes
+                disabled={!changesMade || loading.updateTask}
+                className="col-start-4 self-end">
+                {loading.updateTask ? "Saving.." : "Save changes"}
               </Button>
             </CardFooter>
           </Card>

@@ -6,36 +6,37 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "../ui/button";
 import { FaTrash } from "react-icons/fa6";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Column, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
-import { useBoards } from "@/contexts/boards-context";
 import { MdOutlineFormatColorFill } from "react-icons/md";
 import { useParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { NewTaskButton } from "./new-task-button";
 import { AlertConfirm } from "../ui/alert-confirm";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { deleteList, updateList } from "@/lib/store/thunks/tasks-thunks";
+import { ToastAction } from "../ui/toast";
 
 export default function SectionContainer({
   section,
-  deleteSection = () => {},
   tasks,
   isOverLay = false,
 }: {
   section: Column;
-  deleteSection?: (id: string) => void;
   isOverLay?: boolean;
   tasks: TaskRow[];
 }) {
   const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(section.title);
 
+  const { error, loading } = useAppSelector((state) => state.tasks);
+  const dispatch = useAppDispatch();
+
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
   const { spaceId }: { spaceId: string } = useParams();
-
-  const { loading, updateList } = useBoards();
 
   const { toast } = useToast();
 
@@ -62,18 +63,63 @@ export default function SectionContainer({
     border: `1px solid ${section.color || "#FEE485"}`,
   };
 
+  useEffect(() => {
+    if (error.deleteList) {
+      toast({
+        title: "Couldn't delete list",
+        description: error.deleteList + "!!",
+        action: (
+          <ToastAction onClick={handleDeleteList} altText="Try again">
+            Try again
+          </ToastAction>
+        ),
+      });
+    }
+
+    if (error.updateList) {
+      toast({
+        title: "Couldn't update list",
+        description: error.updateList + "!!",
+        action: (
+          <ToastAction onClick={handleUpdateTitle} altText="Try again">
+            Try again
+          </ToastAction>
+        ),
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error.deleteList, error.updateList]);
+
   const handleUpdateTitle = async () => {
-    await updateList(spaceId, section.id, { name: value }, () => {
-      toast({ value: "Failed to update section title" });
-    });
-    setEditMode(false);
+    dispatch(
+      updateList({
+        spaceId,
+        listId: section.id,
+        listData: { name: value },
+        onSuccess() {
+          setEditMode(false);
+          toast({ description: "List updated" });
+        },
+      })
+    );
+  };
+
+  const handleDeleteList = () => {
+    dispatch(
+      deleteList({
+        spaceId,
+        listId: section.id,
+        onSuccess: () => toast({ description: "List deleted" }),
+      })
+    );
   };
 
   return (
     <div
       style={style}
       ref={setNodeRef}
-      className={` w-64 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white
+      className={` w-64 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white dark:bg-zinc-900
        ${isDragging && !isOverLay && "opacity-50"} `}
       {...attributes}>
       <div
@@ -85,7 +131,7 @@ export default function SectionContainer({
           {!editMode && section.title}
           {editMode && (
             <Input
-              disabled={loading === "updateCol"}
+              disabled={loading.updateList}
               className="bg-white"
               type="text"
               autoFocus
@@ -108,9 +154,7 @@ export default function SectionContainer({
             message="Are you sure you want to delete this section?"
             description="All tasks in this section will be deleted!!"
             confirmText="Delete"
-            onConfirm={() => {
-              deleteSection(section.id);
-            }}>
+            onConfirm={handleDeleteList}>
             <Button
               variant="outline"
               size="icon"

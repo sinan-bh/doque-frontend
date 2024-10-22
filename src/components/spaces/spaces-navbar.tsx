@@ -1,4 +1,3 @@
-import AddPeople from "./add-people";
 import MembersAvatars from "./members-avatars";
 import SpacesMenu from "./spaces-dropdown";
 
@@ -9,7 +8,6 @@ export default function Navbar() {
         <SpacesMenu />
       </div>
       <div className="flex gap-4">
-        <AddPeople />
         <MembersAvatars />
       </div>
     </div>

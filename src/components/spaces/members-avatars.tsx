@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
@@ -7,10 +9,39 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import StackedAvatars from "../ui/stacked-avatars";
-
-const members = [{}, {}, {}, {}, {}, {}, {}];
+import { useEffect, useState } from "react";
+import axiosInstance from "@/utils/axios";
+import { useParams } from "next/navigation";
+import { Member } from "@/types/spaces";
 
 export default function MembersAvatars() {
+  const [members, setMembers] = useState<Member[]>([]);
+
+  const { workSpaceId } = useParams();
+
+  useEffect(() => {
+    async function fetchMembers() {
+      try {
+        const { data: workSpaceData } = await axiosInstance.get(
+          `/workspace/${workSpaceId}`
+        );
+        const memberIds = workSpaceData.data.members;
+        const members: Member[] = await Promise.all(
+          memberIds.map(async (memberId: string) => {
+            const { data: memberData } = await axiosInstance.get(
+              `/user/${memberId}`
+            );
+            return memberData;
+          })
+        );
+        setMembers(members);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchMembers();
+  }, [workSpaceId]);
+
   return (
     <div>
       <HoverCard>

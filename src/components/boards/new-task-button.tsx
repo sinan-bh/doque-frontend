@@ -13,14 +13,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 import { useParams } from "next/navigation";
 import * as Yup from "yup";
-import { useBoards } from "@/contexts/boards-context";
 import { FaPlus } from "react-icons/fa6";
 import { useFormik } from "formik";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { createTask } from "@/lib/store/thunks/tasks-thunks";
 
 // Validation schema using Yup
 const TaskCreateSchema = Yup.object().shape({
@@ -33,11 +34,11 @@ const TaskCreateSchema = Yup.object().shape({
 
 export function NewTaskButton({ listId }: { listId: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { spaceId }: { spaceId: string } = useParams();
   const { toast } = useToast();
 
-  const { createTask } = useBoards();
+  const { loading, error } = useAppSelector((state) => state.tasks);
+  const dispatch = useAppDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -49,7 +50,6 @@ export function NewTaskButton({ listId }: { listId: string }) {
     },
     validationSchema: TaskCreateSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      setLoading(true);
       toast({
         draggable: true,
         title: "Creating Task...",
@@ -57,36 +57,46 @@ export function NewTaskButton({ listId }: { listId: string }) {
         open: isOpen,
       });
 
-      let success = true;
+      dispatch(
+        createTask({
+          spaceId,
+          listId,
+          taskData: values,
+          onSuccess() {
+            formik.resetForm();
+            toast({
+              description: "Task created",
+            });
+          },
+        })
+      );
 
-      await createTask(spaceId, listId, values, (msg) => {
-        success = false;
-        toast({
-          draggable: true,
-          title: "Error creating task",
-          description: msg,
-          action: (
-            <ToastAction onClick={() => setIsOpen(true)} altText="Try again">
-              Try again
-            </ToastAction>
-          ),
-        });
-      });
-
-      if (success) {
-        formik.resetForm();
-        toast({
-          draggable: true,
-          title: "Task created",
-          description: "Task has been created successfully",
-        });
-      }
-
-      setLoading(false);
       setIsOpen(false);
       setSubmitting(false);
     },
   });
+
+  useEffect(() => {
+    if (error.createTask) {
+      toast({
+        title: "Error creating task",
+        description: error.createTask,
+        action: (
+          <ToastAction onClick={() => setIsOpen(true)} altText="Try again">
+            Try again
+          </ToastAction>
+        ),
+      });
+    }
+
+    if (loading.createTask) {
+      toast({
+        title: "Creating Task...",
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading.createTask, error.createTask]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -196,12 +206,15 @@ export function NewTaskButton({ listId }: { listId: string }) {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="ghost" disabled={loading}>
+            <Button variant="ghost" disabled={loading.createTask}>
               Cancel
             </Button>
           </DialogClose>
-          <Button form="create_task_form" type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Task"}
+          <Button
+            form="create_task_form"
+            type="submit"
+            disabled={loading.createTask}>
+            {loading.createTask ? "Creating..." : "Create Task"}
           </Button>
         </DialogFooter>
       </DialogContent>
