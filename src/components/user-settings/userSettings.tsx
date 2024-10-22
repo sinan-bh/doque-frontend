@@ -74,7 +74,7 @@ export default function ProfileSettings() {
     }
   };
   
-  const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const resp = await instance.put(`/userprofile/${userProfile?._id}`, {
