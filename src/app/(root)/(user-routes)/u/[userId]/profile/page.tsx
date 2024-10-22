@@ -25,7 +25,7 @@ export default function Page() {
       <div className="flex justify-around items-center p-4 rounded-lg mb-8">
         <div className=" items-center">
           <Avatar className="w-16 h-16">
-            <AvatarImage src={userProfile?.image} alt="User Profile" />
+            <AvatarImage src={userProfile?.image||"https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"} alt="User Profile" />
             <AvatarFallback />
           </Avatar>
           <div className="mt-3">

@@ -19,7 +19,7 @@ export function Usercards() {
         );
         const userWorkspaces = workspacesResp.data.data;
         const workspaceIds = userWorkspaces.map(
-          (workspace: { id: string }) => workspace.WorkspaceId
+          (workspace: { WorkspaceId: string }) => workspace.WorkspaceId
         );
 
         const spacesResp = await instance.get(
@@ -32,7 +32,7 @@ export function Usercards() {
         );
 
         const currentUser = Cookies.get("user");
-        const user = JSON.parse(currentUser);
+        const user = JSON.parse(currentUser||"{}");
         const currentUserId = user.id;
 
         const assignedSpaces = matchedSpaces.filter(
@@ -66,7 +66,7 @@ export function Usercards() {
               name: string;
               lists: any[];
             }) => (
-              <div key={space._id} className="grid justify-between w-full grid-cols-3 gap-4">
+              <div key={space._id} className="flex justify-between w-full">
                 {space.lists.map(
                   (listItem: { _id: string; name: string; tasks: any[] }) => (
                     <div key={listItem._id}>
@@ -81,7 +81,7 @@ export function Usercards() {
                           >
                             <Card
                               key={task._id}
-                              className="w-[320px] max-w-full overflow-hidden border rounded-lg shadow-md"
+                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md"
                             >
                               <div
                                 className={clsx("h-6", {
