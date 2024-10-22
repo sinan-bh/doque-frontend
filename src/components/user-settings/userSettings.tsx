@@ -6,13 +6,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchUserProfile } from "@/lib/store/features/userSlice";
-import Link from "next/link";
 import { FaCamera } from "react-icons/fa";
 
 export default function ProfileSettings() {
   const dispatch = useAppDispatch();
   const { userProfile } = useAppSelector((state) => state.user);
-  
+
+
   useEffect(() => {
     if (!userProfile) {
       dispatch(fetchUserProfile());
@@ -175,14 +175,15 @@ export default function ProfileSettings() {
                   className="p-2 border outline-none border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
                 />
               </div>
-              <div className="mt-2">
-                <Link
-                  href="/reset-password"
-                  className="text-sm text-blue-500 flex justify-end hover:underline"
-                >
-                  Change Password
-                </Link>
-              </div>
+            </div>
+
+            <div className="mt-2">
+              <a
+                href="/forgot-password"
+                className="text-sm text-blue-500 flex justify-end hover:underline"
+              >
+                Change Password
+              </a>
             </div>
           </div>
           <div>
