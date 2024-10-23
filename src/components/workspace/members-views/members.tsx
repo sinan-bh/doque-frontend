@@ -29,11 +29,6 @@ export default function Members() {
   );
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  console.log('w',workSpaceId);
-  console.log('u',users);
-  console.log('m',members);
-  
-
   const renderContent = () => {
     if (activeTab === "members") {
       return viewType === "grid" ? (

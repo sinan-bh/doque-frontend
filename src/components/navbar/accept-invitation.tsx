@@ -11,7 +11,6 @@ export default function Acceptinvitation({ token }: { token: string | null }) {
     const [invite,setInvite] = useState<Invite | null>(null)
     const {loggedUser } =useAppSelector((state)=>state.user)
 
-  console.log(invite);
   
 
   useEffect(() => {
@@ -19,13 +18,7 @@ export default function Acceptinvitation({ token }: { token: string | null }) {
       const fetchData = async () => {
         try {
           const {data}  = await axios.get(
-            `/accept-invitation?token=${token}`,
-            {
-              headers: {
-                Authorization: `Bearer ${loggedUser?.token}`,
-              },
-            }
-          );
+            `/accept-invitation?token=${token}`);
           setInvite(data)
         } catch (err) {
           if (err instanceof AxiosError && err.response?.status === 404) {

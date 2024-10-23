@@ -17,15 +17,18 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchAllUsers } from "@/lib/store/features/workspace-slice";
+import axiosInstance from "@/utils/axios";
 
 type UserEmail = {
   email: string;
 };
 
 export default function InviteButton() {
+  const dispatch = useAppDispatch()
   const {loggedUser}= useAppSelector((state)=>state.user)
-  const { workSpaceId } = useSelector((state: RootState)=> state.workspace);
+  const { workSpaceId, allUsers } = useSelector((state: RootState)=> state.workspace);
   const [formData, setFormData] = useState({
     email: "",
   });
@@ -42,18 +45,10 @@ export default function InviteButton() {
 
     if (value.length > 2) {
       try {
-        const { data } = await axios.get(
-          `/userprofile`,
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        const filteredSuggestions = data.data.filter((user: UserEmail) =>
+        const filteredSuggestions = allUsers.filter((user: UserEmail) =>
           user.email.toLowerCase().includes(value.toLowerCase())
         );
-
+        dispatch(fetchAllUsers())
         setSuggestions(filteredSuggestions);
         setShowSuggestions(true);
         setShowSuggestions(true);
@@ -76,14 +71,9 @@ export default function InviteButton() {
   const handleSend = async () => {
     setIsOpen(false)
     try {
-      const resp =await axios.post(
+      const resp = await axiosInstance.post(
         `/workspace/${workSpaceId}/invite`,
-        { email: formData.email },
-        {
-          headers: {
-            Authorization: `Bearer ${loggedUser?.token}`,
-          },
-        }
+        { email: formData.email }
       );
   
       if (resp.status == 200) {

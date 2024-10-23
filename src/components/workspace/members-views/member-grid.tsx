@@ -6,7 +6,6 @@ import { Users } from "@/lib/store/features/workspace-slice";
 const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {  
 
 
-console.log(members);
 
   
   return (

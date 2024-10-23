@@ -13,12 +13,12 @@ export default function MessageList() {
   function formatTimestamp(timestamp: string): string {
     const messageDate = new Date(timestamp);
     const currentDate = new Date();
-
+  
     const diffInMilliseconds = currentDate.getTime() - messageDate.getTime();
     const diffInMinutes = diffInMilliseconds / (1000 * 60);
     const diffInHours = diffInMinutes / 60;
     const diffInDays = diffInHours / 24;
-
+  
     if (diffInMinutes < 1) {
       return "Now";
     } else if (diffInMinutes < 60) {

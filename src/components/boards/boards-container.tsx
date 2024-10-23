@@ -50,6 +50,7 @@ export default function BoardsContainer() {
   );
   const [prevState, setPrevState] = useState<string>(JSON.stringify(lists));
 
+
   useEffect(() => {
     dispatch(getSpace(spaceId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
