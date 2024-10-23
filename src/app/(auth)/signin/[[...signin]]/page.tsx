@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, clearMessages } from "@/lib/store/features/userSlice";
+import { loginUser, clearMessages, setForgetEmail } from "@/lib/store/features/userSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 
 export default function Login() {
@@ -41,6 +41,11 @@ export default function Login() {
   useEffect(() => {
     dispatch(clearMessages());
   }, [dispatch, email, password]);
+
+  const handleForgotPassword = () => {
+    dispatch(setForgetEmail(email));
+    router.push("/forgot-password");
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
@@ -85,9 +90,9 @@ export default function Login() {
                   </div>
                 </div>
                 <div className="flex justify-end w-64 mb-5">
-                  <Link href="/forgot-password" className="text-xs text-gray-500">
+                  <div onClick={handleForgotPassword} className="text-xs text-gray-500 cursor-pointer">
                     Forgot Password?
-                  </Link>
+                  </div>
                 </div>
                 <button
                   type="submit"

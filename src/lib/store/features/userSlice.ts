@@ -23,6 +23,8 @@ interface UserState {
   workspaceUser: UserProfile | null;
   error: string | null;
   successMessage: string | null;
+  forgetEmail: string | null;
+  setForgetEmail: string | null
 }
 
 const initialState: UserState = {
@@ -32,6 +34,8 @@ const initialState: UserState = {
   workspaceUser: null,
   error: null,
   successMessage: null,
+  forgetEmail: null,
+  setForgetEmail: null,
 };
 
 const Instance = axios.create({
@@ -248,6 +252,7 @@ const userSlice = createSlice({
       state.loggedUser = null;
       state.userProfile = null;
       state.successMessage = null;
+      state.forgetEmail = null;
       state.error = null;
     },
     setLoading: (state, action) => {
@@ -259,6 +264,9 @@ const userSlice = createSlice({
     clearMessages: (state) => {
       state.successMessage = null;
       state.error = null;
+    },
+    setForgetEmail: (state, action) => {
+      state.forgetEmail = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -387,7 +395,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout, setLoading, setUserProfile, clearMessages } =
+export const { logout, setLoading, setUserProfile, clearMessages, setForgetEmail } =
   userSlice.actions;
 
 export default userSlice.reducer;

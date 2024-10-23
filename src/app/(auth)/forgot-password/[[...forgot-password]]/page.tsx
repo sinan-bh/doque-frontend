@@ -10,7 +10,7 @@ import { AppDispatch, RootState } from '@/lib/store';
 
 export default function ForgotPassword() {
     const dispatch = useDispatch<AppDispatch>();
-    const { loading, error } = useSelector((state: RootState) => state.user);
+    const { loading, error, forgetEmail } = useSelector((state: RootState) => state.user);
     const [email, setEmail] = useState<string>('');
     const [message, setMessage] = useState<string>('');
 
@@ -55,7 +55,7 @@ export default function ForgotPassword() {
                         <AiOutlineMail className="absolute left-3 top-4 text-[#5E6061]" />
                         <input
                             type="email"
-                            value={email}
+                            value={forgetEmail || email}
                             onChange={handleEmailChange}
                             placeholder="Enter your email"
                             className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 ease-in-out"
