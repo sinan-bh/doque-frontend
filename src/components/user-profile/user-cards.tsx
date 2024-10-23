@@ -78,6 +78,7 @@ export function Usercards() {
                         }) => (
                           <Link
                             href={`/w/${space.workspace}/spaces/${space._id}?task=${task._id}&list=${listItem._id}`}
+                            key={task._id}
                           >
                             <Card
                               key={task._id}
