@@ -4,7 +4,7 @@ import GuestWorkSpaces from "@/components/user-home/guest-workspace";
 
 export default function Workspace() {
   return (
-    <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar">
+    <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar dark:bg-gray-950">
       <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">
         My Workspaces
       </h1>

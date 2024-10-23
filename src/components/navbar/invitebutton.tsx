@@ -110,7 +110,7 @@ export default function InviteButton() {
           <DialogTrigger asChild>
             <Button
               variant="ghost"
-              className="bg-white rounded-3xl hover:bg-transparent"
+              className="bg-white rounded-3xl hover:bg-transparent dark:bg-black"
             >
               Invite
             </Button>

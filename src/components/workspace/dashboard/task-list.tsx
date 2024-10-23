@@ -23,7 +23,7 @@ const TaskList: React.FC = () => {
     selectedSpace && selectedSpace.lists.every((list) => !list.tasks || list.tasks.length < 1);
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2">
+    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2 dark:bg-darkBg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-sm">Task Lists</h2>
         <Link href={`/w/${workSpaceId}/spaces/${selectedProjectId}`}>
@@ -55,7 +55,7 @@ const TaskList: React.FC = () => {
                   {list.tasks.slice(0, 3).map((task) => (
                     <div key={task._id} className="flex justify-between items-center">
                       <div>
-                        <span className="font-medium text-xs text-gray-700">{task.title}</span>
+                        <span className="font-medium text-xs text-gray-700 dark:text-white">{task.title}</span>
                         <div className="flex items-center space-x-2 mt-2">
                           <span
                             className="text-[10px] text-green-600 px-1 rounded-full"
@@ -101,7 +101,7 @@ const TaskList: React.FC = () => {
 
           <div className="mt-2">
             <Link href={`/w/${workSpaceId}/spaces/${selectedProjectId}`}>
-              <button className="flex items-center justify-center w-full text-xs font-semibold text-gray-600 border border-gray-300 rounded-full py-1 hover:bg-gray-100">
+              <button className="flex items-center justify-center w-full text-xs font-semibold text-gray-600 border border-gray-300 rounded-full py-1 dark:text-gray-300 ">
                 View All
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

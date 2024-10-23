@@ -35,8 +35,8 @@ export default function GroupChat() {
   ];
 
   return (
-    <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2">
-      <div className="text-sm font-semibold text-gray-600">Message</div>
+    <div className="mt-2 bg-white  rounded-lg shadow-md p-2 space-y-2 dark:bg-darkBg">
+      <div className="text-sm font-semibold text-gray-600 dark:text-gray-300">Message</div>
       <div className="grid grid-cols-3 gap-4">
         {messages.map((message, index) => (
           <ChatList

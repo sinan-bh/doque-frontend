@@ -18,11 +18,11 @@ const MembersList: React.FC<{ members: Users[] }> = ({ members }) => {
               />
               <AvatarFallback />
             </Avatar>
-            <h3 className="text-md font-semibold text-gray-800">
+            <h3 className="text-md font-semibold text-gray-800 dark:text-gray-300">
               {item.firstName}{item.lastName}
             </h3>
           </div>
-          <h2 className="text-gray-600">{item.email}</h2>
+          <h2 className="text-gray-500">{item.email}</h2>
         </div>
       ))}
     </div>

@@ -97,7 +97,7 @@ export default function ProfileSettings() {
   };
 
   return (
-    <div className="h-full bg-gray-100 p-6">
+    <div className="h-full bg-gray-100 p-6 dark:bg-darkBg">
       <div className="mb-6">
         <h2 className="text-3xl font-bold">My Settings</h2>
       </div>
@@ -109,7 +109,7 @@ export default function ProfileSettings() {
                 <Image
                   src={userData?.image|| "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"}
                   alt="Profile"
-                  className="rounded-full object-cover border-4 border-white"
+                  className="rounded-full object-cover border-4 border-white dark:border-black"
                   width={120}
                   height={120}
                 />
@@ -131,12 +131,12 @@ export default function ProfileSettings() {
         </div>
       </div>
       <div className="my-6"></div>
-      <div className="max-w-6xl mr-10 mx-auto p-12 bg-white rounded-lg shadow-md relative">
+      <div className="max-w-6xl mr-10 mx-auto p-12 bg-white rounded-lg shadow-md relative dark:bg-gray-950">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex space-x-8">
             <div className="flex-1 space-y-4">
               <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   First Name
                 </label>
                 <input
@@ -144,12 +144,12 @@ export default function ProfileSettings() {
                   name="firstName"
                   value={userData.firstName}
                   onChange={handleChange}
-                  className="p-2 border outline-none border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+                  className="p-2 border outline-none rounded-lg focus:ring focus:ring-blue-200"
                   required
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 p-1 dark:text-gray-300">
                   Last Name
                 </label>
                 <input
@@ -157,14 +157,14 @@ export default function ProfileSettings() {
                   name="lastName"
                   value={userData.lastName}
                   onChange={handleChange}
-                  className="p-2 border outline-none border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+                  className="p-2 border outline-none rounded-lg focus:ring focus:ring-blue-200"
                   required
                 />
               </div>
             </div>
             <div>
               <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-gray-700 p-1 dark:text-gray-300">
                   Phone
                 </label>
                 <input
@@ -172,7 +172,7 @@ export default function ProfileSettings() {
                   name="phoneNumber"
                   value={userData.phoneNumber}
                   onChange={handleChange}
-                  className="p-2 border outline-none border-gray-300 rounded-lg focus:ring focus:ring-blue-200"
+                  className="p-2 border outline-none rounded-lg focus:ring focus:ring-blue-200"
                 />
               </div>
             </div>
@@ -186,8 +186,8 @@ export default function ProfileSettings() {
               </a>
             </div>
           </div>
-          <div>
-            <button type="submit" className="bg-blue-400 p-2 rounded-xl">
+          <div className="flex justify-end">
+            <button type="submit" className="bg-blue-400 p-2 rounded-xl w-20">
               Save
             </button>
           </div>

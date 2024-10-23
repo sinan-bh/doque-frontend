@@ -48,11 +48,11 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="relative bg-white flex items-center px-4 border rounded-lg w-[400px]">
+    <div className="relative bg-white flex items-center px-4 border rounded-lg w-[400px] dark:bg-darkBg">
       <IoIosSearch className="text-zinc-500 relative top-[1px]" />
       <Input
         type="text"
-        className="bg-white border-none rounded-none shadow-none pl-1 focus-visible:ring-0"
+        className="bg-white border-none rounded-none shadow-none pl-1 focus-visible:ring-0 dark:bg-darkBg"
         placeholder="Search tasks.."
         value={query}
         onChange={(e) => {

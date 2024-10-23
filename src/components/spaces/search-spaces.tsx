@@ -61,7 +61,7 @@ export default function SearchBar() {
       {open && (
         <>
           {filteredSpaces.length > 0 ? (
-            <ul className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10">
+            <ul className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10 dark:bg-darkBg">
               {filteredSpaces.map((space, index) => (
                 <li
                   key={space.name}
@@ -78,7 +78,7 @@ export default function SearchBar() {
               ))}
             </ul>
           ) : (
-            <div className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10">
+            <div className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10 dark:bg-darkBg">
               <p className="p-2 text-sm text-zinc-500">No results found</p>
             </div>
           )}

@@ -81,7 +81,7 @@ export function Usercards() {
                           >
                             <Card
                               key={task._id}
-                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md"
+                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950"
                             >
                               <div
                                 className={clsx("h-6", {
@@ -92,21 +92,21 @@ export function Usercards() {
                               ></div>
                               <CardHeader className="p-4">
                                 <div className="flex flex-col space-y-2">
-                                  <CardTitle className="font-semibold text-gray-900">
-                                    Space:{" "}
-                                    <span className="font-light text-gray-700">
+                                  <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
+                                    Space : {" "}
+                                    <span className="font-semibold text-gray-700 dark:text-gray-100">
                                       {space.name}
                                     </span>
                                   </CardTitle>
-                                  <CardTitle className="font-semibold text-gray-900">
-                                    List:{" "}
-                                    <span className="font-light text-gray-700">
+                                  <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
+                                    List : {" "}
+                                    <span className="font-semibold text-gray-700 dark:text-gray-100">
                                       {listItem.name}
                                     </span>
                                   </CardTitle>
 
                                   <div className="flex items-center space-x-2">
-                                    <p className="font-semibold">Priority:</p>
+                                    <p className="font-normal">Priority : </p>
                                     <p
                                       className={clsx(
                                         "text-sm px-2 py-1 rounded-lg",
@@ -128,7 +128,7 @@ export function Usercards() {
                               <CardFooter className="flex justify-between items-center">
                                 <div className="flex items-center space-x-1">
                                   <FaRegClock className="text-gray-500" />
-                                  <span className="text-xs text-gray-600">
+                                  <span className="text-xs text-gray-600 dark:text-gray-300">
                                     {task?.dueDate
                                       ? new Date(
                                           task.dueDate

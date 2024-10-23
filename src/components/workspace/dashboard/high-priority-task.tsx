@@ -38,7 +38,7 @@ const HighPriorityTask: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-[180px] bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2">
+    <div className="w-full h-[180px] bg-white  rounded-lg shadow-md p-2 space-y-2 dark:bg-gray-800">
       {highPriorityTasks.length > 0 ? (
         <div className="space-y-2">
           <div className="flex justify-between items-center">
@@ -59,16 +59,16 @@ const HighPriorityTask: React.FC = () => {
             </div>
           </div>
           {(highPriorityTasks[currentIndex].createdAt && highPriorityTasks[currentIndex].dueDate) && (
-            <div className="flex justify-between text-[10px] text-gray-500">
+            <div className="flex justify-between text-[10px] text-gray-500 dark:text-gray-300">
               <p>Created at {formatedDate(highPriorityTasks[currentIndex].createdAt)}</p>
               <p>Due Date {formatedDate(highPriorityTasks[currentIndex].dueDate)}</p>
             </div>
           )}
-          <h3 className="text-xs text-gray-900">{highPriorityTasks[currentIndex].title}</h3>
-          <p className="text-[10px] text-gray-600">{highPriorityTasks[currentIndex].description}</p>
+          <h3 className="text-xs text-gray-900 dark:text-gray-300">{highPriorityTasks[currentIndex].title}</h3>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400">{highPriorityTasks[currentIndex].description}</p>
 
           <div>
-            <span className="text-xs font-medium text-gray-700">ToDo</span>
+            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">ToDo</span>
             <div className="flex items-center mt-1 space-x-2">
               {/* <StackedAvatars max={3} members={[{},{},{},{}]} size="sm" space="high" /> */}
             </div>

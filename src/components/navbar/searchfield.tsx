@@ -94,7 +94,7 @@ export default function SearchField() {
   return (
     <div className="relative w-full">
       <span className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-        <IoIosSearch className="text-gray-400" />
+        <IoIosSearch className="text-gray-400 text-xl" />
       </span>
 
       <input
@@ -102,7 +102,7 @@ export default function SearchField() {
         placeholder="Search Workspaces..."
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
-        className="w-full px-8 text-sm py-1 pl-8 pr-8 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#EDF1F4] shadow-[0px_2px_5px_rgba(0,0,0,0.1)]"
+        className="w-full px-8 text-sm py-1 pl-8 pr-8 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EDF1F4] shadow-[0px_2px_5px_rgba(0,0,0,0.1)] dark:bg-darkBg"
         onFocus={() => {
           if (searchValue === "") setShowHistory(true); 
         }}
@@ -116,7 +116,7 @@ export default function SearchField() {
       </span>
 
       {showHistory && searchValue.trim() === "" && searchHistory.length > 0 && (
-        <div className="absolute z-50 top-full left-0 right-0 bg-white border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
+        <div className="absolute z-50 top-full left-0 right-0 bg-white rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto dark:bg-gray-950">
           <div className="flex justify-between px-4 py-2">
             <span>Recent Searches</span>
             <button
@@ -130,7 +130,7 @@ export default function SearchField() {
             {searchHistory.map((term, index) => (
               <li
                 key={index}
-                className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
                 onClick={() => handleHistoryClick(term)}
               >
                 {term}
@@ -152,7 +152,7 @@ export default function SearchField() {
               href={`/w/${workspace.WorkspaceId}/dashboard`}
               onClick={() => handleClick(workspace)}
             >
-              <li className="px-4 py-2 cursor-pointer hover:bg-gray-200">
+              <li className="px-4 py-2 cursor-pointer">
                 {workspace.name}
               </li>
             </Link>

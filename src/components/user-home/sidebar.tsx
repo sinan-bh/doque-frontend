@@ -37,7 +37,7 @@ const Sidebar = () => {
   }, [dispatch]);
 
   return (
-    <div className="w-full sm:w-1/4 md:w-1/5 bg-[#EDF1F4] p-4 flex flex-col">
+    <div className="w-full sm:w-1/4 md:w-1/5 bg-[#EDF1F4] p-4 flex flex-col dark:bg-gray-950">
       <div className="flex-1">
         {sidebarItems.map((item, index) => (
           <Link
@@ -45,8 +45,8 @@ const Sidebar = () => {
             href={item.link}
             onClick={() => activeLink(item.link)}>
             <div
-              className={`flex items-center p-1 mr-2 rounded-lg mt-1 cursor-pointer ${
-                activePath === item.link ? "bg-[#E1E4E6]" : "hover:bg-[#E1E4E6]"
+              className={`flex items-center p-1 mr-2 mt-1 cursor-pointer ${
+                activePath === item.link ? "border-l-2 border-black dark:border-l-2 dark:border-white" : "hover:bg-[#E1E4E6]"
               }`}>
               {item.icon}
               <h2 className="font-medium text-sm ml-2">{item.label}</h2>

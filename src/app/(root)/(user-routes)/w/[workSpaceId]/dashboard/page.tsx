@@ -5,11 +5,11 @@ import GroupChat from "@/components/workspace/dashboard/group-chat";
 export default function DashboardPage() {
   return (
     <div className="flex gap-4 m-4">
-      <div className="basis-3/5"> 
+      <div className="basis-3/5">
         <DashboardProject />
       </div>
       <div className="flex flex-col basis-2/5">
-        <CalendarSmall className="bg-white border border-gray-200 rounded-lg shadow-md" />
+        <CalendarSmall className=" bg-white rounded-lg shadow-md dark:bg-gray-950 " />
         <GroupChat />
       </div>
     </div>

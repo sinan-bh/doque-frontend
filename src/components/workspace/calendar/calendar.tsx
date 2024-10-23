@@ -7,10 +7,10 @@ export default function Calendar() {
 
   return (
     <div>
-      <div className="flex rounded-lg  bg-white ">
-          <div className="flex justify-around">
+      <div className="flex rounded-lg bg-white">
+          <div className="flex justify-around bg-white dark:bg-black">
             <DayCalendar />
-            <CalendarSmall className="w-full h-[300px] bg-white py-5 rounded-lg" />
+            <CalendarSmall className="w-full h-[300px]py-5" />
           </div>
       </div>
     </div>

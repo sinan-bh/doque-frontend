@@ -207,7 +207,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   };
 
   return (
-    <div className={`${className} p-5 bg-white rounded-lg`}>
+    <div className={`${className} p-5 rounded-lg`}>
       {renderHeader()}
       {renderDays()}
       {renderCells()}

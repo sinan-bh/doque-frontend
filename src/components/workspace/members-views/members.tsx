@@ -29,11 +29,6 @@ export default function Members() {
   );
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  console.log('w',workSpaceId);
-  console.log('u',users);
-  console.log('m',members);
-  
-
   const renderContent = () => {
     if (activeTab === "members") {
       return viewType === "grid" ? (
@@ -67,7 +62,7 @@ export default function Members() {
   return (
     <div>
       <div className="mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Members</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">Members</h1>
       </div>
 
       <div className="border-b border-gray-300 mb-4 relative ">

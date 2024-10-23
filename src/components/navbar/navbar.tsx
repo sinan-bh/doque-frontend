@@ -8,7 +8,7 @@ import { ModeToggle } from "../ui/dark-mode/mode-toggle";
 
 export default function Navbar() {
   return (
-    <nav className="bg-[#EDF1F4]">
+    <nav className="bg-[#EDF1F4] dark:bg-darkBg">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         <Link href="/">
           <div className="flex items-center space-x-4">
@@ -19,7 +19,7 @@ export default function Navbar() {
               width={300}
               height={300}
             />
-            <span className="font-bold text-xl text-gray-800">DOQUE</span>
+            <span className="font-bold text-xl text-gray-800 dark:text-gray-200">DOQUE</span>
           </div>
         </Link>
         <div className="relative w-5/12 mx-4">

@@ -15,6 +15,7 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        darkBg:"#242424",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -30,6 +31,7 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
+      
     },
   },
   plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar")],

@@ -35,7 +35,7 @@ const ProjectCard: React.FC = () => {
     
 
   return (
-    <div className="relative w-full bg-white border border-gray-200 rounded-lg shadow-md p-4">
+    <div className="relative w-full bg-white  rounded-lg shadow-md p-4 dark:bg-gray-800">
       {displayedProject ? (
         <div className="flex items-center justify-between">
           <div className="flex-grow">
@@ -83,11 +83,11 @@ const ProjectCard: React.FC = () => {
       )}
 
       {isOpen && otherProjects.length > 0 && (
-        <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto  ">
+        <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto dark:bg-gray-900 ">
           {otherProjects.map((project) => (
             <div
               key={project._id}
-              className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b"
+              className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b dark:hover:bg-gray-800"
               onClick={() => handleProjectClick(project._id)}
             >
               <div className="flex-grow">
