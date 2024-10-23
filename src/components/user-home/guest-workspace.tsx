@@ -18,14 +18,23 @@ export default function GuestWorkSpaces() {
   });
 
   return (
-    <div className="relative">
-      <div ref={carouselRef} className="overflow-hidden">
-        <div className="flex gap-4 py-4 ml-4">
-          {guestWorkSpaces.map(({ WorkspaceId }, index) => (
-            <ProjectCard key={index} workSpaceId={WorkspaceId} />
-          ))}
-        </div>
-      </div>
-    </div>
+    <>
+      {guestWorkSpaces.length > 0 && (
+        <>
+          <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">
+            Guest Workspaces
+          </h2>
+          <div className="relative">
+            <div ref={carouselRef} className="overflow-hidden">
+              <div className="flex py-4 ml-4">
+                {guestWorkSpaces.map(({ WorkspaceId }, index) => (
+                  <ProjectCard key={index} workSpaceId={WorkspaceId} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }

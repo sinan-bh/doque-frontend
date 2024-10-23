@@ -10,24 +10,24 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 import { AppDispatch, RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
-import { createWorkSpace, fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
+import {
+  createWorkSpace,
+  fetchWorkspaceData,
+} from "@/lib/store/features/workspace-slice";
 
-
-
-export const AddWorkSpaceBtn: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const {workSpaceId} = useSelector((state: RootState)=> state.workspace)
+export const AddWorkSpaceBtn = ({ children }: { children: ReactNode }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { workSpaceId } = useSelector((state: RootState) => state.workspace);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
-
 
   const { toast } = useToast();
 
@@ -40,17 +40,22 @@ export const AddWorkSpaceBtn: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setIsOpen(false)
+    setIsOpen(false);
     e.preventDefault();
     try {
-      await dispatch(createWorkSpace({name: formData.name, description: formData.description}))
+      await dispatch(
+        createWorkSpace({
+          name: formData.name,
+          description: formData.description,
+        })
+      );
       if (workSpaceId) {
         toast({
           title: "Created",
           description: "Workspace Created Successfully",
         });
       }
-      dispatch(fetchWorkspaceData()) 
+      dispatch(fetchWorkspaceData());
     } catch (error) {
       console.log(error);
       toast({
@@ -63,11 +68,7 @@ export const AddWorkSpaceBtn: React.FC = () => {
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" className="hover:bg-transparent">
-          Add space
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
           <DialogTitle>Space Name</DialogTitle>

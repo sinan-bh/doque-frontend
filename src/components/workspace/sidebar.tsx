@@ -24,6 +24,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchWorkspaceUser } from "@/lib/store/features/userSlice";
 import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
+import { EditWorkSpace } from "./edit-workspace";
 
 // interface Workspace {
 //   name: string;
@@ -45,36 +46,45 @@ const Sidebar: React.FC = () => {
   const { workspaceUser } = useAppSelector((state) => state.user);
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  const profile = workSpace?.find((workspace) => workspace.WorkspaceId === workSpaceId)?.members.find(p => p.status === "owner")
+  const profile = workSpace
+    ?.find((workspace) => workspace.WorkspaceId === workSpaceId)
+    ?.members.find((p) => p.status === "owner");
 
   useEffect(() => {
     if (profile?.user._id) {
       const fetchData = async () => {
         dispatch(fetchWorkspaceUser({ userId: profile?.user._id }));
-      }
-      fetchData()
+      };
+      fetchData();
     }
-  }, [dispatched, workSpaceId,profile?.user._id]);
-
+  }, [dispatched, workSpaceId, profile?.user._id]);
 
   const sidebarItems: SidebarIcon[] = [
     {
-      icon: <AiFillHome className="text-xl text-black mt-1 dark:text-gray-300" />,
+      icon: (
+        <AiFillHome className="text-xl text-black mt-1 dark:text-gray-300" />
+      ),
       label: "Home",
       href: "/home",
     },
     {
-      icon: <RiDashboardFill className="text-xl text-black  mt-1 dark:text-gray-300" />,
+      icon: (
+        <RiDashboardFill className="text-xl text-black  mt-1 dark:text-gray-300" />
+      ),
       label: "Dashboard",
       href: `/w/${workSpaceId}/dashboard`,
     },
     {
-      icon: <BsFillPeopleFill className="text-xl text-black mt-1 dark:text-gray-300" />,
+      icon: (
+        <BsFillPeopleFill className="text-xl text-black mt-1 dark:text-gray-300" />
+      ),
       label: "Members",
       href: `/w/${workSpaceId}/members`,
     },
     {
-      icon: <FaCalendar className="text-xl text-black mt-1 dark:text-gray-300" />,
+      icon: (
+        <FaCalendar className="text-xl text-black mt-1 dark:text-gray-300" />
+      ),
       label: "Calendar",
       href: `/w/${workSpaceId}/calendar`,
     },
@@ -115,8 +125,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 w-64`}
-    >
+      className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 w-64`}>
       <div className="relative">
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer dark:bg-gray-950">
           <div className="flex items-center h-10 pl-1">
@@ -139,17 +148,20 @@ const Sidebar: React.FC = () => {
         {dropdownOpen && (
           <div
             onMouseLeave={() => setDropdownOpen(false)}
-            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-lg z-50 dark:bg-gray-950"
-          >
+            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-lg z-50 dark:bg-gray-950">
             <div className="border-b-2 border-gray-600 p-2">
-              <h3 className="text-md font-semibold text-black dark:text-gray-300">Workspaces</h3>
+              <h3 className="text-md font-semibold text-black dark:text-gray-300">
+                Workspaces
+              </h3>
             </div>
-            <div className= "h-[200px] overflow-scroll">
+            <div className="h-[200px] overflow-scroll">
               {workSpace.length > 0 ? (
                 workSpace.map((data, key) => (
                   <Link href={`/w/${data.WorkspaceId}/dashboard`} key={key}>
                     <div className="p-2 hover:border-l-2 cursor-pointer dark:text-gray-300 hover:border-black">
-                      <h3 className="text-sm text-black dark:text-gray-300">{data.name}</h3>
+                      <h3 className="text-sm text-black dark:text-gray-300">
+                        {data.name}
+                      </h3>
                     </div>
                   </Link>
                 ))
@@ -157,10 +169,14 @@ const Sidebar: React.FC = () => {
                 <div className="p-2">No workspaces available</div>
               )}
             </div>
-            <div className="flex items-center justify-center p-2 hover:bg-gray-100 cursor-pointer dark:bg-black">
-              <FaPlus className="mr-2" />
-              <AddWorkSpaceBtn />
-            </div>
+            <AddWorkSpaceBtn>
+              <div className="flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-900 cursor-pointer">
+                <FaPlus className="mr-2" />
+                <h3 className="text-md text-black dark:text-gray-300">
+                  Add Workspace
+                </h3>
+              </div>
+            </AddWorkSpaceBtn>
           </div>
         )}
       </div>
@@ -175,8 +191,7 @@ const Sidebar: React.FC = () => {
                   ? "border-l-4 border-black dark:border-gray-300"
                   : "hover:border-l-4 border-transparent"
               }`}
-              onClick={() => handleRouteChange(item.href)}
-            >
+              onClick={() => handleRouteChange(item.href)}>
               <div className="flex items-center">
                 <div>{item.icon}</div>
                 <h2 className="ml-3 text-black h-5 overflow-hidden dark:text-gray-300">
@@ -191,12 +206,15 @@ const Sidebar: React.FC = () => {
           {<Spaces />}
         </div>
 
-        <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer ">
-          <FiSettings className="text-xl text-black dark:text-gray-300" />
-          <h1 className="ml-3 font-medium text-black h-6 overflow-hidden dark:text-gray-300">
-            Settings
-          </h1>
-        </div>
+        <EditWorkSpace
+          initialData={{ name: main?.name || "", visibility: true }}>
+          <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer ">
+            <FiSettings className="text-xl text-black dark:text-gray-300" />
+            <h1 className="ml-3 font-medium text-black h-6 overflow-hidden dark:text-gray-300">
+              Settings
+            </h1>
+          </div>
+        </EditWorkSpace>
       </div>
     </div>
   );

@@ -42,6 +42,11 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+        port: "",
+      },
     ],
   },
 };

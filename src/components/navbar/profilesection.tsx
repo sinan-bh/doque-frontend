@@ -22,10 +22,10 @@ export default function ProfileSection() {
   useEffect(() => {
     const fetchData = async () => {
       const userDetails = Cookies.get("user");
-      const user = JSON.parse(userDetails || "")
+      const user = JSON.parse(userDetails || "");
       dispatch(fetchUserProfile({ userId: user.id }));
-    }
-    fetchData()
+    };
+    fetchData();
   }, [dispatch]);
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -54,8 +54,7 @@ export default function ProfileSection() {
       <div className="flex items-center space-x-2">
         <div
           className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+          onClick={() => setIsOpen(!isOpen)}>
           <Avatar className="w-8 h-8">
             <AvatarImage src={userProfile?.image} alt="Avatar" />
             <AvatarFallback />
@@ -74,13 +73,11 @@ export default function ProfileSection() {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 mt-2 w-64 bg-white/90 rounded-lg  z-10 shadow-lg backdrop-blur-md p-3 dark:bg-gray-950"
-        >
+          className="absolute right-0 mt-2 w-64 bg-white/90 rounded-lg  z-10 shadow-lg backdrop-blur-md p-3 dark:bg-gray-950">
           <Link
             href={`/u/${userProfile?._id}/profile`}
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <Button className="flex items-center justify-between bg-[#E5E9EC] rounded-lg w-full hover:bg-[#E5E9EC]/90 h-12 p-2 dark:bg-gray-950 ">
+            onClick={() => setIsOpen(!isOpen)}>
+            <Button className="flex items-center justify-between bg-gray-100 rounded-lg w-full hover:bg-gray-300 h-12 p-2 dark:bg-gray-900 dark:hover:bg-gray-800 ">
               <div className="flex items-center space-x-2">
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={userProfile?.image} alt="Avatar" />
@@ -91,33 +88,19 @@ export default function ProfileSection() {
                 </span>
               </div>
               <div className="flex items-center space-x-1">
-                <span className="text-sm text-gray-500 dark:text-gray-300">Profile</span>
+                <span className="text-sm text-gray-500 dark:text-gray-300">
+                  Profile
+                </span>
                 <IoIosArrowForward className="text-gray-600" />
               </div>
             </Button>
           </Link>
 
-          <div className="flex justify-between gap-2 mt-2 border-b border-gray-200 pb-2 ">
-            <Button
-              className="flex-1 bg-[#C8AFBE] text-black rounded-2xl h-10 hover:bg-[#C7C3B5] dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              Theme
-            </Button>
-            <Button
-              className="flex-1 bg-[#C8AFBE] text-black rounded-2xl h-10 hover:bg-[#C7C3B5] dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              Templates
-            </Button>
-          </div>
-
           <div className="flex justify-between gap-2 mt-2">
             <Link
               href={`/u/${userProfile?._id}/settings`}
               className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5] dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600"
-              onClick={() => setIsOpen(!isOpen)}
-            >
+              onClick={() => setIsOpen(!isOpen)}>
               <FiSettings className="mr-1 dark:text-gray-300" />
               Settings
             </Link>
@@ -126,8 +109,7 @@ export default function ProfileSection() {
                 handleLogout();
                 setIsOpen(!isOpen);
               }}
-              className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5] dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600"
-            >
+              className="flex-1 bg-[#E5E9EC] text-black rounded-2xl flex items-center justify-center h-8 hover:bg-[#C7C3B5] dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600">
               <IoLogOutOutline className="mr-1 dark:text-gray-300" />
               Logout
             </Button>

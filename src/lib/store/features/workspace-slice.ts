@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import axiosInstance from "@/utils/axios";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export interface Project {
   _id: string;
@@ -59,7 +60,7 @@ const initialState: WorkspaceState = {
   allUsers: [],
   workSpace: [],
   members: [],
-  loading: false,
+  loading: true,
   error: null,
 };
 
@@ -75,12 +76,10 @@ type readyPage = {
 };
 
 export const fetchWorkspaceData = createAsyncThunk(
-  "workspace/ata",
+  "workspace/fetchWorkspaceData",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get(
-        "/workspace"
-      );
+      const { data } = await axiosInstance.get("/workspace");
       return data.data;
     } catch (error) {
       console.log(error);
@@ -100,10 +99,10 @@ export const createWorkSpace = createAsyncThunk<
     { rejectWithValue }
   ) => {
     try {
-      const { data } = await axiosInstance.post(
-        "/workspace",
-        { name, description }
-      );
+      const { data } = await axiosInstance.post("/workspace", {
+        name,
+        description,
+      });
       return data.data._id;
     } catch (error) {
       console.log(error);
@@ -141,18 +140,15 @@ export const createList = createAsyncThunk(
   "workspace/createSpace",
   async ({ spaceId, listName }: readyPage, { rejectWithValue }) => {
     try {
-      await axiosInstance.post(
-        `/space/${spaceId}/lists`,
-        { name: listName.todo }
-      );
-      await axiosInstance.post(
-        `/space/${spaceId}/lists`,
-        { name: listName.doing }
-      );
-      await axiosInstance.post(
-        `/space/${spaceId}/lists`,
-        { name: listName.completed }
-      );
+      await axiosInstance.post(`/space/${spaceId}/lists`, {
+        name: listName.todo,
+      });
+      await axiosInstance.post(`/space/${spaceId}/lists`, {
+        name: listName.doing,
+      });
+      await axiosInstance.post(`/space/${spaceId}/lists`, {
+        name: listName.completed,
+      });
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
@@ -186,9 +182,7 @@ export const fetchWorkspaceMembers = createAsyncThunk(
   "workspace/fetchMembers",
   async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get(
-        `/workspace/${workSpaceId}`
-      );
+      const { data } = await axiosInstance.get(`/workspace/${workSpaceId}`);
 
       return data.data.members;
     } catch (error) {
@@ -204,12 +198,10 @@ export const fetchUserProfiles = createAsyncThunk(
   async ({ members }: { members: Member[] }, { rejectWithValue }) => {
     try {
       const userPromises = members.map((member) => {
-        return axiosInstance.get(
-          `/userprofile/${member.user}`
-        );
+        return axiosInstance.get(`/userprofile/${member.user}`);
       });
       const userResponses = await Promise.all(userPromises);
-      const fetchedUsers = userResponses.map((resp) => resp.data.data);      
+      const fetchedUsers = userResponses.map((resp) => resp.data.data);
       return fetchedUsers;
     } catch (error) {
       console.log(error);
@@ -221,13 +213,68 @@ export const fetchAllUsers = createAsyncThunk(
   "workspace/fetchAllUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get(
-        "/userprofile"
-      );
+      const { data } = await axiosInstance.get("/userprofile");
       return data.data;
     } catch (error) {
       console.log(error);
       return rejectWithValue("Failed to fetch workspaces");
+    }
+  }
+);
+
+export const updateWorkspace = createAsyncThunk(
+  "workspace/updateWorkspace",
+  async (
+    {
+      workSpaceId,
+      name,
+      visibility,
+      onError,
+      onSuccess,
+    }: {
+      workSpaceId: string;
+      name: string;
+      visibility?: boolean;
+      onError: (msg: string) => void;
+      onSuccess: () => void;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      await axiosInstance.put(`/workspace/${workSpaceId}`, {
+        name,
+        visibility,
+      });
+      onSuccess();
+      return { workSpaceId, name };
+    } catch (error) {
+      onError(axiosErrorCatch(error));
+      return rejectWithValue("Failed to update workspace");
+    }
+  }
+);
+
+export const deleteWorkspace = createAsyncThunk(
+  "workspace/deleteWorkspace",
+  async (
+    {
+      workSpaceId,
+      onError,
+      onSuccess,
+    }: {
+      workSpaceId: string;
+      onError: (msg: string) => void;
+      onSuccess: () => void;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      await axiosInstance.delete(`/workspace/${workSpaceId}`);
+      onSuccess();
+      return workSpaceId;
+    } catch (error) {
+      onError(axiosErrorCatch(error));
+      return rejectWithValue("Failed to delete workspace");
     }
   }
 );
@@ -243,7 +290,7 @@ const workspaceSlice = createSlice({
       state.workSpaceId = action.payload;
     },
     setSelectedProjectId: (state, action: PayloadAction<string | null>) => {
-      state.selectedProjectId = action.payload; 
+      state.selectedProjectId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -275,11 +322,25 @@ const workspaceSlice = createSlice({
       .addCase(createSpace.fulfilled, (state, action) => {
         state.spaceId = action.payload;
       })
-      .addCase(fetchAllUsers.fulfilled, (state, action)=> {
-        state.allUsers = action.payload
+      .addCase(fetchAllUsers.fulfilled, (state, action) => {
+        state.allUsers = action.payload;
       })
+      .addCase(deleteWorkspace.fulfilled, (state, action) => {
+        state.workSpace = state.workSpace.filter(
+          (workspace) => workspace.WorkspaceId !== action.payload
+        );
+      })
+      .addCase(updateWorkspace.fulfilled, (state, action) => {
+        state.workSpace = state.workSpace.map((workspace) => {
+          if (workspace.WorkspaceId === action.payload.workSpaceId) {
+            return { ...workspace, name: action.payload.name };
+          }
+          return workspace;
+        });
+      });
   },
 });
 
-export const { setChosenDate, setWorkSpaceId, setSelectedProjectId  } = workspaceSlice.actions;
+export const { setChosenDate, setWorkSpaceId, setSelectedProjectId } =
+  workspaceSlice.actions;
 export default workspaceSlice.reducer;

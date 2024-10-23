@@ -54,7 +54,7 @@ export default function BoardsContainer() {
   useEffect(() => {
     dispatch(getSpace(spaceId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spaceId]); //do not include populate function inside dependency!!
+  }, [spaceId]);
 
   const columnsIds = useMemo(() => lists.map((column) => column.id), [lists]);
 

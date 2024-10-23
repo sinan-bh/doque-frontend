@@ -8,6 +8,7 @@ import { NewSpaceButton } from "../spaces/new-space-button";
 import { EditSpace } from "../spaces/edit-space";
 import HandleLoading from "../ui/handle-loading";
 import { useParams } from "next/navigation";
+import { Button } from "../ui/button";
 
 const Spaces: React.FC = () => {
   const [showSpaces, setShowSpaces] = useState(true);
@@ -26,22 +27,24 @@ const Spaces: React.FC = () => {
       <div className="pb-2">
         <div className="flex items-center justify-between border-b border-gray-500 pb-1 ">
           <Link href={`/w/${workSpaceId}/spaces`}>
-            <h3 className="font-medium text-black dark:text-gray-300">Spaces</h3>
+            <h3 className="font-medium text-black dark:text-gray-300">
+              Spaces
+            </h3>
           </Link>
           <div className="flex items-center gap-2 ">
             <NewSpaceButton>
-              <FaPlus className="text-black cursor-pointer dark:text-gray-300" />
+              <Button size="icon" variant="ghost">
+                <FaPlus className="text-black cursor-pointer dark:text-gray-300" />
+              </Button>
             </NewSpaceButton>
             {showSpaces ? (
-              <IoIosArrowUp
-                className="cursor-pointer"
-                onClick={toggleSpaceList}
-              />
+              <Button size="icon" variant="ghost" onClick={toggleSpaceList}>
+                <IoIosArrowUp className="cursor-pointer" />
+              </Button>
             ) : (
-              <IoIosArrowDown
-                className="cursor-pointer"
-                onClick={toggleSpaceList}
-              />
+              <Button size="icon" variant="ghost" onClick={toggleSpaceList}>
+                <IoIosArrowDown className="cursor-pointer" />
+              </Button>
             )}
           </div>
         </div>
@@ -67,7 +70,9 @@ const Spaces: React.FC = () => {
                     </Link>
                     <div className="flex items-center relative">
                       <EditSpace initialData={space} spaceId={space._id}>
-                        <BsThreeDotsVertical className="text-black mr-2 cursor-pointer dark:text-gray-300" />
+                        <div>
+                          <BsThreeDotsVertical className="text-black mr-2 cursor-pointer dark:text-gray-300" />
+                        </div>
                       </EditSpace>
                     </div>
                   </div>

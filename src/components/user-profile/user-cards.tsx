@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import instance from "@/utils/axios";
@@ -14,17 +15,13 @@ export function Usercards() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const workspacesResp = await instance.get(
-          "/workspace"
-        );
+        const workspacesResp = await instance.get("/workspace");
         const userWorkspaces = workspacesResp.data.data;
         const workspaceIds = userWorkspaces.map(
           (workspace: { WorkspaceId: string }) => workspace.WorkspaceId
         );
 
-        const spacesResp = await instance.get(
-          "/space"
-        );
+        const spacesResp = await instance.get("/space");
         const allSpaces = spacesResp.data.data;
 
         const matchedSpaces = allSpaces.filter((space: { workspace: string }) =>
@@ -32,7 +29,7 @@ export function Usercards() {
         );
 
         const currentUser = Cookies.get("user");
-        const user = JSON.parse(currentUser||"{}");
+        const user = JSON.parse(currentUser || "{}");
         const currentUserId = user.id;
 
         const assignedSpaces = matchedSpaces.filter(
@@ -53,7 +50,6 @@ export function Usercards() {
 
     fetchData();
   }, []);
-
 
   return (
     <div className="p-8 min-h-screen">
@@ -78,29 +74,26 @@ export function Usercards() {
                         }) => (
                           <Link
                             href={`/w/${space.workspace}/spaces/${space._id}?task=${task._id}&list=${listItem._id}`}
-                            key={task._id}
-                          >
+                            key={task._id}>
                             <Card
                               key={task._id}
-                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950"
-                            >
+                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950">
                               <div
                                 className={clsx("h-6", {
                                   "bg-red-300": task?.priority === "high",
                                   "bg-yellow-300": task?.priority === "medium",
                                   "bg-green-300": task?.priority === "low",
-                                })}
-                              ></div>
+                                })}></div>
                               <CardHeader className="p-4">
                                 <div className="flex flex-col space-y-2">
                                   <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
-                                    Space : {" "}
+                                    Space :{" "}
                                     <span className="font-semibold text-gray-700 dark:text-gray-100">
                                       {space.name}
                                     </span>
                                   </CardTitle>
                                   <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
-                                    List : {" "}
+                                    List :{" "}
                                     <span className="font-semibold text-gray-700 dark:text-gray-100">
                                       {listItem.name}
                                     </span>
@@ -119,8 +112,7 @@ export function Usercards() {
                                           "text-green-700 bg-green-100":
                                             task?.priority === "low",
                                         }
-                                      )}
-                                    >
+                                      )}>
                                       {task.priority}
                                     </p>
                                   </div>

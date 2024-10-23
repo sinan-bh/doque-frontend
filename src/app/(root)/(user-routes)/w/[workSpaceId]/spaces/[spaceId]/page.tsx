@@ -4,8 +4,8 @@ import { EditSpace } from "@/components/spaces/edit-space";
 import Filter from "@/components/spaces/filter";
 import SearchBar from "@/components/boards/search-tasks";
 import { Button } from "@/components/ui/button";
-import { getSpaceDetails } from "@/utils/taskUtils";
 import { cookies } from "next/headers";
+import { getSpaceDetails } from "@/utils/space-utils";
 
 export default async function Page({
   params,

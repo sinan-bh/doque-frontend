@@ -4,12 +4,18 @@ import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchUserProfile, clearMessages, updateUserProfile } from "@/lib/store/features/userSlice";
+import {
+  fetchUserProfile,
+  clearMessages,
+  updateUserProfile,
+} from "@/lib/store/features/userSlice";
 import { FaCamera } from "react-icons/fa";
 
 export default function ProfileSettings() {
   const dispatch = useAppDispatch();
-  const { userProfile, successMessage, error } = useAppSelector((state) => state.user);
+  const { userProfile, successMessage, error } = useAppSelector(
+    (state) => state.user
+  );
 
   const { toast } = useToast();
   const router = useRouter();
@@ -17,8 +23,8 @@ export default function ProfileSettings() {
   useEffect(() => {
     const fetchData = async () => {
       dispatch(fetchUserProfile({ userId: userProfile?._id }));
-    }
-    fetchData()
+    };
+    fetchData();
   }, [dispatch]);
 
   useEffect(() => {
@@ -27,7 +33,7 @@ export default function ProfileSettings() {
         title: "Success",
         description: successMessage,
       });
-      dispatch(clearMessages()); 
+      dispatch(clearMessages());
     }
 
     if (error) {
@@ -35,7 +41,7 @@ export default function ProfileSettings() {
         title: "Error",
         description: error,
       });
-      dispatch(clearMessages()); 
+      dispatch(clearMessages());
     }
   }, [successMessage, error, toast, dispatch]);
 
@@ -67,7 +73,9 @@ export default function ProfileSettings() {
     }));
   };
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -76,10 +84,13 @@ export default function ProfileSettings() {
     formData.append("upload_preset", "Project Doque");
 
     try {
-      const response = await fetch("https://api.cloudinary.com/v1_1/dzxrdd7a4/image/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dzxrdd7a4/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
       setUserData((prevData) => ({
@@ -110,7 +121,10 @@ export default function ProfileSettings() {
             <div className="mr-6 z-10 relative">
               {userData.image && (
                 <Image
-                  src={userData?.image || "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"}
+                  src={
+                    userData?.image ||
+                    "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"
+                  }
                   alt="Profile"
                   className="rounded-full object-cover border-4 border-white dark:border-black"
                   width={120}
@@ -183,8 +197,7 @@ export default function ProfileSettings() {
             <div className="mt-2">
               <a
                 href="/forgot-password"
-                className="text-sm text-blue-500 flex justify-end hover:underline"
-              >
+                className="text-sm text-blue-500 flex justify-end hover:underline">
                 Change Password
               </a>
             </div>
