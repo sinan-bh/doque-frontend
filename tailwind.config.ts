@@ -23,11 +23,17 @@ const config: Config = {
       },
       animation: {
         fadeIn: "fadeIn 1s ease-out",
+        marquee: "marquee 3s linear infinite",
       },
       keyframes: {
         fadeIn: {
           "0%": { opacity: "0", transform: "translateY(50px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "90%": { transform: "translateX(-100%)" }, 
+          "100%": { transform: "translateX(-100%)" },
         },
       },
     },

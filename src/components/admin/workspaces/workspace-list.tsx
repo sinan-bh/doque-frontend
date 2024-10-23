@@ -1,59 +1,131 @@
-import React from "react";
-import Link from "next/link";
+"use client";
 
-interface Workspace {
-  _id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const workspaceData: Workspace[] = [
-  {
-    _id: "60d0fe4f5311236168a109cb",
-    name: "Project Workspace",
-    createdAt: "2023-01-01T00:00:00.000Z",
-    updatedAt: "2023-01-02T00:00:00.000Z",
-  },
-  {
-    _id: "60d0fe4f5311236168a109klm",
-    name: "Task Workspace",
-    createdAt: "2023-01-01T00:00:00.000Z",
-    updatedAt: "2023-01-02T00:00:00.000Z",
-  },
-  {
-    _id: "60d0fe4f5311236168a109fu",
-    name: "Design Workspace",
-    createdAt: "2023-01-01T00:00:00.000Z",
-    updatedAt: "2023-01-02T00:00:00.000Z",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../lib/store/hooks";
+import {
+  fetchWorkspaces,
+  selectWorkspaces,
+  selectWorkspaceLoading,
+  selectWorkspaceError,
+} from "../../../lib/store/features/admin/workspace-slice";
+import {
+  fetchMembers,
+  selectMembers,
+} from "../../../lib/store/features/admin/member-slice";
+import Spinner from "@/components/ui/spinner/spinner";
+import SearchInput from "./search-input";
+import FilterDropdown from "./filter-drop-down";
+import WorkspaceCard from "./workspace-card";
+import Pagination from "@/components/ui/pagination";
 
 export default function WorkspaceList() {
+  const dispatch = useAppDispatch();
+  const workspaces = useAppSelector(selectWorkspaces);
+  const members = useAppSelector(selectMembers);
+  const loading = useAppSelector(selectWorkspaceLoading);
+  const error = useAppSelector(selectWorkspaceError);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(12);
+
+  useEffect(() => {
+    dispatch(fetchWorkspaces({ page: currentPage, limit: itemsPerPage }));
+    dispatch(fetchMembers());
+  }, [dispatch, currentPage, itemsPerPage]);
+
+  const filteredWorkspaces = workspaces.filter((workspace) => {
+    const matchesSearch = workspace.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    let matchesFilter = true;
+    if (filter === "today") {
+      matchesFilter =
+        new Date(workspace.createdAt).toDateString() ===
+        new Date().toDateString();
+    } else if (filter === "week") {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      matchesFilter =
+        new Date(workspace.createdAt) >= oneWeekAgo &&
+        new Date(workspace.createdAt) <= new Date();
+    } else if (filter === "month") {
+      const currentMonth = new Date().getMonth();
+      matchesFilter = new Date(workspace.createdAt).getMonth() === currentMonth;
+    }
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const handleFilterSelect = (selectedFilter: string) => {
+    setFilter(selectedFilter);
+    setShowFilterDropdown(false);
+  };
+
+  const getCreatorDetails = (creatorId: string) => {
+    return members.find((member) => member._id === creatorId);
+  };
+
+  const totalPages = Math.ceil(filteredWorkspaces.length / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-        Workspaces
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {workspaceData.map((workspace) => (
-          <Link
-            key={workspace._id}
-            href={`/admin/workspaces/${workspace._id}`}
-            className="p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg block hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {workspace.name}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Created on: {new Date(workspace.createdAt).toLocaleDateString()}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Updated on: {new Date(workspace.updatedAt).toLocaleDateString()}
-            </p>
-          </Link>
-        ))}
+    <div className="min-h-screen">
+      <div className="sticky top-0 z-10 py-4 px-4 bg-gray-200 rounded dark:bg-gray-700">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold text-gray-600 dark:text-gray-200">
+            Workspaces
+          </h2>
+          <div className="flex items-center space-x-4">
+            <SearchInput
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+            <FilterDropdown
+              setFilter={handleFilterSelect}
+              showDropdown={showFilterDropdown}
+              setShowDropdown={setShowFilterDropdown}
+            />
+          </div>
+        </div>
       </div>
+
+      <div className="mt-6 overflow-y-auto h-[calc(100vh-250px)]">
+        {loading && <Spinner />}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && !error && (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {filteredWorkspaces
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+              .map((workspace) => {
+                const creator = getCreatorDetails(workspace.createdBy);
+                return (
+                  <WorkspaceCard
+                    key={workspace._id}
+                    workspace={workspace}
+                    creator={creator}
+                  />
+                );
+              })}
+          </ul>
+        )}
+      </div>
+
+       <Pagination
+       currentPage={currentPage}
+       totalPages={totalPages}
+       onPageChange={handlePageChange}
+     />
     </div>
   );
 }
