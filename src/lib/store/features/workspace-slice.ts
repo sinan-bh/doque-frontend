@@ -40,6 +40,7 @@ interface WorkspaceState {
   spaceId: string;
   users: Users[];
   user: "";
+  allUsers: Users[];
   selectedProjectId: string | null;
   workSpace: Workspace[];
   members: Member[];
@@ -55,6 +56,7 @@ const initialState: WorkspaceState = {
   user: "",
   selectedProjectId: null,
   users: [],
+  allUsers: [],
   workSpace: [],
   members: [],
   loading: false,
@@ -151,7 +153,6 @@ export const createList = createAsyncThunk(
         `/space/${spaceId}/lists`,
         { name: listName.completed }
       );
-      console.log("list");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
@@ -189,8 +190,6 @@ export const fetchWorkspaceMembers = createAsyncThunk(
         `/workspace/${workSpaceId}`
       );
 
-      console.log(data);
-
       return data.data.members;
     } catch (error) {
       console.log(error);
@@ -210,13 +209,25 @@ export const fetchUserProfiles = createAsyncThunk(
         );
       });
       const userResponses = await Promise.all(userPromises);
-      const fetchedUsers = userResponses.map((resp) => resp.data.data);
-      console.log(fetchedUsers);
-      
+      const fetchedUsers = userResponses.map((resp) => resp.data.data);      
       return fetchedUsers;
     } catch (error) {
       console.log(error);
       return rejectWithValue("Failed to fetch user profiles");
+    }
+  }
+);
+export const fetchAllUsers = createAsyncThunk(
+  "workspace/fetchAllUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get(
+        "/userprofile"
+      );
+      return data.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Failed to fetch workspaces");
     }
   }
 );
@@ -232,7 +243,7 @@ const workspaceSlice = createSlice({
       state.workSpaceId = action.payload;
     },
     setSelectedProjectId: (state, action: PayloadAction<string | null>) => {
-      state.selectedProjectId = action.payload; // Add selectedProjectId to state
+      state.selectedProjectId = action.payload; 
     },
   },
   extraReducers: (builder) => {
@@ -263,7 +274,10 @@ const workspaceSlice = createSlice({
       })
       .addCase(createSpace.fulfilled, (state, action) => {
         state.spaceId = action.payload;
-      });
+      })
+      .addCase(fetchAllUsers.fulfilled, (state, action)=> {
+        state.allUsers = action.payload
+      })
   },
 });
 

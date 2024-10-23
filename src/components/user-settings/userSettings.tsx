@@ -1,33 +1,50 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import instance from "@/utils/axios"; 
-import { useToast } from "@/hooks/use-toast"; 
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchUserProfile } from "@/lib/store/features/userSlice";
+import { fetchUserProfile, clearMessages, updateUserProfile } from "@/lib/store/features/userSlice";
 import { FaCamera } from "react-icons/fa";
 
 export default function ProfileSettings() {
   const dispatch = useAppDispatch();
-  const { userProfile } = useAppSelector((state) => state.user);
+  const { userProfile, successMessage, error } = useAppSelector((state) => state.user);
 
-
-  useEffect(() => {
-    if (!userProfile) {
-      dispatch(fetchUserProfile());
-    }
-  }, [dispatch, userProfile]);
-  
   const { toast } = useToast();
   const router = useRouter();
-  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(fetchUserProfile({ userId: userProfile?._id }));
+    }
+    fetchData()
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (successMessage) {
+      toast({
+        title: "Success",
+        description: successMessage,
+      });
+      dispatch(clearMessages()); 
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+      });
+      dispatch(clearMessages()); 
+    }
+  }, [successMessage, error, toast, dispatch]);
+
   const [userData, setUserData] = useState({
     firstName: userProfile?.firstName || "",
     lastName: userProfile?.lastName || "",
     email: userProfile?.email || "",
     phoneNumber: userProfile?.phoneNumber || "",
-    image: userProfile?.image || "", 
+    image: userProfile?.image || "",
   });
 
   useEffect(() => {
@@ -64,7 +81,7 @@ export default function ProfileSettings() {
         body: formData,
       });
 
-      const data = await response.json();  
+      const data = await response.json();
       setUserData((prevData) => ({
         ...prevData,
         image: data.secure_url,
@@ -73,27 +90,13 @@ export default function ProfileSettings() {
       console.error("Image upload failed", error);
     }
   };
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const resp = await instance.put(`/userprofile/${userProfile?._id}`, {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phoneNumber: userData.phoneNumber,
-        image: userData.image, 
-      });
-
-      if (resp.status === 200) {
-        toast({
-          title: "Updated",
-          description: "Profile updated successfully",
-        });
-        router.push(`/u/${userProfile?._id}/profile`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    await dispatch(updateUserProfile({ id: userProfile?._id, userData }));
+    dispatch(fetchUserProfile({ userId: userProfile?._id }));
+    toast({ description: "Profile updated successfully" });
+    router.push(`/u/${userProfile?._id}/profile`);
   };
 
   return (
@@ -107,7 +110,7 @@ export default function ProfileSettings() {
             <div className="mr-6 z-10 relative">
               {userData.image && (
                 <Image
-                  src={userData?.image|| "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"}
+                  src={userData?.image || "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"}
                   alt="Profile"
                   className="rounded-full object-cover border-4 border-white dark:border-black"
                   width={120}

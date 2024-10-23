@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchUserProfile, logout } from "@/lib/store/features/userSlice";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function ProfileSection() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -19,9 +20,12 @@ export default function ProfileSection() {
   const { userProfile } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    if (!userProfile) {
-      dispatch(fetchUserProfile());
+    const fetchData = async () => {
+      const userDetails = Cookies.get("user");
+      const user = JSON.parse(userDetails || "")
+      dispatch(fetchUserProfile({ userId: user.id }));
     }
+    fetchData()
   }, [dispatch]);
 
   const handleClickOutside = (event: MouseEvent) => {

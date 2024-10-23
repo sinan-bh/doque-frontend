@@ -1,23 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
+import axiosInstance from "@/utils/axios";
 
 interface UserProfile {
-  _id: string;
+  _id?: string;
   email: string;
   firstName: string;
   lastName: string;
   image: string;
   activeWorkspace?: [];
-  description: string;
+  description?: string;
   name?: string;
   phoneNumber: string;
+
 }
 
 interface UserState {
   loggedUser: { email: string; id: string; token: string } | null;
   loading: boolean;
   userProfile: UserProfile | null;
+  workspaceUser: UserProfile | null;
   error: string | null;
   successMessage: string | null;
 }
@@ -26,11 +29,12 @@ const initialState: UserState = {
   loggedUser: null,
   loading: false,
   userProfile: null,
+  workspaceUser: null,
   error: null,
   successMessage: null,
 };
 
-const axiosInstance = axios.create({
+const Instance = axios.create({
   baseURL: "https://daily-grid-rest-api.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
@@ -45,9 +49,8 @@ export const loginUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/login", credentials,);
+      const response = await Instance.post("/login", credentials);
       const { data } = response;
-
       const userData = data.data;
 
       Cookies.set(
@@ -70,17 +73,18 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
 // Fetch User Profile
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
-  async (_, { rejectWithValue }) => {
+  async ({ userId }: { userId: string | undefined }, { rejectWithValue }) => {
     const userDetails = Cookies.get("user");
     const user = JSON.parse(userDetails || "");
     try {
-      const response = await axiosInstance.get(`/userprofile/${user.id}`,{
-        headers:{
-          Authorization:`Bearer ${user.token}`
-        }
+      const response = await Instance.get(`/userprofile/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       });
       return response.data.data;
     } catch (error) {
@@ -88,6 +92,53 @@ export const fetchUserProfile = createAsyncThunk(
         return rejectWithValue({
           message:
             error.response?.data.message || "Failed to fetch user profile",
+        });
+      }
+      return rejectWithValue({ message: "An unknown error occurred" });
+    }
+  }
+);
+
+// Fetch Workspace User
+export const fetchWorkspaceUser = createAsyncThunk(
+  "user/fetchWorkspaceUser",
+  async ({ userId }: { userId: string | undefined }, { rejectWithValue }) => {
+    const userDetails = Cookies.get("user");
+    const user = JSON.parse(userDetails || "");
+    try {
+      const response = await Instance.get(`/userprofile/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue({
+          message:
+            error.response?.data.message || "Failed to fetch user profile",
+        });
+      }
+      return rejectWithValue({ message: "An unknown error occurred" });
+    }
+  }
+);
+
+// Update User Profile
+export const updateUserProfile = createAsyncThunk(
+  "user/updateUserProfile",
+  async (
+    { id, userData }: { id: string | undefined; userData: UserProfile },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.put(`/userprofile/${id}`, userData);
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue({
+          message: error.response?.data.message || "Update failed",
         });
       }
       return rejectWithValue({ message: "An unknown error occurred" });
@@ -108,7 +159,7 @@ export const signup = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/register", userData);
+      const response = await Instance.post("/register", userData);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -126,7 +177,7 @@ export const forgotPassword = createAsyncThunk(
   "user/forgotPassword",
   async (email: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/forgotpassword", { email });
+      const response = await Instance.post("/forgotpassword", { email });
       return {
         message:
           response.data.message ||
@@ -152,7 +203,7 @@ export const resetPassword = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.patch(`/reset-password/${token}`, {
+      const response = await Instance.patch(`/reset-password/${token}`, {
         newPassword,
       });
       return response.data;
@@ -175,7 +226,7 @@ export const verifyOtp = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/verifyotp", { email, otp });
+      const response = await Instance.post("/verifyotp", { email, otp });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -242,8 +293,38 @@ const userSlice = createSlice({
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          (action.payload as { message: string }).message ||
+          (action.payload as { message: string })?.message ||
           "Fetch user profile failed";
+      })
+      .addCase(fetchWorkspaceUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workspaceUser = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchWorkspaceUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkspaceUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as { message: string })?.message ||
+          "Fetch user profile failed";
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userProfile = action.payload;
+        state.error = null;
+        state.successMessage = "Profile updated successfully!";
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as { message: string }).message || "Update failed";
       })
       .addCase(signup.pending, (state) => {
         state.loading = true;
@@ -295,16 +376,18 @@ const userSlice = createSlice({
       .addCase(verifyOtp.fulfilled, (state) => {
         state.loading = false;
         state.error = null;
+        state.successMessage = "OTP verified successfully!";
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error =
           (action.payload as { message: string }).message ||
-          "OTP Verification failed";
+          "OTP verification failed";
       });
   },
 });
 
 export const { logout, setLoading, setUserProfile, clearMessages } =
   userSlice.actions;
+
 export default userSlice.reducer;

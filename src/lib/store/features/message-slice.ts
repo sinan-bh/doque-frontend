@@ -33,7 +33,6 @@ export const fetchMessages = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const { workSpaceId } = state.workspace;
-    console.log(workSpaceId);
 
     if (!workSpaceId) return rejectWithValue("Invalid data");
 

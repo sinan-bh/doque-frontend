@@ -1,21 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEllipsisV, FaLock, FaUnlock } from "react-icons/fa";
+import { useAppDispatch } from "../../../lib/store/hooks";
+import { toggleBlockMember } from "../../../lib/store/features/admin/member-slice";
 
 interface StatusButtonProps {
   initialStatus: boolean;
+  memberId: string;
 }
 
-export default function StatusButton({ initialStatus }: StatusButtonProps) {
-  const [isActive, setIsActive] = useState(initialStatus);
+export default function StatusButton({
+  initialStatus,
+  memberId,
+}: StatusButtonProps) {
+  const [isBlocked, setIsBlocked] = useState(initialStatus);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const toggleStatus = (status: boolean) => {
-    setIsActive(status);
-    setShowDropdown(false);
-  };
+  useEffect(() => {
+    setIsBlocked(initialStatus);
+  }, [initialStatus]);
 
   const handleDropdown = () => {
-    setShowDropdown(!showDropdown);
+    setShowDropdown((prev) => !prev);
+  };
+
+  const toggleStatus = (newStatus: boolean) => {
+    setIsBlocked(newStatus);
+    dispatch(toggleBlockMember({ memberId, isBlocked: newStatus }));
+    setShowDropdown(false);
   };
 
   return (
@@ -47,13 +59,13 @@ export default function StatusButton({ initialStatus }: StatusButtonProps) {
       )}
 
       <div className="flex items-center mt-2">
-        {isActive ? (
-          <span className="text-green-500">
-            <FaUnlock />
-          </span>
-        ) : (
+        {isBlocked ? (
           <span className="text-red-500">
             <FaLock />
+          </span>
+        ) : (
+          <span className="text-green-500">
+            <FaUnlock />
           </span>
         )}
       </div>

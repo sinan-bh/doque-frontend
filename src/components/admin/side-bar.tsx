@@ -7,10 +7,12 @@ import {
   FaTachometerAlt,
   FaUsers,
   FaFolder,
-  FaUser,
-  FaCog,
+  FaSignOutAlt,
   FaBars,
 } from "react-icons/fa";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { logout } from "../../lib/store/features/admin/admin-auth-slice";
+import { useRouter } from "next/navigation";
 
 type MenuItem = {
   icon: JSX.Element;
@@ -21,18 +23,23 @@ type MenuItem = {
 const menuItems: MenuItem[] = [
   { icon: <FaTachometerAlt />, label: "Dashboard", href: "/admin/dashboard" },
   { icon: <FaUsers />, label: "Members", href: "/admin/members" },
-  { icon: <FaFolder />, label: "Workspaces", href: "/admin/workspaces" },
-  { icon: <FaUser />, label: "Profile", href: "/admin/profile" },
-  { icon: <FaCog />, label: "Settings", href: "#" },
+  { icon: <FaFolder />, label: "Workspaces", href: "/admin/workspace" },
 ];
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/u/home");
+  };
 
   return (
     <aside
-      className={`relative h-screen p-4 bg-white dark:bg-gray-800 shadow-md transition-width duration-300 ${
+      className={`relative flex flex-col h-screen p-4 bg-white dark:bg-gray-800 shadow-md transition-width duration-300 ${
         isOpen ? "w-64" : "w-16"
       }`}
     >
@@ -51,7 +58,7 @@ export default function Sidebar() {
           DOQ
         </div>
       )}
-      <ul className="space-y-4">
+      <ul className="flex-grow space-y-4">
         {menuItems.map((item, index) => (
           <li key={index} className="ml-2">
             <Link href={item.href}>
@@ -70,6 +77,16 @@ export default function Sidebar() {
           </li>
         ))}
       </ul>
+      <div className="mt-auto">
+        <button
+          onClick={handleLogout}
+          className={`flex items-center pl-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer transform transition-transform duration-300 hover:scale-105
+            ${isOpen ? "justify-start" : "justify-center"}`}
+        >
+          <FaSignOutAlt className="mr-2" />
+          {isOpen && <span>Logout</span>}
+        </button>
+      </div>
     </aside>
   );
 }

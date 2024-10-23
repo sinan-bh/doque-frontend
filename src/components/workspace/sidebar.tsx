@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -21,7 +22,7 @@ import {
   setWorkSpaceId,
 } from "@/lib/store/features/workspace-slice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchUserProfile } from "@/lib/store/features/userSlice";
+import { fetchWorkspaceUser } from "@/lib/store/features/userSlice";
 import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 
 // interface Workspace {
@@ -41,14 +42,21 @@ const Sidebar: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string>("");
   const dispatched = useAppDispatch();
-  const { userProfile } = useAppSelector((state) => state.user);
+  const { workspaceUser } = useAppSelector((state) => state.user);
+  const { workSpaceId }: { workSpaceId: string } = useParams();
+
+  const profile = workSpace?.find((workspace) => workspace.WorkspaceId === workSpaceId)?.members.find(p => p.status === "owner")
 
   useEffect(() => {
-    if (!userProfile) {
-      dispatch(fetchUserProfile());
+    if (profile?.user._id) {
+      const fetchData = async () => {
+        dispatch(fetchWorkspaceUser({ userId: profile?.user._id }));
+      }
+      fetchData()
     }
-  }, [dispatched, userProfile]);
-  const { workSpaceId }: { workSpaceId: string } = useParams();
+  }, [dispatched, workSpaceId,profile?.user._id]);
+
+
   const sidebarItems: SidebarIcon[] = [
     {
       icon: <AiFillHome className="text-xl text-black mt-1 dark:text-gray-300" />,
@@ -113,7 +121,7 @@ const Sidebar: React.FC = () => {
         <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer dark:bg-gray-950">
           <div className="flex items-center h-10 pl-1">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={userProfile?.image} alt="Workspace logo" />
+              <AvatarImage src={workspaceUser?.image} alt="Workspace logo" />
               <AvatarFallback />
             </Avatar>
             <h2 className="text-md text-black ml-2 h-5 overflow-hidden dark:text-gray-300">

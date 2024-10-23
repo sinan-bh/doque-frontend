@@ -46,13 +46,13 @@ const TaskList: React.FC = () => {
         </Link>
       </div>
 
-      {!isTask ? (
+      {!isTask && spaces ? (
         <div>
-          <div>
+          <div className="max-h-[160px] overflow-scroll">
             {selectedSpace?.lists.map((list) => (
               <div key={list._id} className="flex flex-col justify-between p-1">
                 <div className="flex flex-col">
-                  {list.tasks.slice(0, 3).map((task) => (
+                  {list.tasks.map((task) => (
                     <div key={task._id} className="flex justify-between items-center">
                       <div>
                         <span className="font-medium text-xs text-gray-700 dark:text-white">{task.title}</span>
@@ -122,7 +122,7 @@ const TaskList: React.FC = () => {
           </div>
         </div>
       ) : (
-        <Image height={300} src={image} alt="No tasks available" />
+        <Image height={300} src={image} alt="No tasks available" className="opacity-15"/>
       )}
     </div>
   );
