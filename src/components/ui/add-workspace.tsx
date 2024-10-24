@@ -31,8 +31,6 @@ export const AddWorkSpaceBtn = ({ children }: { children: ReactNode }) => {
 
   const { toast } = useToast();
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MGNjNDQ3OGNmZDdjNzI5MWFmNThhNSIsImlhdCI6MTcyOTE0MDc2MiwiZXhwIjoxNzMxNzMyNzYyfQ.tcXc7sUP-8nan0LDqbfUfW_lKq_5N5idKQ-1VDFnqmw";
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
