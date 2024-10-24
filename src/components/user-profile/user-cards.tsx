@@ -8,12 +8,17 @@ import clsx from "clsx";
 import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { FaRegClock } from "react-icons/fa";
 import Link from "next/link";
+import { Space } from "@/types/spaces";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export function Usercards() {
-  const [assignedSpaces, setAssignedSpaces] = useState([]);
+  const [assignedSpaces, setAssignedSpaces] = useState<Space[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const workspacesResp = await instance.get("/workspace");
         const userWorkspaces = workspacesResp.data.data;
@@ -32,19 +37,26 @@ export function Usercards() {
         const user = JSON.parse(currentUser || "{}");
         const currentUserId = user.id;
 
-        const assignedSpaces = matchedSpaces.filter(
-          (space: { lists: any[] }) => {
-            return space.lists.some((listItem) =>
-              listItem.tasks.some((task: { assignedTo: string[] }) =>
-                task.assignedTo.includes(currentUserId)
-              )
-            );
-          }
-        );
+        const assignedSpaces = matchedSpaces
+          .map((space: { lists: any[] }) => {
+            const filteredLists = space.lists
+              .map((listItem) => {
+                const filteredTasks = listItem.tasks.filter(
+                  (task: { assignedTo: string[] }) =>
+                    task.assignedTo.includes(currentUserId)
+                );
+                return { ...listItem, tasks: filteredTasks };
+              })
+              .filter((listItem) => listItem.tasks.length > 0);
 
+            return { ...space, lists: filteredLists };
+          })
+          .filter((space: Space) => space.lists.length > 0);
         setAssignedSpaces(assignedSpaces);
       } catch (error) {
-        console.log(error);
+        setError(axiosErrorCatch(error));
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -54,6 +66,8 @@ export function Usercards() {
   return (
     <div className="p-8 min-h-screen">
       <div className="flex flex-wrap gap-4 justify-start">
+        {isLoading && <p>Loading....</p>}
+        {error && <p className="text-red-600">{error}</p>}
         {assignedSpaces.length > 0 ? (
           assignedSpaces.map(
             (space: {
@@ -74,16 +88,19 @@ export function Usercards() {
                         }) => (
                           <Link
                             href={`/w/${space.workspace}/spaces/${space._id}?task=${task._id}&list=${listItem._id}`}
-                            key={task._id}>
+                            key={task._id}
+                          >
                             <Card
                               key={task._id}
-                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950">
+                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950"
+                            >
                               <div
                                 className={clsx("h-6", {
                                   "bg-red-300": task?.priority === "high",
                                   "bg-yellow-300": task?.priority === "medium",
                                   "bg-green-300": task?.priority === "low",
-                                })}></div>
+                                })}
+                              ></div>
                               <CardHeader className="p-4">
                                 <div className="flex flex-col space-y-2">
                                   <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
@@ -112,7 +129,8 @@ export function Usercards() {
                                           "text-green-700 bg-green-100":
                                             task?.priority === "low",
                                         }
-                                      )}>
+                                      )}
+                                    >
                                       {task.priority}
                                     </p>
                                   </div>
@@ -145,7 +163,7 @@ export function Usercards() {
             )
           )
         ) : (
-          <p>No assigned spaces found.</p>
+          <>{!isLoading && !error && <p>No assigned spaces found.</p>}</>
         )}
       </div>
     </div>
