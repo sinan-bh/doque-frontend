@@ -26,7 +26,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-full h-screen sm:w-1/4 md:w-1/5  bg-[#EDF1F4] p-4 flex flex-col">
+    <div className="w-full h-auto sm:w-1/4 md:w-1/5  bg-[#EDF1F4] p-4 flex flex-col">
       <div className="flex-1">
         {sidebarItems.map((item, index) => (
           <Link key={index} href={item.link}>
@@ -41,7 +41,7 @@ const Sidebar = () => {
         <h2 className="font-semibold text-sm mt-1 text-gray-600">Workspaces</h2>
 
         {workspaceItems.map((workspace, index) => (
-          <Link href="/w/1/1" key={index}>
+          <Link href="/w/1/dashboard" key={index}>
             <div className="flex items-center ml-1 mt-3 ">
               <Image
                 src={workspace.link}
