@@ -3,11 +3,11 @@ import { useAppDispatch, useAppSelector } from "../../../lib/store/hooks";
 import {
   fetchMembers,
   selectMembers,
-} from "../../../lib/store/features/admin/member-slice";
+} from "../../../lib/store/features/admin/admin-member-slice";
 import {
   fetchWorkspaces,
   selectWorkspaces,
-} from "../../../lib/store/features/admin/workspace-slice";
+} from "../../../lib/store/features/admin/admin-workspace-slice";
 import DashboardStats from "./dashboard-status/dashboard-status";
 import WorkspaceStatistics from "./dashboard-status/workspace-statics";
 import ActivityChart from "./dashboard-status/activity-chart";

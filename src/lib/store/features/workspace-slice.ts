@@ -35,6 +35,7 @@ export type Users = {
 };
 
 interface WorkspaceState {
+  workspaces: any;
   chosenDate: Date | string | number;
   projects: Project[] | null;
   workSpaceId: string;

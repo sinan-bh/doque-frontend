@@ -1,7 +1,7 @@
 import React from "react";
 import LineChart from "../charts/line-chart";
 import { format, parseISO } from "date-fns";
-import { Workspace } from "@/lib/store/features/admin/workspace-slice";
+import { Workspace } from "@/lib/store/features/admin/admin-workspace-slice";
 
 interface ActivityChartProps {
   workspaces: Workspace[];

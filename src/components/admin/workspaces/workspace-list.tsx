@@ -7,11 +7,11 @@ import {
   selectWorkspaces,
   selectWorkspaceLoading,
   selectWorkspaceError,
-} from "../../../lib/store/features/admin/workspace-slice";
+} from "../../../lib/store/features/admin/admin-workspace-slice";
 import {
   fetchMembers,
   selectMembers,
-} from "../../../lib/store/features/admin/member-slice";
+} from "../../../lib/store/features/admin/admin-member-slice";
 import Spinner from "@/components/ui/spinner/spinner";
 import SearchInput from "./search-input";
 import FilterDropdown from "./filter-drop-down";

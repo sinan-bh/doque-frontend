@@ -1,14 +1,14 @@
 import React from "react";
 import {
   Workspace,
-} from "../../../lib/store/features/admin/workspace-slice";
+} from "../../../lib/store/features/admin/admin-workspace-slice";
 
 import {
   UserIcon,
   CalendarIcon,
   ClipboardListIcon,
 } from "@heroicons/react/solid";
-import { Member } from "@/lib/store/features/admin/member-slice";
+import { Member } from "@/lib/store/features/admin/admin-member-slice";
 
 interface WorkspaceDetailsContentProps {
   workspace: Workspace;

@@ -3,7 +3,6 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/dark-mode/theme-provider";
-import { AdminProvider } from "@/contexts/admin-context";
 import StoreProvider from "@/lib/store/store-provider";
 export const metadata: Metadata = {
   title: "DOQUE",
@@ -31,10 +30,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <AdminProvider>
               {children}
               <Toaster />
-            </AdminProvider>
           </ThemeProvider>
         </StoreProvider>
       </body>

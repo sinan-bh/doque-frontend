@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
+import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 
 interface AdminState {
   token: string | null;
@@ -8,10 +10,32 @@ interface AdminState {
 }
 
 const initialState: AdminState = {
-  token: localStorage.getItem("adminToken"),
-  isAuthenticated: !!localStorage.getItem("adminToken"),
+  token: Cookies.get("adminToken")
+    ? JSON.parse(Cookies.get("adminToken")!).token
+    : null,
+  isAuthenticated: !!Cookies.get("adminToken"),
   error: null,
 };
+
+const axiosInstance = axios.create({
+  baseURL: "https://daily-grid-rest-api.onrender.com/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const tokenData = Cookies.get("adminToken");
+    const token = tokenData ? JSON.parse(tokenData).token : null;
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const login = createAsyncThunk(
   "admin/login",
@@ -20,29 +44,31 @@ export const login = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await fetch(
-        "https://daily-grid-rest-api.onrender.com/api/admin/adminlogin",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
+      const response = await axiosInstance.post("/admin/adminlogin", {
+        email,
+        password,
+      });
+
+      const { data } = response;
+      Cookies.set(
+        "adminToken",
+        JSON.stringify({
+          token: data.data,
+        }),
+        { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("adminToken", data.data);
-        return data.data;
-      } else {
-        const errorData = await response.json();
+      return data.data;
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      if (axiosError.response?.data) {
         return rejectWithValue(
-          errorData.message || "Invalid email or password"
+          axiosError.response.data.message || "Invalid email or password"
         );
       }
-    } catch (error) {
-      return rejectWithValue(`An error occurred during login ${error}`);
+      return rejectWithValue(
+        `An error occurred during login: ${axiosError.message}`
+      );
     }
   }
 );
@@ -54,7 +80,7 @@ const adminAuthSlice = createSlice({
     logout: (state) => {
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("adminToken");
+      Cookies.remove("adminToken");
     },
   },
   extraReducers: (builder) => {

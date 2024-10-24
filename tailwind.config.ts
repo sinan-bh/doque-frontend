@@ -25,6 +25,8 @@ const config: Config = {
       animation: {
         fadeIn: "fadeIn 1s ease-out",
         marquee: "marquee 3s linear infinite",
+        bounceDelay: "bounceDelay 1.5s infinite",
+
       },
       keyframes: {
         fadeIn: {
@@ -35,6 +37,10 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "90%": { transform: "translateX(-100%)" }, 
           "100%": { transform: "translateX(-100%)" },
+        },
+        bounceDelay: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-25px)" },
         },
       },
       

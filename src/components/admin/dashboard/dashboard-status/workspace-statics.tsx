@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import BarChart from "../charts/bar-chart";
 import PieChart from "../charts/pie-chart";
-import { Workspace } from "@/lib/store/features/admin/workspace-slice";
-import { Member } from "@/lib/store/features/admin/member-slice";
+import { Workspace } from "@/lib/store/features/admin/admin-workspace-slice";
+import { Member } from "@/lib/store/features/admin/admin-member-slice";
 
 interface WorkspaceStatisticsProps {
   workspaces: Workspace[];
