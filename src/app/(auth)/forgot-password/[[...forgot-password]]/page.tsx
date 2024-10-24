@@ -17,7 +17,7 @@ export default function ForgotPassword() {
         e.preventDefault();
         setMessage('');
 
-        const resultAction = await dispatch(forgotPassword(email));
+        const resultAction = await dispatch(forgotPassword(email || forgetEmail));
 
         if (forgotPassword.fulfilled.match(resultAction)) {
             setMessage(resultAction.payload.message);

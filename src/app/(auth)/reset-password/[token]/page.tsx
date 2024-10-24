@@ -75,7 +75,7 @@ export default function ResetPassword() {
                                 setNewPassword(e.target.value);
                                 dispatch(clearMessages());
                             }}
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-white"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-black"
                             required
                         />
                         <button
@@ -98,7 +98,7 @@ export default function ResetPassword() {
                                 setConfirmPassword(e.target.value);
                                 dispatch(clearMessages());
                             }}
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-white"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-black"
                             required
                         />
                         <button

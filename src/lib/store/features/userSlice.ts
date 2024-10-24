@@ -159,6 +159,7 @@ export const signup = createAsyncThunk(
       password: string;
       firstName: string;
       lastName: string;
+      image: string;
     },
     { rejectWithValue }
   ) => {
@@ -179,7 +180,7 @@ export const signup = createAsyncThunk(
 // Forgot Password
 export const forgotPassword = createAsyncThunk(
   "user/forgotPassword",
-  async (email: string, { rejectWithValue }) => {
+  async (email: string | null, { rejectWithValue }) => {
     try {
       const response = await Instance.post("/forgotpassword", { email });
       return {

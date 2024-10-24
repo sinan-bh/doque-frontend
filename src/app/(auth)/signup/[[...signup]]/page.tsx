@@ -23,6 +23,7 @@ interface FormValues {
   firstName: string;
   lastName: string;
   confirmPassword: string;
+  image?: string;
 }
 
 export default function Signup() {
@@ -58,6 +59,7 @@ export default function Signup() {
         password: values.password,
         firstName: values.firstName,
         lastName: values.lastName,
+        image: "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"
       })
     );
 
