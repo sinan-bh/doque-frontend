@@ -13,7 +13,6 @@ interface UserProfile {
   description?: string;
   name?: string;
   phoneNumber: string;
-
 }
 
 interface UserState {
@@ -24,7 +23,7 @@ interface UserState {
   error: string | null;
   successMessage: string | null;
   forgetEmail: string | null;
-  setForgetEmail: string | null
+  setForgetEmail: string | null;
 }
 
 const initialState: UserState = {
@@ -81,11 +80,11 @@ export const loginUser = createAsyncThunk(
 // Fetch User Profile
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
-  async ({ userId }: { userId: string | undefined }, { rejectWithValue }) => {
+  async ({}, { rejectWithValue }) => {
     const userDetails = Cookies.get("user");
     const user = JSON.parse(userDetails || "");
     try {
-      const response = await Instance.get(`/userprofile/${userId}`, {
+      const response = await Instance.get(`/userprofile/${user.id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -396,7 +395,12 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout, setLoading, setUserProfile, clearMessages, setForgetEmail } =
-  userSlice.actions;
+export const {
+  logout,
+  setLoading,
+  setUserProfile,
+  clearMessages,
+  setForgetEmail,
+} = userSlice.actions;
 
 export default userSlice.reducer;

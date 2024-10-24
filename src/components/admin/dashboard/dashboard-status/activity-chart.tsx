@@ -1,10 +1,10 @@
 import React from "react";
 import LineChart from "../charts/line-chart";
 import { format, parseISO } from "date-fns";
-import { Workspace } from "@/lib/store/features/admin/admin-workspace-slice";
+import { AdminWorkspace } from "@/lib/store/features/admin/admin-workspace-slice";
 
 interface ActivityChartProps {
-  workspaces: Workspace[];
+  workspaces: AdminWorkspace[];
   lineChartView: string;
   setLineChartView: (view: string) => void;
 }
@@ -108,8 +108,7 @@ export default function ActivityChart({
                 lineChartView === option
                   ? "bg-transparent border border-slate-800 dark:border-white text-black dark:text-white"
                   : "bg-gray-300 dark:bg-gray-700 dark:text-white"
-              }`}
-            >
+              }`}>
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </button>
           ))}

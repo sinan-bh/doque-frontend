@@ -212,62 +212,53 @@ export default function TaskDetails({
         {data && (
           <Card className="task-details-section overflow-hidden w-[600px]">
             <div
-              className={clsx("h-16 flex justify-between items-end p-2", {
+              className={clsx("h-10", {
                 "bg-red-300": values?.priority === "high",
                 "bg-yellow-200": values?.priority === "medium",
                 "bg-green-300": values?.priority === "low",
-              })}>
-              <div>
-                <p className="text-zinc-700 text-xs">Created At</p>
-                <div className="flex items-center gap-2 text-sm">
-                  <FaRegClock />
-                  {data.createdAt && (
-                    <span>{new Date(data.createdAt).toLocaleDateString()}</span>
-                  )}
-                </div>
-              </div>
-              <AlertConfirm
-                confirmText="Delete Task"
-                onConfirm={handleTaskDelete}
-                message="Are you sure you want to delete this task?"
-                description="This action is permanent and cannot be undone">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className=" hover:border-red-600 hover:bg-red-300 h-8 w-8 ">
-                  <IoTrashOutline />
-                </Button>
-              </AlertConfirm>
-            </div>
+              })}></div>
 
             <CardHeader>
-              <CardTitle className="flex gap-4 items-center text- xl">
-                <div onClick={() => setTitleEditOpen(true)}>
-                  {!titleEditOpen && (
-                    <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 h-9 hover:border rounded-md px-3 py-1 text-sm">
-                      {values?.title} <CiEdit className="text-zinc-800" />
-                    </h2>
-                  )}
-                  {titleEditOpen && (
-                    <Input
-                      className="bg-white"
-                      type="text"
-                      autoFocus
-                      value={values?.title}
-                      onChange={(e) => {
-                        setValues((prev) => ({
-                          ...prev!,
-                          title: e.target.value,
-                        }));
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") setTitleEditOpen(false);
-                      }}
-                      onBlur={() => setTitleEditOpen(false)}
-                    />
-                  )}
+              <div className="flex justify-between">
+                <CardTitle className="flex gap-4 items-center text- xl">
+                  <div onClick={() => setTitleEditOpen(true)}>
+                    {!titleEditOpen && (
+                      <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 h-9 hover:border rounded-md px-3 py-1 text-sm">
+                        {values?.title}{" "}
+                        <CiEdit className="text-zinc-800 dark:text-zinc-200" />
+                      </h2>
+                    )}
+                    {titleEditOpen && (
+                      <Input
+                        type="text"
+                        autoFocus
+                        value={values?.title}
+                        onChange={(e) => {
+                          setValues((prev) => ({
+                            ...prev!,
+                            title: e.target.value,
+                          }));
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") setTitleEditOpen(false);
+                        }}
+                        onBlur={() => setTitleEditOpen(false)}
+                      />
+                    )}
+                  </div>
+                </CardTitle>
+                <div>
+                  <p className="text-zinc-700 text-xs">Created At</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <FaRegClock />
+                    {data.createdAt && (
+                      <span>
+                        {new Date(data.createdAt).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </CardTitle>
+              </div>
               <div className="h-0.5 bg-zinc-400 rounded-full"></div>
             </CardHeader>
 
@@ -379,7 +370,16 @@ export default function TaskDetails({
 
             <div className="h-0.5 bg-zinc-300 my-2 rounded-full"></div>
 
-            <CardFooter className="flex justify-end items-end mt-4">
+            <CardFooter className="flex justify-between items-end mt-4">
+              <AlertConfirm
+                confirmText="Delete Task"
+                onConfirm={handleTaskDelete}
+                message="Are you sure you want to delete this task?"
+                description="This action is permanent and cannot be undone">
+                <Button variant="destructive">
+                  Delete task <IoTrashOutline />
+                </Button>
+              </AlertConfirm>
               <Button
                 onClick={handleUpdateTask}
                 size="sm"

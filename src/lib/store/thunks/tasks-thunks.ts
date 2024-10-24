@@ -94,11 +94,13 @@ export const updateList = createAsyncThunk(
       listId,
       listData,
       onSuccess,
+      onError,
     }: {
       spaceId: string;
       listId: string;
       listData: { name?: string; color?: string };
       onSuccess: () => void;
+      onError: (error: string) => void;
     },
     { rejectWithValue }
   ) => {
@@ -107,6 +109,7 @@ export const updateList = createAsyncThunk(
       onSuccess();
       return { listId, listData };
     } catch (error) {
+      onError(axiosErrorCatch(error));
       return rejectWithValue(axiosErrorCatch(error));
     }
   }

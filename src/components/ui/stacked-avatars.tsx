@@ -1,5 +1,12 @@
-import { Member } from "@/types/spaces";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+
+type Member = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  _id: string;
+  image?: string;
+};
 
 export default function StackedAvatars({
   members,

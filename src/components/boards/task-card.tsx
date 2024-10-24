@@ -81,7 +81,7 @@ export default function TaskCard({ task }: { task: TaskRow }) {
 
             {task.assignedTo?.length ? (
               <StackedAvatars
-                members={task.assignedTo.map(() => ({}))}
+                members={task.assignedTo.map((member) => ({ _id: member }))}
                 size="sm"
                 max={3}
               />

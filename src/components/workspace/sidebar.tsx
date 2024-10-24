@@ -204,7 +204,7 @@ const Sidebar: React.FC = () => {
 
         <EditWorkSpace
           initialData={{ name: main?.name || "", visibility: true }}>
-          <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer ">
+          <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer dark:hover:bg-gray-900">
             <FiSettings className="text-xl text-black dark:text-gray-300" />
             <h1 className="ml-3 font-medium text-black h-6 overflow-hidden dark:text-gray-300">
               Settings

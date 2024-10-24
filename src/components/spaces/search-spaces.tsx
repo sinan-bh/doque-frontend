@@ -44,11 +44,11 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="relative bg-white flex items-center px-4 border rounded-lg w-[400px]">
+    <div className="relative bg-white dark:bg-zinc-900 flex items-center px-4 border rounded-lg w-[400px]">
       <IoIosSearch className="text-zinc-500 relative top-[1px]" />
       <Input
         type="text"
-        className="bg-white border-none rounded-none shadow-none pl-1 focus-visible:ring-0"
+        className="bg-white dark:bg-zinc-900 border-none rounded-none shadow-none pl-1 focus-visible:ring-0"
         placeholder="Search spaces.."
         value={query}
         onChange={(e) => {
@@ -61,12 +61,12 @@ export default function SearchBar() {
       {open && (
         <>
           {filteredSpaces.length > 0 ? (
-            <ul className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10 dark:bg-darkBg">
+            <ul className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10 dark:bg-zinc-900">
               {filteredSpaces.map((space, index) => (
                 <li
                   key={space.name}
-                  className={`px-4 py-1  cursor-pointer hover:bg-zinc-100 ${
-                    highlightedIndex === index ? "bg-zinc-100" : ""
+                  className={`px-4 py-1  cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
+                    highlightedIndex === index && "bg-zinc-100 dark:bg-zinc-800"
                   }`}>
                   <Link href={`spaces/${space._id}`}>
                     <p>{space.name}</p>
@@ -78,7 +78,7 @@ export default function SearchBar() {
               ))}
             </ul>
           ) : (
-            <div className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10 dark:bg-darkBg">
+            <div className="absolute top-full left-0 w-full bg-white border border-zinc-200 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto z-10 dark:bg-zinc-900">
               <p className="p-2 text-sm text-zinc-500">No results found</p>
             </div>
           )}

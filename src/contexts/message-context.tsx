@@ -13,19 +13,19 @@ import { RootState } from "@/lib/store";
 import { useAppSelector } from "@/lib/store/hooks";
 
 type Message = {
-    _id: string;
-    messages: [
-      {
-        content: string;
-        timestamp: string;
-        _id: string;
-        sender: {
-          firstName: string;
-          image: string;
-        };
-      }
-    ];
-}; 
+  _id: string;
+  messages: [
+    {
+      content: string;
+      timestamp: string;
+      _id: string;
+      sender: {
+        firstName: string;
+        image: string;
+      };
+    }
+  ];
+};
 
 type MessageContextType = {
   messages: Message | null;
@@ -44,13 +44,12 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
   const [isOnline, setIsOnline] = useState<boolean>(
     typeof navigator !== "undefined" ? navigator.onLine : true
   );
-  const {loggedUser}= useAppSelector((state)=>state.user)
-  const {workSpaceId} = useSelector((state: RootState)=> state.workspace)
+  const { loggedUser } = useAppSelector((state) => state.user);
+  const { workSpaceId } = useSelector((state: RootState) => state.workspace);
 
-  setInterval(()=>{
-    setTrigger(!trigger)
-  },60000)
-
+  setInterval(() => {
+    setTrigger(!trigger);
+  }, 60000);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -71,26 +70,25 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
     if (workSpaceId && loggedUser?.token) {
       const fetchData = async () => {
         try {
-          const {data} = await axios.get(
+          const { data } = await axios.get(
             `/chat/workspaces/${workSpaceId}/messages`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,
               },
             }
-          );          
-          
+          );
+
           setMessages(data.data);
         } catch (err) {
           if (err instanceof AxiosError && err.status === 404)
             return setMessages(null);
           setError(true);
-          console.log(err);
         }
       };
       fetchData();
     }
-  }, [trigger,workSpaceId,loggedUser?.token]);
+  }, [trigger, workSpaceId, loggedUser?.token]);
 
   const addMessage = async (text: string) => {
     try {
@@ -105,30 +103,26 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
       );
       setTrigger(!trigger);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const deleteMessage = async (id: string) => {
     try {
-      await axios.delete(
-        `/chat/workspaces/${id}/chat`,
-        {
-          headers: {
-            Authorization: `Bearer ${loggedUser?.token}`,
-          },
-        }
-      );
+      await axios.delete(`/chat/workspaces/${id}/chat`, {
+        headers: {
+          Authorization: `Bearer ${loggedUser?.token}`,
+        },
+      });
       setMessages(null);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   return (
     <MessageContext.Provider
-      value={{ messages, addMessage, deleteMessage, error, isOnline }}
-    >
+      value={{ messages, addMessage, deleteMessage, error, isOnline }}>
       {children}
     </MessageContext.Provider>
   );

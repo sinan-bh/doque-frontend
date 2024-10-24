@@ -10,13 +10,14 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState<"activity" | "cards">("activity");
   const dispatch = useAppDispatch();
   const { userProfile } = useAppSelector((state) => state.user);
- 
 
   useEffect(() => {
     if (!userProfile) {
       dispatch(fetchUserProfile());
     }
-  }, [dispatch, userProfile]);  const handleTabClick = (tab: "activity" | "cards") => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, userProfile]);
+  const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
   };
 
@@ -25,14 +26,22 @@ export default function Page() {
       <div className="flex justify-around items-center p-4 rounded-lg mb-8">
         <div className=" items-center">
           <Avatar className="w-16 h-16">
-            <AvatarImage src={userProfile?.image||"https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"} alt="User Profile" />
+            <AvatarImage
+              src={
+                userProfile?.image ||
+                "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"
+              }
+              alt="User Profile"
+            />
             <AvatarFallback />
           </Avatar>
           <div className="mt-3">
             <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
               {userProfile?.firstName} {userProfile?.lastName}
             </h1>
-            <h3 className="text-sm text-gray-600 dark:text-gray-200">{userProfile?.email}</h3>
+            <h3 className="text-sm text-gray-600 dark:text-gray-200">
+              {userProfile?.email}
+            </h3>
           </div>
         </div>
         <div className="bg-lime-300 p-0.5 rounded-lg dark:text-black">
@@ -48,8 +57,7 @@ export default function Page() {
               activeTab === "activity"
                 ? "text-black border-b-2  dark:text-gray-100 border-gray-100"
                 : "text-gray-500 dark:text-gray-300"
-            }`}
-          >
+            }`}>
             Activity
           </h2>
           <h2
@@ -58,8 +66,7 @@ export default function Page() {
               activeTab === "cards"
                 ? "text-black border-b-2 dark:text-gray-100 border-gray-100"
                 : "text-gray-500 dark:text-gray-400"
-            }`}
-          >
+            }`}>
             Cards
           </h2>
         </div>
@@ -74,7 +81,9 @@ export default function Page() {
               <div>
                 <h1 className="text-lg text-gray-800 dark:text-gray-100">
                   {userProfile?.firstName} {userProfile?.lastName}
-                  <span className="text-sm text-gray-500 dark:text-gray-300">- activity log</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-300">
+                    - activity log
+                  </span>
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   30 Sept 2024, 11:49 . Activity performed in{" "}

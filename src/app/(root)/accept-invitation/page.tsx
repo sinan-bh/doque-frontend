@@ -1,10 +1,12 @@
 import Acceptinvitation from "@/components/navbar/accept-invitation";
+import { Suspense } from "react";
 
 export default function Page() {
-  
   return (
     <div>
-      <Acceptinvitation />
+      <Suspense>
+        <Acceptinvitation />
+      </Suspense>
     </div>
-  )
+  );
 }

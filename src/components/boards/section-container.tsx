@@ -10,7 +10,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Column, TaskRow } from "@/types/spaces";
 import TaskCard from "./task-card";
-import { MdOutlineFormatColorFill } from "react-icons/md";
 import { useParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { NewTaskButton } from "./new-task-button";
@@ -18,6 +17,7 @@ import { AlertConfirm } from "../ui/alert-confirm";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { deleteList, updateList } from "@/lib/store/thunks/tasks-thunks";
 import { ToastAction } from "../ui/toast";
+import ColorSelector from "./color-box";
 
 export default function SectionContainer({
   section,
@@ -76,22 +76,11 @@ export default function SectionContainer({
       });
     }
 
-    if (error.updateList) {
-      toast({
-        title: "Couldn't update list",
-        description: error.updateList + "!!",
-        action: (
-          <ToastAction onClick={handleUpdateTitle} altText="Try again">
-            Try again
-          </ToastAction>
-        ),
-      });
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error.deleteList, error.updateList]);
 
   const handleUpdateTitle = async () => {
+    if (value === section.title) return setEditMode(false);
     dispatch(
       updateList({
         spaceId,
@@ -100,6 +89,17 @@ export default function SectionContainer({
         onSuccess() {
           setEditMode(false);
           toast({ description: "List updated" });
+        },
+        onError(error) {
+          toast({
+            title: "Couldn't update list",
+            description: error,
+            action: (
+              <ToastAction onClick={handleUpdateTitle} altText="Try again">
+                Try again
+              </ToastAction>
+            ),
+          });
         },
       })
     );
@@ -125,14 +125,16 @@ export default function SectionContainer({
       <div
         className="flex justify-between gap-2 p-2 cursor-pointer"
         {...listeners}>
-        <h2
-          onClick={() => setEditMode(true)}
-          className="font-semibold rounded-md text-center">
-          {!editMode && section.title}
-          {editMode && (
+        {!editMode ? (
+          <h2
+            onClick={() => setEditMode(true)}
+            className="font-semibold cursor-text min-w-40 hover:border rounded-md px-3 py-1 ">
+            {section.title}
+          </h2>
+        ) : (
+          editMode && (
             <Input
               disabled={loading.updateList}
-              className="bg-white"
               type="text"
               autoFocus
               value={value}
@@ -144,12 +146,18 @@ export default function SectionContainer({
               }}
               onBlur={() => handleUpdateTitle()}
             />
-          )}
-        </h2>
+          )
+        )}
+      </div>
+
+      <div className="flex justify-between items-center">
+        <NewTaskButton listId={section.id} />
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" className="h-6 w-6">
-            <MdOutlineFormatColorFill size={16} />
-          </Button>
+          <ColorSelector
+            currentColor={section.color}
+            listId={section.id}
+            name={section.title}
+          />
           <AlertConfirm
             message="Are you sure you want to delete this section?"
             description="All tasks in this section will be deleted!!"
@@ -164,8 +172,6 @@ export default function SectionContainer({
           </AlertConfirm>
         </div>
       </div>
-
-      <NewTaskButton listId={section.id} />
 
       <div className="flex flex-col gap-2 ">
         <SortableContext

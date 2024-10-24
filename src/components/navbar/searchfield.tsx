@@ -15,7 +15,7 @@ export default function SearchField() {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchHistory, setSearchHistory] = useState<Workspace[]>([]);
   const [showHistory, setShowHistory] = useState<boolean>(false);
-  
+
   const searchContainerRef = useRef<HTMLDivElement>(null); // Reference for the container
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function SearchField() {
     // Close dropdown on click outside
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        searchContainerRef.current && 
+        searchContainerRef.current &&
         !searchContainerRef.current.contains(event.target as Node)
       ) {
         setShowHistory(false);
@@ -36,7 +36,7 @@ export default function SearchField() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -59,7 +59,9 @@ export default function SearchField() {
 
     setLoading(true);
     try {
-      const response = await axiosInstance.get<{ data: Workspace[] }>(`/workspace`);
+      const response = await axiosInstance.get<{ data: Workspace[] }>(
+        `/workspace`
+      );
       const data = response.data?.data || [];
 
       const filteredData = data.filter((workspace) =>
@@ -79,6 +81,7 @@ export default function SearchField() {
       fetchSuggestions();
     }, 300);
     return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   const clearSearch = () => {
@@ -122,19 +125,17 @@ export default function SearchField() {
 
       <span
         className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer"
-        onClick={clearSearch}
-      >
+        onClick={clearSearch}>
         <IoIosClose className="text-gray-400 size-6" />
       </span>
 
       {showHistory && searchValue.trim() === "" && searchHistory.length > 0 && (
-        <div className="absolute z-50 top-full left-0 right-0 bg-white rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto dark:bg-gray-950">
+        <div className="absolute z-50 top-full left-0 right-0 bg-white rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto dark:bg-zinc-900">
           <div className="flex justify-between px-4 py-2">
             <span>Recent Searches</span>
             <button
               onClick={clearSearchHistory}
-              className="text-sm text-blue-500"
-            >
+              className="text-sm text-blue-500">
               Clear
             </button>
           </div>
@@ -143,8 +144,7 @@ export default function SearchField() {
               <li
                 key={index}
                 className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
-                onClick={() => handleClick(workspace)}
-              >
+                onClick={() => handleClick(workspace)}>
                 <Link href={`/w/${workspace.WorkspaceId}/dashboard`}>
                   {workspace.name}
                 </Link>
@@ -155,17 +155,16 @@ export default function SearchField() {
       )}
 
       {loading ? (
-        <div className="absolute z-50 top-full left-0 right-0 bg-white border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
+        <div className="absolute z-50 top-full left-0 right-0 bg-white dark:bg-zinc-900 border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
           <p className="px-4 py-2">Loading...</p>
         </div>
       ) : suggestions.length > 0 ? (
-        <ul className="absolute z-50 top-full left-0 right-0 bg-white border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
+        <ul className="absolute z-50 top-full left-0 right-0 bg-white dark:bg-zinc-900 border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
           {suggestions.map((workspace) => (
             <Link
               key={workspace.WorkspaceId}
               href={`/w/${workspace.WorkspaceId}/dashboard`}
-              onClick={() => handleClick(workspace)}
-            >
+              onClick={() => handleClick(workspace)}>
               <li className="px-4 py-2 cursor-pointer">{workspace.name}</li>
             </Link>
           ))}

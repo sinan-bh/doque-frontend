@@ -35,7 +35,7 @@ export type Users = {
 };
 
 interface WorkspaceState {
-  workspaces: any;
+  workspaces: null | Workspace[];
   chosenDate: Date | string | number;
   projects: Project[] | null;
   workSpaceId: string;
@@ -51,6 +51,7 @@ interface WorkspaceState {
 }
 
 const initialState: WorkspaceState = {
+  workspaces: null,
   chosenDate: "",
   projects: null,
   workSpaceId: "",
@@ -83,7 +84,7 @@ export const fetchWorkspaceData = createAsyncThunk(
       const { data } = await axiosInstance.get("/workspace");
       return data.data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return rejectWithValue("Failed to fetch workspaces");
     }
   }
@@ -106,7 +107,7 @@ export const createWorkSpace = createAsyncThunk<
       });
       return data.data._id;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
         return rejectWithValue("createWorkSpace not found");
       }
@@ -128,7 +129,7 @@ export const createSpace = createAsyncThunk(
       );
       return data.data._id;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
         return rejectWithValue("createSpace not found");
       }
@@ -151,7 +152,7 @@ export const createList = createAsyncThunk(
         name: listName.completed,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error instanceof AxiosError && error.response?.status === 404) {
         return rejectWithValue("createSpace not found");
       }
@@ -169,7 +170,7 @@ export const fetchProjects = createAsyncThunk(
       );
       return data.data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       if (error instanceof AxiosError && error.response?.status === 404) {
         return rejectWithValue("Projects not found");
@@ -187,7 +188,7 @@ export const fetchWorkspaceMembers = createAsyncThunk(
 
       return data.data.members;
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       return rejectWithValue("Failed to fetch members");
     }
@@ -205,7 +206,7 @@ export const fetchUserProfiles = createAsyncThunk(
       const fetchedUsers = userResponses.map((resp) => resp.data.data);
       return fetchedUsers;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return rejectWithValue("Failed to fetch user profiles");
     }
   }
@@ -217,7 +218,7 @@ export const fetchAllUsers = createAsyncThunk(
       const { data } = await axiosInstance.get("/userprofile");
       return data.data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return rejectWithValue("Failed to fetch workspaces");
     }
   }

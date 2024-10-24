@@ -42,8 +42,10 @@ export default function SpaceCard({ space }: { space: Space }) {
               <div
                 className="flex gap-2 justify-between mb-2 p-2 border bg-white dark:bg-zinc-950 rounded-md"
                 key={i}>
-                <p>{section.name}</p>
-                <p>Tasks: {section.tasks.length}</p>
+                <p className="text-ellipsis overflow-hidden whitespace-nowrap">
+                  {section.name}
+                </p>
+                <p className="flex-shrink-0">Tasks: {section.tasks.length}</p>
               </div>
             ))}
           </CardContent>

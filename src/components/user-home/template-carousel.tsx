@@ -2,15 +2,10 @@
 
 import React from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import Card from "@/components/user-home/card";
 import { TemplateCard } from "./template-card";
 import { templateList } from "@/consts/templates";
 
-interface CarouselProps {
-  cards: { title: string; description?: string; image: string }[];
-}
-
-export default function Carousel({ cards }: CarouselProps) {
+export default function TemplateCarousel() {
   const [carouselRef] = useEmblaCarousel({ loop: true });
 
   return (

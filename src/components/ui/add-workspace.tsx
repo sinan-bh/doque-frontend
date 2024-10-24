@@ -57,7 +57,6 @@ export const AddWorkSpaceBtn = ({ children }: { children: ReactNode }) => {
       }
       dispatch(fetchWorkspaceData());
     } catch (error) {
-      console.log(error);
       toast({
         variant: "destructive",
         title: "Error",

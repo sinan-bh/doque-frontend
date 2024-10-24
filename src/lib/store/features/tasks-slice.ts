@@ -88,7 +88,6 @@ const tasksSlice = createSlice({
       const overColumnIndex = state.lists.findIndex(
         (column) => column.id === action.payload.overId
       );
-      console.log(activeColumnIndex, overColumnIndex);
       state.lists = arrayMove(state.lists, activeColumnIndex, overColumnIndex);
     },
 
@@ -126,7 +125,6 @@ const tasksSlice = createSlice({
       const activeIndex = state.tasks.findIndex(
         (task) => task.id === action.payload.activeId
       );
-      console.log(activeIndex);
 
       if (activeIndex === -1) {
         return;

@@ -120,8 +120,7 @@ export function EditSpace({
         <DialogHeader>
           <DialogTitle>Edit space</DialogTitle>
           <DialogDescription>
-            Spaces are where you can organize your work. Create a space for a
-            team, project, or anything you like!!
+            Edit your space name and description..
           </DialogDescription>
         </DialogHeader>
         <form

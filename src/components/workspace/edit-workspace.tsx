@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -44,8 +43,7 @@ export function EditWorkSpace({
   const handleUpdateSpace = async (e: FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Updating space",
-      description: "Updating the space details",
+      title: "Updating workspace",
     });
     setLoading(true);
     dispatch(
@@ -80,8 +78,8 @@ export function EditWorkSpace({
 
   const handleDeleteSpace = async () => {
     toast({
-      title: "Deleting space",
-      description: "Deleting the space and all its contents",
+      title: "Deleting workspace",
+      description: "Deleting the workspace and all its contents",
     });
     setLoading(true);
     dispatch(
@@ -110,21 +108,17 @@ export function EditWorkSpace({
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[500px]">
+      <DialogContent className="w-[600px]">
         <DialogHeader>
-          <DialogTitle>Edit space</DialogTitle>
-          <DialogDescription>
-            Spaces are where you can organize your work. Create a space for a
-            team, project, or anything you like!!
-          </DialogDescription>
+          <DialogTitle>Edit Workspace</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={handleUpdateSpace}
-          id="edit_space_form"
+          id="edit_workspace_form"
           className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="space_name" className="text-right">
-              Space Name
+              Workspace Name
             </Label>
             <Input
               placeholder="Enter new space name"
@@ -143,7 +137,7 @@ export function EditWorkSpace({
             confirmText="Delete Workspace"
             onConfirm={handleDeleteSpace}>
             <Button size={"sm"} className="self-start" variant="destructive">
-              Delete space
+              Delete workspace
             </Button>
           </AlertConfirm>
           {!loading && (
@@ -156,10 +150,10 @@ export function EditWorkSpace({
           <Button
             size={"sm"}
             className="col-start-4 px-4"
-            form="edit_space_form"
+            form="edit_workspace_form"
             disabled={loading}
             type="submit">
-            {loading ? "Updating..." : "Update space"}
+            {loading ? "Updating..." : "Update"}
           </Button>
         </DialogFooter>
       </DialogContent>

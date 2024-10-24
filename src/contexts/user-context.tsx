@@ -89,7 +89,9 @@ export default function UserContextProvider({
           token: token,
           id: data._id,
         };
-        Cookies.set("user", JSON.stringify(user), { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
+        Cookies.set("user", JSON.stringify(user), {
+          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
         setLoggedUser(user);
         router.push("/");
       }
@@ -128,10 +130,7 @@ export default function UserContextProvider({
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post(
-        "/register",
-        userData
-      );
+      const response = await axios.post("/register", userData);
       const { statusCode } = response.data;
       result.statusCode = statusCode;
     } catch (error) {
@@ -158,12 +157,8 @@ export default function UserContextProvider({
     } as { statusCode: number | null; error: string | null };
 
     try {
-      const response = await axios.post(
-        "/verifyotp",
-        { email, otp }
-      );
-      const { statusCode, message } = response.data;
-      console.log(message);
+      const response = await axios.post("/verifyotp", { email, otp });
+      const { statusCode } = response.data;
 
       result.statusCode = statusCode;
     } catch (error) {
@@ -190,13 +185,13 @@ export default function UserContextProvider({
   };
 
   const forgotPassword = async (email: string) => {
-    const result = { statusCode: null, error: null } as { statusCode: number | null; error: string | null };
+    const result = { statusCode: null, error: null } as {
+      statusCode: number | null;
+      error: string | null;
+    };
 
     try {
-      const response = await axios.post(
-        "/forgotpassword",
-        { email }
-      );
+      const response = await axios.post("/forgotpassword", { email });
       const { statusCode, message } = response.data;
       result.statusCode = statusCode;
       result.error = message;
@@ -220,13 +215,15 @@ export default function UserContextProvider({
   };
 
   const resetPassword = async (token: string, newPassword: string) => {
-    const result = { statusCode: null, error: null } as { statusCode: number | null; error: string | null };
+    const result = { statusCode: null, error: null } as {
+      statusCode: number | null;
+      error: string | null;
+    };
 
     try {
-      const response = await axios.patch(
-        `/reset-password/${token}`,
-        { newPassword }
-      );
+      const response = await axios.patch(`/reset-password/${token}`, {
+        newPassword,
+      });
       const { statusCode, message } = response.data;
       result.statusCode = statusCode;
 
@@ -256,17 +253,14 @@ export default function UserContextProvider({
     if (loggedUser?.token) {
       const fetchData = async () => {
         try {
-          const { data } = await axios.get(
-            `/userprofile/${loggedUser?.id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${loggedUser?.token}`,
-              },
-            }
-          );
+          const { data } = await axios.get(`/userprofile/${loggedUser?.id}`, {
+            headers: {
+              Authorization: `Bearer ${loggedUser?.token}`,
+            },
+          });
           setUserProfile(data.data);
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       };
       fetchData();

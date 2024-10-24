@@ -44,6 +44,7 @@ export default function Chat() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
   return (
@@ -51,8 +52,7 @@ export default function Chat() {
       {isVisible && (
         <div
           ref={chatRef}
-          className="fixed z-50 top-0 right-0 h-screen w-3/6 bg-white shadow-lg rounded-l-lg flex flex-col"
-        >
+          className="fixed z-50 top-0 right-0 h-screen w-3/6 bg-white shadow-lg rounded-l-lg flex flex-col">
           <div className="flex justify-between items-center mt-4 border-b pb-2 px-6">
             <h2 className="text-lg font-semibold text-gray-900">Messages</h2>
             <DeleteButton onDelete={() => handleDelete()} />

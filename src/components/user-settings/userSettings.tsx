@@ -22,7 +22,7 @@ export default function ProfileSettings() {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(fetchUserProfile({ userId: userProfile?._id }));
+      dispatch(fetchUserProfile());
     };
     fetchData();
   }, [dispatch]);
@@ -105,7 +105,7 @@ export default function ProfileSettings() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await dispatch(updateUserProfile({ id: userProfile?._id, userData }));
-    dispatch(fetchUserProfile({ userId: userProfile?._id }));
+    dispatch(fetchUserProfile());
     toast({ description: "Profile updated successfully" });
     router.push(`/u/${userProfile?._id}/profile`);
   };
