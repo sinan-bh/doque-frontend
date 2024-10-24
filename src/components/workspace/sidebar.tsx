@@ -94,8 +94,8 @@ const Sidebar: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        dispatch(setWorkSpaceId(workSpaceId));
-        await dispatch(fetchWorkspaceData());
+      dispatch(setWorkSpaceId(workSpaceId));
+      await dispatch(fetchWorkspaceData());
     };
     fetchData();
   }, [workSpaceId]);

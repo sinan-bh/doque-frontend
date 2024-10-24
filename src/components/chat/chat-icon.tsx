@@ -11,14 +11,14 @@ interface MessageIconProps {
 }
 
 const MessageIcon: React.FC<MessageIconProps> = ({ onClick }) => {
-  const dispatch = useDispatch<AppDispatch>()
-  const {workSpaceId}: {workSpaceId: string} = useParams()
+  const dispatch = useDispatch<AppDispatch>();
+  const { workSpaceId }: { workSpaceId: string } = useParams();
 
   const handleClick = () => {
-    dispatch(setWorkSpaceId(workSpaceId))
-    dispatch(fetchMessages())
-    onClick()
-  }
+    dispatch(setWorkSpaceId(workSpaceId));
+    dispatch(fetchMessages());
+    onClick();
+  };
 
   return (
     <button

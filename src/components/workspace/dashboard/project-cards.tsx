@@ -14,10 +14,10 @@ const ProjectCard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  useEffect(() => {    
-    if ((workSpaceId && spaces && spaces.length > 0) ) {
+  useEffect(() => {
+    if (workSpaceId && spaces && spaces.length > 0) {
       dispatch(setSelectedProjectId(spaces[0]._id));
-    } 
+    }
   }, [workSpaceId, spaces, dispatch]);
 
   const toggleProjects = () => {
@@ -43,7 +43,7 @@ const ProjectCard: React.FC = () => {
           <div className="flex-grow">
             <h3 className="text-sm font-medium">{displayedProject.name}</h3>
             <p className="text-xs text-gray-500 max-w-48">
-            <CustomMarquee text={displayedProject.description} />
+              <CustomMarquee text={displayedProject.description} />
             </p>
           </div>
           <button onClick={toggleProjects} className="focus:outline-none">
@@ -53,8 +53,7 @@ const ProjectCard: React.FC = () => {
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 20 20"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -68,8 +67,7 @@ const ProjectCard: React.FC = () => {
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -97,8 +95,7 @@ const ProjectCard: React.FC = () => {
             <div
               key={project._id}
               className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b dark:hover:bg-gray-800"
-              onClick={() => handleProjectClick(project._id)}
-            >
+              onClick={() => handleProjectClick(project._id)}>
               <div className="flex-grow">
                 <p className="text-sm font-medium">{project.name}</p>
                 <p className="text-xs text-gray-500">{project.description}</p>

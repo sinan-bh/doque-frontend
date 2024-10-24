@@ -58,10 +58,9 @@ export const addMessage = createAsyncThunk(
     if (!workSpaceId) return rejectWithValue("Invalid data");
 
     try {
-      await axiosInstance.post(
-        `/chat/workspaces/${workSpaceId}/messages`,
-        { content: text }
-      );
+      await axiosInstance.post(`/chat/workspaces/${workSpaceId}/messages`, {
+        content: text,
+      });
     } catch (err) {
       return rejectWithValue(err);
     }
@@ -75,9 +74,7 @@ export const deleteMessage = createAsyncThunk(
     const { workSpaceId } = state.workspace;
     if (!workSpaceId) return rejectWithValue("Invalid data");
     try {
-      await axiosInstance.delete(
-        `/chat/workspaces/${workSpaceId}/chat`
-      );
+      await axiosInstance.delete(`/chat/workspaces/${workSpaceId}/chat`);
     } catch (err) {
       return rejectWithValue(err);
     }
