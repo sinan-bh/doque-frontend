@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FaEllipsisV, FaLock, FaUnlock } from "react-icons/fa";
 import { useAppDispatch } from "../../../lib/store/hooks";
 import { toggleBlockMember } from "../../../lib/store/features/admin/admin-member-slice";
-import { toggleBlockMember } from "../../../lib/store/features/admin/admin-member-slice";
 
 interface StatusButtonProps {
   initialStatus: boolean;
   memberId: string;
-  memberId: string;
 }
-
 
 export default function StatusButton({
   initialStatus,
@@ -26,17 +23,7 @@ export default function StatusButton({
   const handleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
-  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    setIsBlocked(initialStatus);
-  }, [initialStatus]);
-
-  const handleDropdown = () => {
-    setShowDropdown((prev) => !prev);
-  };
-
-  
   const toggleStatus = (newStatus: boolean) => {
     setIsBlocked(newStatus);
     dispatch(toggleBlockMember({ memberId, isBlocked: newStatus }));
@@ -72,11 +59,6 @@ export default function StatusButton({
       )}
 
       <div className="flex items-center mt-2">
-        {isBlocked ? (
-          <span className="text-red-500">
-            <FaLock />
-          </span>
-        ) : (
         {isBlocked ? (
           <span className="text-red-500">
             <FaLock />

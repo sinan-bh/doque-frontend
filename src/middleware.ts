@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicRoutes = ["/signin", "/signup", "/home", "/"];
+const publicRoutes = ["/signin", "/signup", "/home", "/", "/admin/adminlogin"];
 const adminRoutes = ["/admin/dashboard", "/admin/members", "/admin/workspace", "/admin/workspace/[id]"];
 
 export function middleware(req: NextRequest) {
@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const pathname = url.pathname;
 
-  if (!token && !publicRoutes.includes(pathname)) {
+  if (!token && !adminToken && !publicRoutes.includes(pathname)) {
     url.pathname = "/signin";
     return NextResponse.redirect(url);
   }
@@ -36,6 +36,6 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Apply middleware to all routes except public ones like /signin, /signup, /home
-    "/((?!signin|home|_next|favicon.ico|reset-password|forgot-password|verify-otp|admin/adminogin).*)",
+    "/((?!home|_next|favicon.ico|reset-password|forgot-password|verify-otp).*)",
   ],
 };
