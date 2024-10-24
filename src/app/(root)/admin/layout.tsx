@@ -12,7 +12,7 @@ export default function Layout({
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Navbar />
-        <main className="flex-1 overflow-y-auto px-6 py-4">
+        <main className="flex-1 overflow-hidden px-6 py-2">
           {children}
         </main>
       </div>

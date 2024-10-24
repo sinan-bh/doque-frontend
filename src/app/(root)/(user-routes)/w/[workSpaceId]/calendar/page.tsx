@@ -17,7 +17,7 @@ function Page() {
   });
 
   return (
-    <div className="flex justify-center">
+    <div className="flex ml-11">
       <div>
         <div className="py-3 w-full flex justify-between">
           <div>

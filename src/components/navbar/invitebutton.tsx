@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,25 +12,35 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
-import { useUser } from "@/contexts/user-context";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { fetchAllUsers } from "@/lib/store/features/workspace-slice";
+import axiosInstance from "@/utils/axios";
+import { useParams } from "next/navigation";
 
 type UserEmail = {
   email: string;
 };
 
 export default function InviteButton() {
-  const { loggedUser } = useUser();
-  const { workSpaceId } = useWorkSpaceContext();
+  const dispatch = useAppDispatch();
+  const { allUsers } = useSelector((state: RootState) => state.workspace);
   const [formData, setFormData] = useState({
     email: "",
   });
   const [suggestions, setSuggestions] = useState<UserEmail[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { workSpaceId }: { workSpaceId: string } = useParams();
+
+  useEffect(() => {
+    if (workSpaceId) {
+      dispatch(fetchAllUsers());
+    }
+  }, [workSpaceId]);
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,23 +51,15 @@ export default function InviteButton() {
 
     if (value.length > 2) {
       try {
-        const { data } = await axios.get(
-          `https://daily-grid-rest-api.onrender.com/api/userprofile`,
-          {
-            headers: {
-              Authorization: `Bearer ${loggedUser?.token}`,
-            },
-          }
-        );
-        const filteredSuggestions = data.data.filter((user: UserEmail) =>
+        const filteredSuggestions = allUsers.filter((user: UserEmail) =>
           user.email.toLowerCase().includes(value.toLowerCase())
         );
-
+        dispatch(fetchAllUsers());
         setSuggestions(filteredSuggestions);
         setShowSuggestions(true);
         setShowSuggestions(true);
       } catch (error) {
-        console.log("Error fetching suggestions", error);
+        console.error(error);
       }
     } else {
       setSuggestions([]);
@@ -70,21 +72,16 @@ export default function InviteButton() {
     setShowSuggestions(false);
   };
 
-  const {toast} = useToast()
+  const { toast } = useToast();
 
   const handleSend = async () => {
-    setIsOpen(false)
+    setIsOpen(false);
     try {
-      const resp =await axios.post(
-        `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}/invite`,
-        { email: formData.email },
-        {
-          headers: {
-            Authorization: `Bearer ${loggedUser?.token}`,
-          },
-        }
+      const resp = await axiosInstance.post(
+        `/workspace/${workSpaceId}/invite`,
+        { email: formData.email }
       );
-  
+
       if (resp.status == 200) {
         toast({
           title: "Sent",
@@ -92,7 +89,6 @@ export default function InviteButton() {
         });
       }
     } catch (error) {
-      console.log(error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -109,8 +105,7 @@ export default function InviteButton() {
           <DialogTrigger asChild>
             <Button
               variant="ghost"
-              className="bg-white rounded-3xl hover:bg-transparent"
-            >
+              className="bg-white rounded-3xl hover:bg-transparent dark:bg-black">
               Invite
             </Button>
           </DialogTrigger>
@@ -134,15 +129,14 @@ export default function InviteButton() {
                     onChange={(e) => handleInputChange(e)}
                   />
                   {showSuggestions && suggestions.length > 0 && (
-                    <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-auto">
+                    <ul className="absolute left-0 right-0 mt-1 bg-white dark:bg-zinc-900 border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-auto">
                       {suggestions.map((suggestion, index) => (
                         <li
                           key={index}
-                          className="p-2 hover:bg-gray-100 cursor-pointer"
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer"
                           onClick={() =>
                             handleSelectSuggestion(suggestion?.email)
-                          }
-                        >
+                          }>
                           {suggestion?.email}
                         </li>
                       ))}

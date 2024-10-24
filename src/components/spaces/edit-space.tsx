@@ -13,67 +13,37 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormEvent, useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
-import { Space } from "@/types/spaces";
-import axios from "@/utils/axios";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 import { AlertConfirm } from "../ui/alert-confirm";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import {
+  deleteSpaceData,
+  updateSpaceData,
+} from "@/lib/store/thunks/space-thunks";
 
 export function EditSpace({
   spaceId,
-  setSpaces = () => {},
   children,
   initialData,
 }: {
   spaceId: string;
-  setSpaces?: React.Dispatch<React.SetStateAction<Space[]>>;
   children?: React.ReactNode;
   initialData: { name: string; description: string };
 }) {
   const [spaceName, setSpaceName] = useState(initialData.name);
   const [spaceDesc, setSpaceDesc] = useState(initialData.description);
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { error, loadingSpaces } = useAppSelector((state) => state.space);
+
+  const dispatch = useAppDispatch();
 
   const { toast } = useToast();
 
-  const handleEditSpace = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    toast({
-      draggable: true,
-      title: "Updating..",
-      description: "Please wait..",
-      open: loading,
-      onOpenChange: setLoading,
-    });
-
-    try {
-      const { data } = await axios.put(`/space/${spaceId}`, {
-        name: spaceName,
-        description: spaceDesc,
-      });
-
-      if (data) {
-        setSpaces((prev) =>
-          prev.map((space) => {
-            if (space._id === spaceId) {
-              return { ...space, name: spaceName, description: spaceDesc };
-            }
-            return space;
-          })
-        );
-        toast({
-          draggable: true,
-          title: "Space updated",
-          description: "Space has been updated successfully",
-        });
-      }
-    } catch (error) {
-      setLoading(false);
-      setIsOpen(false);
+  useEffect(() => {
+    if (error.updateSpace) {
       toast({
         draggable: true,
         title: "Could not update space",
@@ -84,35 +54,63 @@ export function EditSpace({
           </ToastAction>
         ),
       });
-    } finally {
-      setLoading(false);
-      setIsOpen(false);
     }
+    if (loadingSpaces.updateSpace) {
+      toast({
+        title: "Updating..",
+        description: "Please wait..",
+        open: loadingSpaces.updateSpace,
+      });
+    }
+    if (loadingSpaces.deleteSpace) {
+      toast({
+        title: "Deleting..",
+        description: "Please wait..",
+        open: loadingSpaces.deleteSpace,
+      });
+    }
+    if (error.deleteSpace) {
+      toast({
+        title: "Could not delete space",
+        description: error.deleteSpace,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, loadingSpaces]);
+
+  const handleEditSpace = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(
+      updateSpaceData({
+        spaceId,
+        spaceData: {
+          name: spaceName,
+          description: spaceDesc,
+        },
+        onSuccess: () => {
+          toast({
+            title: "Space updated",
+            description: "Space has been updated successfully",
+          });
+          setIsOpen(false);
+        },
+      })
+    );
   };
 
   const handleDeleteSpace = async () => {
-    try {
-      await axios.delete(`/space/${spaceId}`);
-      setSpaces((prev) => prev.filter((space) => space._id !== spaceId));
-      toast({
-        draggable: true,
-        title: "Space deleted",
-        description: "Space has been deleted successfully",
-      });
-      setIsOpen(false);
-    } catch (error) {
-      setIsOpen(false);
-      toast({
-        draggable: true,
-        title: "Could not delete space",
-        description: axiosErrorCatch(error),
-        action: (
-          <ToastAction onClick={() => setIsOpen(true)} altText="Try again">
-            Try again
-          </ToastAction>
-        ),
-      });
-    }
+    dispatch(
+      deleteSpaceData({
+        spaceId,
+        onSuccess: () => {
+          toast({
+            title: "Space Deleted",
+            description: "Space has been deleted successfully",
+          });
+          setIsOpen(false);
+        },
+      })
+    );
   };
 
   return (
@@ -122,8 +120,7 @@ export function EditSpace({
         <DialogHeader>
           <DialogTitle>Edit space</DialogTitle>
           <DialogDescription>
-            Spaces are where you can organize your work. Create a space for a
-            team, project, or anything you like!!
+            Edit your space name and description..
           </DialogDescription>
         </DialogHeader>
         <form
@@ -165,7 +162,7 @@ export function EditSpace({
               Delete space
             </Button>
           </AlertConfirm>
-          {!loading && (
+          {!loadingSpaces.updateSpace && (
             <DialogClose className="col-start-3" asChild>
               <Button size={"sm"} variant="ghost">
                 Cancel
@@ -176,9 +173,9 @@ export function EditSpace({
             size={"sm"}
             className="col-start-4 px-4"
             form="edit_space_form"
-            disabled={loading}
+            disabled={loadingSpaces.updateSpace}
             type="submit">
-            {loading ? "Updating..." : "Update space"}
+            {loadingSpaces.updateSpace ? "Updating..." : "Update space"}
           </Button>
         </DialogFooter>
       </DialogContent>

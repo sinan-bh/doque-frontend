@@ -25,6 +25,7 @@ export type Task = {
   assignedTo: string[];
   dueDate?: string;
   priority?: string;
+  status: string;
   createdBy?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -52,16 +53,25 @@ export type Column = {
 };
 
 export type TaskFormValues = {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   assignedTo?: string[];
   dueDate?: string;
   priority?: string;
+  status?: string;
 };
 
 export type ApiResponse<T> = {
   data: T | null;
   error: string | null;
+};
+
+export type Member = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  _id: string;
+  image: string;
 };
 
 export type coverColor = { name: string; hex: string };

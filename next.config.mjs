@@ -37,6 +37,16 @@ const nextConfig = {
         hostname: "media.istockphoto.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+        port: "",
+      },
     ],
   },
 };

@@ -1,8 +1,7 @@
-import axios from "axios";
 import Cookies from "js-cookie";
+import axios from "axios";
 
-// Create the Axios instance
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: "https://daily-grid-rest-api.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
@@ -10,7 +9,7 @@ const instance = axios.create({
 });
 
 //? request interceptor to attach the token to the Authorization header
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     const userCookie = Cookies.get("user");
     if (userCookie) {
@@ -28,4 +27,4 @@ instance.interceptors.request.use(
   }
 );
 
-export default instance;
+export default axiosInstance;

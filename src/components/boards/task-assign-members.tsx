@@ -16,37 +16,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TaskFormValues } from "@/types/spaces";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import axiosInstance from "@/utils/axios";
+import { useParams } from "next/navigation";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
-const members = [
-  {
-    value: "6376722425",
-    email: "anaspappadan@gmail.com,ksngj ngijsn",
-    label: "Anas",
-  },
-  {
-    value: "363463475786",
-    label: "Sahad",
-    email: "sahad@gmail.com",
-  },
-  {
-    value: "363463475755",
-    label: "Abhijith",
-    email: "abhijith@gmail.com",
-  },
-  {
-    value: "5687252875",
-    label: "Arun",
-    email: "arun@gmail.com",
-  },
-  {
-    value: "646758658",
-    label: "Sreejith",
-    email: "sreejith@gmail.com",
-  },
-];
+type Member = {
+  status: string;
+  user: { firstName: string; _id: string };
+};
 
 export default function AssignTaskToMembers({
   existingMembers,
@@ -56,6 +36,28 @@ export default function AssignTaskToMembers({
   setValues: Dispatch<SetStateAction<TaskFormValues | null>>;
 }) {
   const [open, setOpen] = useState(false);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { workSpaceId } = useParams();
+
+  useEffect(() => {
+    setLoading(true);
+    async function fetchMembers() {
+      try {
+        const { data } = await axiosInstance.get(
+          `/workspaces/${workSpaceId}/invited-members`
+        );
+        setMembers(data.data);
+      } catch (error) {
+        setError(axiosErrorCatch(error));
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchMembers();
+  }, [workSpaceId]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -78,19 +80,23 @@ export default function AssignTaskToMembers({
               <CommandList>
                 <CommandEmpty>No members found..</CommandEmpty>
                 <CommandGroup className="max-h-60 overflow-y-auto">
+                  {loading && <CommandEmpty>Loading...</CommandEmpty>}
+                  {error && (
+                    <CommandEmpty className="text-red-600">
+                      {error}
+                    </CommandEmpty>
+                  )}
                   {members.map((member) => {
-                    const isAssigned = existingMembers.includes(member.value);
+                    const isAssigned = existingMembers.includes(
+                      member.user._id
+                    );
                     return (
                       <CommandItem
-                        value={member.label}
-                        style={{ backgroundColor: "white" }}
-                        key={member.value}
+                        value={member.user._id}
+                        key={member.user._id}
                         className="flex justify-between">
                         <div className="flex flex-col items-start">
-                          <span>{member.label}</span>
-                          <span className="text-zinc-600 text-xs overflow-hidden max-w-40 whitespace-nowrap text-ellipsis">
-                            {member.email}
-                          </span>
+                          <span>{member.user.firstName}</span>
                         </div>
                         <Button
                           variant="outline"
@@ -101,7 +107,7 @@ export default function AssignTaskToMembers({
                               setValues((prev) => ({
                                 ...prev!,
                                 assignedTo: prev?.assignedTo?.filter(
-                                  (m) => m !== member.value
+                                  (m) => m !== member.user._id
                                 ),
                               }));
                               return;
@@ -110,7 +116,7 @@ export default function AssignTaskToMembers({
                               ...prev!,
                               assignedTo: [
                                 ...(prev?.assignedTo || []),
-                                member.value,
+                                member.user._id,
                               ],
                             }));
                           }}>
@@ -141,7 +147,7 @@ export default function AssignTaskToMembers({
               <AvatarFallback />
             </Avatar>
             <p className="text-xs text-zinc-700">
-              {members.find((m) => member === m.value)?.label}
+              {members.find((m) => member === m.user._id)?.user.firstName}
             </p>
           </div>
         ))}

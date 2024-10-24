@@ -1,45 +1,33 @@
-import { useUser } from "@/contexts/user-context";
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import Spinner from "../ui/spinner/spinner";
+import axiosInstance from "@/utils/axios";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type Invite = {
-    redirectUrl: string;
-}
-
-export default function Acceptinvitation({ token }: { token: string | null }) {
-    const [invite,setInvite] = useState<Invite | null>(null)
-  const { loggedUser } = useUser();
-
-  console.log(invite);
-  
+export default function Acceptinvitation() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const workspaceId = searchParams.get("workspaceId");
 
   useEffect(() => {
-    if (token && loggedUser?.id) {
+    if (workspaceId) {
       const fetchData = async () => {
         try {
-          const {data}  = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/accept-invitation?token=${token}`,
-            {
-              headers: {
-                Authorization: `Bearer ${loggedUser?.token}`,
-              },
-            }
+          const res = await axiosInstance.get(
+            `/workspaces/${workspaceId}/accept-invitation`
           );
-          setInvite(data)
-        } catch (err) {
-          if (err instanceof AxiosError && err.response?.status === 404) {
-            console.error("Token  not found");
-          } else {
-            console.error(err);
+          if (res.status === 200) {
+            router.push(`/w/${workspaceId}/dashboard`);
           }
+        } catch (err) {
+          console.error(err);
+          router.push(`/w/${workspaceId}/dashboard`);
         }
       };
       fetchData();
     }
-  }, [token,loggedUser?.id]);
-
-
+  }, [workspaceId]);
 
   return (
     <div className="h-screen flex justify-center items-center">

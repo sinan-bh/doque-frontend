@@ -1,14 +1,12 @@
-"use client"
 import Acceptinvitation from "@/components/navbar/accept-invitation";
-import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function Page() {
-  const searchParams = useSearchParams()  
-  const token = searchParams.get('token')
-  
   return (
     <div>
-      <Acceptinvitation token={token}/>
+      <Suspense>
+        <Acceptinvitation />
+      </Suspense>
     </div>
-  )
+  );
 }

@@ -1,141 +1,119 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AiOutlineMail,
   AiOutlineLock,
-  AiOutlineEye,
   AiOutlineEyeInvisible,
+  AiOutlineEye,
 } from "react-icons/ai";
-import { BiLogIn } from "react-icons/bi";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
-import { useWorkSpaceContext } from "@/contexts/workspace-context";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, clearMessages, setForgetEmail } from "@/lib/store/features/userSlice";
+import { AppDispatch, RootState } from "@/lib/store";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { loginUser: login } = useUser();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const error = useSelector((state: RootState) => state.user.error);
+  const loading = useSelector((state: RootState) => state.user.loading);
 
-  const { workSpace } = useWorkSpaceContext();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    dispatch(clearMessages());
 
-    const result = await login(email, password);
-    if (result.statusCode === 200) {
-      if (!workSpace || workSpace.length === 0) {
-        router.push("/onboarding");
-      } else {
-        router.push("/u/home");
-      }
-    } else {
-      setError(result.error);
+    const result = await dispatch(loginUser({ email, password }));
+
+    if (result.payload?.statusCode === 200) {
+      router.push("/u/home");
     }
-  };
-
-  const handleGoogleLogin = () => {
-    console.log("Logging in with Google...");
-    router.push("/u/home");
-  };
-
-  const handleGithubLogin = () => {
-    console.log("Logging in with GitHub...");
-    router.push("/u/home");
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  useEffect(() => {
+    dispatch(clearMessages());
+  }, [dispatch, email, password]);
+
+  const handleForgotPassword = () => {
+    dispatch(setForgetEmail(email));
+    router.push("/forgot-password");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] w-full flex justify-center items-center">
-      <div className="bg-gradient-to-br from-[#E0F7FF] to-white p-8 rounded-2xl shadow-gray-300 shadow-lg w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <div className="bg-white rounded-lg p-3 flex justify-center items-center shadow-lg">
-            <BiLogIn className="text-3xl text-black" />
-          </div>
-        </div>
-        <h1 className="text-3xl font-bold text-center mb-2">Login</h1>
-        <p className="text-gray-600 text-center mb-6">
-          Enter your credentials to access your account.
-        </p>
-        {error && <p className="text-red-500 text-center">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="relative">
-            <AiOutlineMail className="absolute left-3 top-4 text-[#5E6061]" />
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="block w-full px-4 py-3 pl-10 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-              required
-            />
-          </div>
-          <div className="relative">
-            <AiOutlineLock className="absolute left-3 top-4 text-[#5E6061]" />
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="block w-full px-4 py-3 pl-10 pr-10 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-              required
-            />
-            <div
-              className="absolute right-3 top-4 cursor-pointer text-[#5E6061]"
-              onClick={togglePasswordVisibility}
-            >
-              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
+      <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center sm:px-20">
+        <div className="bg-white rounded-2xl shadow-2xl flex flex-col sm:flex-row w-full max-w-4xl dark:bg-[#1F1A30]">
+          <div className="w-full sm:w-3/5 p-5">
+            <div className="text-left font-bold">
+              <span className="text-green-500 text-2xl dark:text-white">Do</span>
+              <span className="text-black text-2xl dark:text-gray-500">que</span>
+            </div>
+            <div className="py-10">
+              <h2 className="text-3xl font-bold text-green-500 mb-2 dark:text-white">Sign In</h2>
+              <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
+              <p className="mb-10 text-gray-500">Sign in to your account</p>
+              {error && <p className="text-red-500">{error}</p>}
+              <form onSubmit={handleLogin} className="flex flex-col items-center mt-10">
+                <div className="bg-gray-100 w-64 p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
+                  <AiOutlineMail className="text-gray-400 m-2" />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-gray-100 outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white "
+                    required
+                    onFocus={() => dispatch(clearMessages())}
+                  />
+                </div>
+                <div className="bg-gray-100 w-64 p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
+                  <AiOutlineLock className="text-gray-400 m-2" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-gray-100 outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
+                    required
+                    onFocus={() => dispatch(clearMessages())}
+                  />
+                  <div className="cursor-pointer text-gray-400 m-2" onClick={togglePasswordVisibility}>
+                    {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                  </div>
+                </div>
+                <div className="flex justify-end w-64 mb-5">
+                  <div onClick={handleForgotPassword} className="text-xs text-gray-500 cursor-pointer">
+                    Forgot Password?
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  {loading ? "Logging in..." : "Sign In"}
+                </button>
+              </form>
             </div>
           </div>
-          <div className="flex justify-between text-sm">
-            <Link href="/signup" className="text-[#5E6061] hover:text-[#333]">
-              Don&apos;t have an account?
-            </Link>
-            <Link href="/forgot-password" className="text-[#5E6061] hover:text-[#333]">
-              Forgot password?
+          <div className="w-full sm:w-2/5 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center dark:bg-[#1F1A30]">
+            <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
+            <div className="border-2 w-10 border-white inline-block mb-2"></div>
+            <p className="mb-10">Don&apos;t have an account? Sign up today and start your journey!</p>
+            <Link href="/signup" className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black">
+              Sign Up
             </Link>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-[#8BF376] text-xl text-gray-700 font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-[#6BBE4D] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-          >
-            Get Started
-          </button>
-        </form>
-        <div className="flex items-center justify-between my-4">
-          <hr className="w-full border-t border-gray-500" />
-          <span className="mx-2 text-gray-800 text-xs whitespace-nowrap">
-            or sign in with
-          </span>
-          <hr className="w-full border-t border-gray-500" />
         </div>
-        <div className="flex justify-between space-x-4 mt-4">
-          <Button
-            onClick={handleGoogleLogin}
-            className="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-900 px-4 py-3 rounded-lg shadow-md hover:bg-[#93D8EE] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-          >
-            <FcGoogle className="text-xl" />
-            <span className="font-semibold text-[#5E6061]">Google</span>
-          </Button>
-          <Button
-            onClick={handleGithubLogin}
-            className="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-900 px-4 py-3 rounded-lg shadow-md hover:bg-[#93D8EE] focus:outline-none focus:ring-2 focus:ring-[#93D8EE]"
-          >
-            <FaGithub className="text-xl" />
-            <span className="font-semibold text-[#5E6061]">GitHub</span>
-          </Button>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }

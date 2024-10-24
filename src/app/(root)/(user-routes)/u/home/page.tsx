@@ -1,18 +1,56 @@
-import React from "react";
-import { cards, guestCards, recentlyVisitedCards } from "@/consts/user-home-cards"
-import Carousel from "@/components/user-home/carousel";
+import MyWorkSpace from "@/components/user-home/my-workspace";
+import GuestWorkSpaces from "@/components/user-home/guest-workspace";
+import TemplateCarousel from "@/components/user-home/template-carousel";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-export default function Workspace() {
-  return (
-    <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
-      <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">My Workspaces</h1>
-      <Carousel cards={cards} />
+export default async function Workspace() {
+  const userCookie = cookies().get("user")?.value;
 
-      <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">Guest&apos;s Workspace</h2>
-      <Carousel cards={guestCards} />
+  try {
+    if (!userCookie) {
+      redirect("/onboarding");
+    }
 
-      <h2 className="text-3xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">Recently Visited</h2>
-      <Carousel cards={recentlyVisitedCards} />
-    </div>
-  );
-};
+    const parsedUserCookie: { token: string } = JSON.parse(userCookie);
+
+    const res = await fetch(
+      "https://daily-grid-rest-api.onrender.com/api/workspace",
+      {
+        headers: {
+          Authorization: `Bearer ${parsedUserCookie.token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch workspace data.");
+    }
+
+    const data = await res.json();
+
+    if (data.length === 0) {
+      redirect("/onboarding");
+    }
+
+    return (
+      <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar dark:bg-gray-950">
+        <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">
+          My Workspaces
+        </h1>
+
+        <MyWorkSpace />
+
+        <GuestWorkSpaces />
+
+        <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">
+          Templates
+        </h1>
+        <TemplateCarousel />
+      </div>
+    );
+  } catch (error) {
+    console.error("Error loading workspaces:", error);
+    redirect("/onboarding");
+  }
+}

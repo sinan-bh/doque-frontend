@@ -7,9 +7,9 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import { useUser } from "./user-context";
 import { useParams } from "next/navigation";
 import axiosInstance from "@/utils/axios";
+import { useAppSelector } from "@/lib/store/hooks";
 
 interface Project {
   _id: string;
@@ -25,16 +25,16 @@ interface Member {
 interface Workspace {
   WorkspaceId: string;
   name: string;
-
 }
 
 export type Users = {
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
   image: string;
   isActive: boolean;
-}
+};
 
 interface CalendarContextType {
   chosenDate: Date | string | number;
@@ -63,13 +63,13 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [users, setUsers] = useState<Users[]>([]);
   const [workSpacesId, setWorkSpacesId] = useState<string>("");
-  const { loggedUser } = useUser();
+  const { loggedUser } = useAppSelector((state) => state.user);
   const { workSpaceId } = useParams();
 
   const handleNext = async (previousSpaceName: string) => {
     try {
       const res = await axios.post(
-        "https://daily-grid-rest-api.onrender.com/api/workspace",
+        "/workspace",
         { name: previousSpaceName },
         {
           headers: {
@@ -79,7 +79,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
       );
       setWorkSpacesId(res.data.data._id);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -87,7 +87,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
     const fetchData = async () => {
       try {
         const { data } = await axiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`
+          `/space?workspaceId=${workSpaceId}`
         );
 
         setProjects(data.data);
@@ -104,7 +104,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
       const fetchData = async () => {
         try {
           const { data } = await axios.get(
-            `https://daily-grid-rest-api.onrender.com/api/space?workspaceId=${workSpaceId}`,
+            `/space?workspaceId=${workSpaceId}`,
             {
               headers: {
                 Authorization: `Bearer ${loggedUser?.token}`,
@@ -127,28 +127,23 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axiosInstance.get(
-          "https://daily-grid-rest-api.onrender.com/api/workspace"
-        );
+        const { data } = await axiosInstance.get("/workspace");
 
         setWorkspace(data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     fetchData();
     if (loggedUser?.token) {
       const fetchData = async () => {
         try {
-          const {data} = await axios.get(
-            "https://daily-grid-rest-api.onrender.com/api/workspace",
-            {
-              headers: { Authorization: `Bearer ${loggedUser?.token}` },
-            }
-          );          
+          const { data } = await axios.get("/workspace", {
+            headers: { Authorization: `Bearer ${loggedUser?.token}` },
+          });
           setWorkspace(data.data);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       };
       fetchData();
@@ -160,42 +155,37 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
       if (!workSpaceId) return;
 
       try {
-        const resp = await axiosInstance.get(
-          `https://daily-grid-rest-api.onrender.com/api/workspace/${workSpaceId}`
-        );
+        const resp = await axiosInstance.get(`/workspace/${workSpaceId}`);
 
         const activeMembers = resp.data.data.members.filter(
           (member: { status: string }) => member.status !== "pending"
         );
         setMembers(activeMembers);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
-      fetchWorkspaceMembers();
-  }, [workSpaceId,loggedUser?.token]);
+    fetchWorkspaceMembers();
+  }, [workSpaceId, loggedUser?.token]);
 
   useEffect(() => {
     const fetchUserProfiles = async () => {
       if (members.length === 0) return;
       try {
         const userPromises = members.map((member) => {
-          return axiosInstance.get(
-            `https://daily-grid-rest-api.onrender.com/api/userprofile/${member.user}`
-          );
+          return axiosInstance.get(`/userprofile/${member.user}`);
         });
 
-          const userResponses = await Promise.all(userPromises);
-          const fetchedUsers = userResponses.map((resp) => resp.data);
-          const users = fetchedUsers.map(u=> u.data)          
-          setUsers(users);
-        } catch (error) {
-          console.log(error);
-        }
-      };
+        const userResponses = await Promise.all(userPromises);
+        const fetchedUsers = userResponses.map((resp) => resp.data);
+        const users = fetchedUsers.map((u) => u.data);
+        setUsers(users);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-      fetchUserProfiles();
-
+    fetchUserProfiles();
   }, [members]);
 
   return (
@@ -210,8 +200,7 @@ const WorkSpaceContextProvider = ({ children }: ContextProps) => {
         setChosenDate,
         handleNext,
         setWorkSpacesId,
-      }}
-    >
+      }}>
       {children}
     </WorkSpaceContext.Provider>
   );

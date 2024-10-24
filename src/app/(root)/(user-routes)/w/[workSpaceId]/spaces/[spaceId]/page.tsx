@@ -2,10 +2,10 @@ import BoardsContainer from "@/components/boards/boards-container";
 import TaskDetails from "@/components/boards/task-details";
 import { EditSpace } from "@/components/spaces/edit-space";
 import Filter from "@/components/spaces/filter";
-import SearchBar from "@/components/spaces/search-bar";
+import SearchBar from "@/components/boards/search-tasks";
 import { Button } from "@/components/ui/button";
-import { getSpaceDetails } from "@/utils/taskUtils";
 import { cookies } from "next/headers";
+import { getSpaceDetails } from "@/utils/space-utils";
 
 export default async function Page({
   params,
@@ -26,7 +26,7 @@ export default async function Page({
       {spaceDetails && (
         <>
           <div className="flex px-4 justify-between">
-            <SearchBar placeholder={`Search in ${spaceDetails.name}..`} />
+            <SearchBar />
             <div className="flex gap-4">
               <EditSpace
                 spaceId={params.workSpaceId}
@@ -48,7 +48,7 @@ export default async function Page({
               taskId={searchParams["task"]}
             />
           )}
-          <BoardsContainer spaceData={spaceDetails} />
+          <BoardsContainer />
         </>
       )}
     </div>

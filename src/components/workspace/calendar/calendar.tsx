@@ -7,13 +7,11 @@ export default function Calendar() {
 
   return (
     <div>
-      <div className="w-[855px] h-[450px] py-1 mb-5 rounded-lg  bg-white ">
-        <main className="flex justify-center items-center w-2/3 rounded-lg  bg-white">
-          <div className="flex justify-between ml-[300px]">
+      <div className="flex rounded-lg bg-white">
+          <div className="flex justify-around bg-white dark:bg-black">
             <DayCalendar />
-            <CalendarSmall className="w-80 h-[300px] bg-white p-5 rounded-lg" />
+            <CalendarSmall className="w-full h-[300px]py-5" />
           </div>
-        </main>
       </div>
     </div>
   );
