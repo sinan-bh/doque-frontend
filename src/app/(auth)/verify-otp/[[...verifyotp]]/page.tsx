@@ -60,7 +60,7 @@ export default function VerifyEmail() {
             <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
                     <div className="top-4 right-4 text-center font-bold">
-                        <span className="text-white text-3xl">Do</span>
+                        <span className="text-green-500 text-3xl">Do</span>
                         <span className="text-black text-3xl dark:text-gray-500">que</span>
                     </div>
                 </div>
