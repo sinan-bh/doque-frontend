@@ -101,6 +101,8 @@ const workspaceSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchWorkspaces.fulfilled, (state, action) => {
+        console.log("action.payload");
+        
         state.loading = false;
         state.workspaces = action.payload;
       })
@@ -108,6 +110,8 @@ const workspaceSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      
       .addCase(fetchWorkspaceDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -133,7 +137,7 @@ const workspaceSlice = createSlice({
 export const selectWorkspaces = (state: RootState) =>
   state.adminWorkspace.workspaces;
 export const selectWorkspaceLoading = (state: RootState) =>
-  state.workspace.loading;
-export const selectWorkspaceError = (state: RootState) => state.workspace.error;
+  state.adminWorkspace.loading;
+export const selectWorkspaceError = (state: RootState) => state.adminWorkspace.error;
 
 export default workspaceSlice.reducer;

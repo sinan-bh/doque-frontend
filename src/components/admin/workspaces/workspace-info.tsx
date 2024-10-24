@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Workspace,
+  AdminWorkspace,
 } from "../../../lib/store/features/admin/admin-workspace-slice";
 
 import {
@@ -8,11 +8,11 @@ import {
   CalendarIcon,
   ClipboardListIcon,
 } from "@heroicons/react/solid";
-import { Member } from "@/lib/store/features/admin/admin-member-slice";
+import { AdminMember } from "@/lib/store/features/admin/admin-member-slice";
 
 interface WorkspaceDetailsContentProps {
-  workspace: Workspace;
-  members: Member[];
+  workspace: AdminWorkspace;
+  members: AdminMember[];
   loading: boolean;
   error: string | null;
 }

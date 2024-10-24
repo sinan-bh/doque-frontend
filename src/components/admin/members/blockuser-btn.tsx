@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaEllipsisV, FaLock, FaUnlock } from "react-icons/fa";
 import { useAppDispatch } from "../../../lib/store/hooks";
 import { toggleBlockMember } from "../../../lib/store/features/admin/admin-member-slice";
+import { toggleBlockMember } from "../../../lib/store/features/admin/admin-member-slice";
 
 interface StatusButtonProps {
   initialStatus: boolean;
@@ -9,11 +10,7 @@ interface StatusButtonProps {
   memberId: string;
 }
 
-export default function StatusButton({
-  initialStatus,
-  memberId,
-}: StatusButtonProps) {
-  const [isBlocked, setIsBlocked] = useState(initialStatus);
+
 export default function StatusButton({
   initialStatus,
   memberId,
@@ -39,9 +36,7 @@ export default function StatusButton({
     setShowDropdown((prev) => !prev);
   };
 
-  const toggleStatus = (newStatus: boolean) => {
-    setIsBlocked(newStatus);
-    dispatch(toggleBlockMember({ memberId, isBlocked: newStatus }));
+  
   const toggleStatus = (newStatus: boolean) => {
     setIsBlocked(newStatus);
     dispatch(toggleBlockMember({ memberId, isBlocked: newStatus }));
