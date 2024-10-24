@@ -1,7 +1,8 @@
 "use client"; 
 
-import { useCalendarContext } from "@/contexts/CalenderContext";
+import { RootState } from "@/lib/store";
 import { FC, useState } from "react";
+import { useSelector } from "react-redux";
 
 type TimeSlot = string; 
 type Tasks = { [key: string]: string[] }; 
@@ -20,7 +21,7 @@ const generateTimeSlots = (): TimeSlot[] => {
 };
 
 const DayCalendar: FC = () => {
-  const { chosenDate } = useCalendarContext(); 
+  const { chosenDate } = useSelector((state: RootState)=> state.workspace); 
 
   const times: TimeSlot[] = generateTimeSlots();
   const [tasks, setTasks] = useState<Tasks>({});
@@ -97,15 +98,15 @@ const DayCalendar: FC = () => {
   };
 
   return (
-    <div>
+    <div className="w-full h-[400px] dark:bg-darkBg">
       <h2 className="text-2xl font-bold mb-4 underline">
         {displayedDate.toLocaleDateString("en-US", { weekday: "long" })}
       </h2>
-      <div className="space-y-4 w-[500px] h-[450px] overflow-hidden overflow-y-scroll hide-scrollbar">
+      <div className="space-y-4 w-[600px] h-[350px] overflow-y-scroll ">
         {times.map((time, idx) => (
-          <div key={idx} className="relative hover:bg-gray-100 transition">
+          <div key={idx} className="relative hover:bg-gray-100 transition dark:hover:bg-gray-900">
             <div className={`flex items-center cursor-pointer`} onClick={() => openAddModal(time)}>
-              <div className="w-20 text-right pr-3 font-medium">{time}</div>
+              <div className="w-20 text-right  font-medium">{time}</div>
               <div className="flex-grow border-t border-gray-300 relative">
                 <div className="grid grid-cols-3 gap-2">
                   {tasks[time]?.map((task, taskIndex) => (

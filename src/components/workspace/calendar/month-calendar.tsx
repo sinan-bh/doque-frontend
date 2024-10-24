@@ -53,22 +53,22 @@ const MonthCalendar: React.FC = () => {
   };
 
   return (
-    <div className="w-[855px] h-[500px]   border-2  overflow-y-scroll hide-scrollbar bg-white">
-      <div className="flex items-center justify-end p-4 bg-white shadow-md rounded-t-lg">
+    <div className="w-[940px] max-h-full overflow-y-scroll hide-scrollbar ">
+      <div className="flex items-center justify-end p-4 bg-white shadow-md rounded-t-lg dark:bg-darkBg">
         <button
           onClick={handlePreviousMonth}
-          className="text-gray-600 hover:text-gray-800 px-3"
+          className="text-gray-600 hover:text-gray-800 px-3 dark:text-gray-200"
         >
           &lt;
         </button>
 
-        <span className="font-bold text-lg text-gray-800">
+        <span className="font-bold text-lg text-gray-800 dark:text-gray-200">
           {currentDate.isSame(dayjs(), 'month') ? 'This Month' : currentDate.format('MMMM YYYY')}
         </span>
 
         <button
           onClick={handleNextMonth}
-          className="text-gray-600 hover:text-gray-800 px-3"
+          className="text-gray-600 hover:text-gray-800 px-3 dark:text-gray-200"
         >
           &gt;
         </button>
@@ -78,7 +78,7 @@ const MonthCalendar: React.FC = () => {
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
           <div
             key={index}
-            className="text-center  bg-gray-100 text-gray-600 font-semibold"
+            className="text-center  bg-gray-100 text-gray-600 font-semibold dark:bg-darkBg dark:text-gray-200"
           >
             {day}
           </div>
@@ -87,7 +87,7 @@ const MonthCalendar: React.FC = () => {
         {getDaysInMonth().map((dayInfo, index) => (
           <div
             key={index}
-            className={`relative h-20 border border-gray-200 ${
+            className={`relative h-20 border border-gray-200 dark:bg-darkBg ${
               dayInfo.isCurrentMonth
                 ? 'bg-white hover:bg-gray-50'
                 : 'bg-gray-50 text-gray-400'

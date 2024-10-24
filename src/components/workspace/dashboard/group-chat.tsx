@@ -1,49 +1,70 @@
+"use client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
+import { fetchUserProfiles, fetchWorkspaceMembers } from "@/lib/store/features/workspace-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useParams } from "next/navigation";
+import React, { useEffect } from "react";
 
 interface MessageProps {
   name: string;
   image: string;
-  hasNotification?: boolean;
+  // isActive?: boolean;
 }
 
-function ChatList({ name, hasNotification }: MessageProps) {
+function ChatList({ name, image }: MessageProps) {  
+
   return (
     <div className="flex flex-col items-center relative">
       <div className="relative">
-        <Avatar>
-          <AvatarImage src="" alt="Project Icon" />
-          <AvatarFallback />
+        <Avatar className="w-12 h-12">
+          <AvatarImage src={image} alt={`${name}'s Avatar`} />
+          <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
-        {hasNotification && (
-          <div className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></div>
-        )}
+        {/*-----comming soon----*/}
+        {/* {isActive && (
+          <div className="absolute top-0 right-0 h-3 w-3 bg-green-400 rounded-full border border-white"></div>
+        )} */}
       </div>
-      <p className="text-sm font-semibold mt-1">{name}</p>
+      <p className="text-xs font-semibold mt-1 text-center truncate w-full">
+        {name}
+      </p>
     </div>
   );
 }
 
 export default function GroupChat() {
-  const messages = [
-    { name: "Sinan", image: "/path-to-image1.jpg", hasNotification: false },
-    { name: "Sinan", image: "/path-to-image2.jpg", hasNotification: true },
-    { name: "Alixa", image: "/path-to-image3.jpg", hasNotification: false },
-    { name: "Alixa", image: "/path-to-image4.jpg", hasNotification: false },
-    { name: "Alixa", image: "/path-to-image5.jpg", hasNotification: false },
-    { name: "Sinan", image: "/path-to-image6.jpg", hasNotification: false },
-  ];
+  const { users, members } = useAppSelector((state) => state.workspace);
+  const dispatch = useAppDispatch();
+  const { workSpaceId }: { workSpaceId: string } = useParams();
+  // const [isActive, setIsActive] = useState<boolean>(false)
+
+useEffect(() => {
+  const fetchData = async () => {
+    await dispatch(fetchWorkspaceMembers({ workSpaceId }));
+  };
+  // const value = window.navigator.onLine
+  // setIsActive(value)
+    fetchData();
+  }, [workSpaceId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchUserProfiles({ members }));
+    };
+    fetchData()
+  }, [members]);
 
   return (
-    <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-md p-2 space-y-2">
-      <div className="text-sm font-semibold text-gray-600 ">Message</div>
-      <div className="grid grid-cols-3 gap-1">
-        {messages.map((message, index) => (
+    <div className="mt-2 bg-white  rounded-lg shadow-md p-2 space-y-2 dark:bg-darkBg">
+      <div className="text-sm font-semibold text-gray-600 dark:text-gray-300">Message</div>
+      <div className="grid grid-cols-3 gap-4">
+        {users?.map((message, index) => (
           <ChatList
             key={index}
-            name={message.name}
+            name={message.firstName}
             image={message.image}
-            hasNotification={message.hasNotification}
+            // isActive={isActive}
           />
         ))}
       </div>

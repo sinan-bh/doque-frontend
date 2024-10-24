@@ -1,21 +1,17 @@
-const workSpaces = {
-  1: {
-    name: "Workspace 1",
-  },
-  2: {
-    name: "Workspace 2",
-  },
-  3: {
-    name: "Workspace 3",
-  },
-};
+import Spinner from "@/components/ui/spinner/spinner";
+import { redirect } from "next/navigation";
 
 export default function Page({
   params,
 }: {
-  params: { workSpaceId: 1 | 2 | 3 };
+  params: {
+    workSpaceId: string;
+  };
 }) {
+  redirect(`/w/${params.workSpaceId}/dashboard`); // Redirect to the dashboard page
   return (
-    <div>{workSpaces[params.workSpaceId]?.name || "Work space not found"}</div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Spinner />
+    </div>
   );
 }

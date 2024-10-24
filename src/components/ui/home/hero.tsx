@@ -29,7 +29,7 @@ export default function Home() {
 
         <section className="relative text-center pt-32 pb-10 animate-fadeIn">
           <div className="relative z-10 m-16">
-            <h1 className="text-9xl font-bold">
+            <h1 className="text-9xl font-bold text-black">
               DO
               <span className="relative inline-block">
                 <span
@@ -54,7 +54,7 @@ export default function Home() {
               Organize, collaborate, and track progress with our powerful yet
               simple task management tool.
             </p>
-            <Link href="/signup">
+            <Link href="/u/home">
               <button className="my-8 relative inline-flex items-center justify-center h-12 px-4 text-lg font-semibold text-[#36395A] bg-[#FCFCFD] rounded-lg border-0 shadow-lg transition-all duration-150 ease-in-out transform active:translate-y-0 hover:translate-y-[-2px] focus:shadow-outline focus:outline-none focus:ring-2 focus:ring-[#D6D6E7] focus:ring-opacity-50 hover:shadow-[rgba(45,35,66,0.4)_0_4px_8px,rgba(45,35,66,0.3)_0_7px_13px_-3px,#D6D6E7_0_-3px_0_inset] active:shadow-[rgba(214,214,231,1)_0_3px_7px_inset]">
                 Get Started Free
               </button>

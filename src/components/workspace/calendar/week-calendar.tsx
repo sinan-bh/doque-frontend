@@ -47,8 +47,8 @@ const WeekCalendar: React.FC = () => {
   };
 
   return (
-    <div className="w-[855px] h-[500px] py-1 rounded-lg shadow-md border border-gray-300 bg-white">
-      <div className="flex justify-end p-4 bg-white shadow-lg rounded-t-lg">
+    <div className="w-[940px] h-full  rounded-lg shadow-md border border-gray-300 bg-white dark:bg-darkBg">
+      <div className="flex justify-end p-4 bg-white shadow-lg rounded-t-lg dark:bg-darkBg">
         <button
           onClick={handlePreviousWeek}
           className="text-gray-600 hover:text-gray-800 px-3"
@@ -70,21 +70,21 @@ const WeekCalendar: React.FC = () => {
         </button>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100%-64px)] hide-scrollbar">
+      <div className="overflow-y-auto h-[calc(100%-64px)] ">
         <div className="grid grid-cols-[50px,repeat(7,1fr)] border-t border-gray-300">
-          <div className="border border-gray-300 bg-gray-100"></div>
+          <div className="border border-gray-300 bg-gray-100 dark:bg-darkBg"></div>
 
           {days.map((day, index) => (
             <div
               key={index}
-              className="text-center border border-gray-300 bg-gray-100 font-light"
+              className="text-center border border-gray-300 bg-gray-100 font-light dark:bg-darkBg"
             >
               {`${day.toLocaleString("en-US", { weekday: "short" })} ${day.getDate()}`}
             </div>
           ))}
           {times.map((time) => (
             <React.Fragment key={time}>
-              <div className="border border-gray-300 text-right p-1 bg-gray-200 w-[50px] text-xs text-gray-500 font-bold">
+              <div className="border border-gray-300 text-right p-1 bg-gray-200 w-[50px] text-xs text-gray-400 font-bold dark:bg-darkBg">
                 {time}
               </div>
 

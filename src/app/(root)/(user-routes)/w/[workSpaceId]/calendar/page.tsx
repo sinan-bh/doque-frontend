@@ -17,9 +17,9 @@ function Page() {
   });
 
   return (
-    <div className="bg-gray-100 flex justify-end pr-10">
+    <div className="flex ml-11">
       <div>
-        <div className="py-3 w-3/3 flex justify-between">
+        <div className="py-3 w-full flex justify-between">
           <div>
             <h1 className="font-extrabold text-3xl">Calendar</h1>
             <span>

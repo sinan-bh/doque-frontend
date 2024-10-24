@@ -11,15 +11,18 @@ export default function SpaceNameStep({
   onNext,
   initialName = "",
 }: SpaceNameStepProps) {
-  const [boardName, setBoardName] = useState<string>(initialName);
+  const [spaceName, setSpaceName] = useState<string>(initialName);
+
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBoardName(event.target.value);
+    setSpaceName(event.target.value);
   };
 
-  const handleNextStep = () => {
-    onNext(boardName);
+  const handleNextStep = async () => {
+    onNext(spaceName);
   };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-10">
@@ -32,20 +35,20 @@ export default function SpaceNameStep({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-32">
         <div className="mt-14 space-y-4 flex flex-col">
           <h2 className="text-3xl font-semibold text-black">Great!</h2>
-          <p className="text-lg text-gray-700">Let&apos;s create your first board</p>
+          <p className="text-lg text-gray-700">Let&apos;s create your first Work Space</p>
           <input
             type="text"
             placeholder="Enter Your Space Name..."
-            value={boardName}
+            value={spaceName}
             onChange={handleInputChange}
             className="w-full py-3 px-4 bg-transparent border border-gray-400 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             className={`text-left flex flex-end text-indigo-600 font-semibold hover:underline ${
-              !boardName.trim() ? "opacity-50 cursor-not-allowed" : ""
+              !spaceName.trim() ? "opacity-50 cursor-not-allowed" : ""
             }`}
             onClick={handleNextStep}
-            disabled={!boardName.trim()}
+            disabled={!spaceName.trim()}
           >
             Next
           </button>
@@ -55,7 +58,7 @@ export default function SpaceNameStep({
           <div className="w-96 h-auto bg-white shadow-lg rounded-lg p-6">
             <h3 className="font-semibold mb-4">
               <div className="h-8 pl-5 bg-indigo-100 text-indigo-600 rounded-lg flex items-center">
-                {boardName || "Space Name"}
+                {spaceName || "Space Name"}
               </div>
             </h3>
 

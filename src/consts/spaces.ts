@@ -1,92 +1,117 @@
-import { SpaceDetails } from "@/types/spaces";
-
-export const spaces: SpaceDetails[] = [
+export const spaces = [
   {
-    name: "Space 1",
-    contents: {
-      boards: [
-        {
-          name: "Board 1",
-          createdAt: "2021-01-01",
-          updatedAt: "2021-01-02",
-          members: 5,
-          sections: [
-            { name: "To Do", tasks: 5 },
-            { name: "In Progress", tasks: 3 },
-            { name: "Done", tasks: 2 },
-          ],
-        },
-        {
-          name: "Board 2",
-          createdAt: "2021-01-01",
-          updatedAt: "2021-01-02",
-          members: 5,
-          sections: [
-            { name: "To Do", tasks: 5 },
-            { name: "In Progress", tasks: 3 },
-            { name: "Done", tasks: 2 },
-          ],
-        },
-      ],
-    },
+    id: "1",
+    title: "Project Alpha",
+    description: "A project to develop a new web application",
+    background: "blue",
+    workspaceId: "workspace_123",
+    createdBy: "Alice Brown",
+    lists: [
+      {
+        id: "1",
+        title: "Backlog",
+        color: "lightgray",
+        tasks: [
+          {
+            id: "1",
+            title: "Setup Task",
+            description: "Initial setup for the project",
+            assignedTo: ["David Clark", "Emma Harris"],
+            dueDate: "2024-10-20",
+            priority: "High",
+            createdBy: "Alice Brown",
+            createdAt: "2024-10-01",
+            updatedAt: "2024-10-01",
+          },
+          {
+            id: "2",
+            title: "Documentation Task",
+            description: "Create project documentation",
+            assignedTo: ["Alice Brown"],
+            dueDate: "2024-10-25",
+            priority: "Medium",
+            createdBy: "David Clark",
+            createdAt: "2024-10-02",
+            updatedAt: "2024-10-04",
+          },
+        ],
+      },
+      {
+        id: "2",
+        title: "In Progress",
+        color: "yellow",
+        tasks: [
+          {
+            id: "3",
+            title: "Authentication Task",
+            description: "Implement authentication module",
+            assignedTo: ["Emma Harris"],
+            dueDate: "2024-10-22",
+            priority: "High",
+            createdBy: "David Clark",
+            createdAt: "2024-10-05",
+            updatedAt: "2024-10-06",
+          },
+        ],
+      },
+    ],
   },
   {
-    name: "Space 2",
-    contents: {
-      boards: [
-        {
-          name: "Board 1",
-          createdAt: "2021-01-01",
-          updatedAt: "2021-01-02",
-          members: 5,
-          sections: [
-            { name: "To Do", tasks: 5 },
-            { name: "In Progress", tasks: 3 },
-            { name: "Done", tasks: 2 },
-          ],
-        },
-        {
-          name: "Board 2",
-          createdAt: "2021-01-01",
-          updatedAt: "2021-01-02",
-          members: 5,
-          sections: [
-            { name: "To Do", tasks: 5 },
-            { name: "In Progress", tasks: 3 },
-            { name: "Done", tasks: 2 },
-          ],
-        },
-        {
-          name: "Board 3",
-          createdAt: "2021-01-01",
-          updatedAt: "2021-01-02",
-          members: 5,
-          sections: [
-            { name: "To Do", tasks: 5 },
-            { name: "In Progress", tasks: 3 },
-            { name: "Done", tasks: 2 },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    name: "Space 3",
-    contents: {
-      boards: [
-        {
-          name: "Board 1",
-          createdAt: "2021-01-01",
-          updatedAt: "2021-01-02",
-          members: 5,
-          sections: [
-            { name: "To Do", tasks: 5 },
-            { name: "In Progress", tasks: 3 },
-            { name: "Done", tasks: 2 },
-          ],
-        },
-      ],
-    },
+    id: "2",
+    title: "Project Beta",
+    description: "E-commerce platform development",
+    background: "green",
+    workspaceId: "workspace_456",
+    createdBy: "Michael Lee",
+    lists: [
+      {
+        id: "1",
+        title: "To Do",
+        color: "red",
+        tasks: [
+          {
+            id: "1",
+            title: "Landing Page Task",
+            description: "Build landing page",
+            assignedTo: ["Sarah Green", "Paul Adams"],
+            dueDate: "2024-10-18",
+            priority: "High",
+            createdBy: "Michael Lee",
+            createdAt: "2024-10-01",
+            updatedAt: "2024-10-01",
+          },
+          {
+            id: "2",
+            title: "Payment Integration Task",
+            description: "Integrate payment gateway",
+            assignedTo: ["Paul Adams"],
+            dueDate: "2024-10-25",
+            priority: "Medium",
+            createdBy: "Sarah Green",
+            createdAt: "2024-10-03",
+            updatedAt: "2024-10-05",
+          },
+        ],
+      },
+      {
+        id: "2",
+        title: "Done",
+        color: "green",
+        tasks: [
+          {
+            id: "3",
+            title: "User Profile Task",
+            description: "Create user profiles",
+            assignedTo: ["Paul Adams"],
+            dueDate: "2024-10-10",
+            priority: "Low",
+            createdBy: "Michael Lee",
+            createdAt: "2024-09-30",
+            updatedAt: "2024-10-10",
+          },
+        ],
+      },
+    ],
   },
 ];
 

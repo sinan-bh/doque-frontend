@@ -1,6 +1,9 @@
 "use client";
 
 import React from "react";
+import { createWorkSpace } from "@/lib/store/features/workspace-slice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 
 interface TaskNameStepProps {
   previousSpaceName: string;
@@ -30,8 +33,15 @@ export default function TaskNameStep({
     onTaskCategoryChange(name, value);
   };
 
-  const handleNext = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleNext = async (previousSpaceName: string) => {
+    await dispatch(createWorkSpace({ name: previousSpaceName }));
+  };
+
+  const handleCreateWorkSpace = async () => {
     const currentBoardName = taskCategories.todo;
+    handleNext(previousSpaceName);
     onNext(currentBoardName);
   };
 
@@ -96,7 +106,7 @@ export default function TaskNameStep({
               className={`text-indigo-600 font-semibold hover:underline ${
                 !allFieldsFilled ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              onClick={handleNext}
+              onClick={handleCreateWorkSpace}
               disabled={!allFieldsFilled}
             >
               Next

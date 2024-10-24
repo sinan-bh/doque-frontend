@@ -1,124 +1,105 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
-import React, { useState } from "react";
-
-type Project = {
-  title: string;
-  description: string;
-  image: string;
-};
-
-const projects: Project[] = [
-  {
-    title: "Website Redesign",
-    description:
-      "Redesigning the company's website to improve user experience and responsiveness...",
-    image: "/profile-pic1.jpg",
-  },
-  {
-    title: "Mobile App Development",
-    description:
-      "Building a cross-platform mobile application to enhance user accessibility...",
-    image: "/profile-pic2.jpg",
-  },
-  {
-    title: "E-commerce Platform",
-    description:
-      "Developing an e-commerce platform with advanced search and recommendation systems...",
-    image: "/profile-pic3.jpg",
-  },
-];
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { setSelectedProjectId } from "@/lib/store/features/workspace-slice";
+import { NewSpaceButton } from "@/components/spaces/new-space-button";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import { useParams } from "next/navigation";
+import CustomMarquee from "@/components/ui/marquee";
 
 const ProjectCard: React.FC = () => {
-  const [selectedProjectIndex, setSelectedProjectIndex] = useState<number>(0);
+  const dispatch = useAppDispatch();
+  const { spaces } = useAppSelector((state) => state.space);
+  const { selectedProjectId } = useAppSelector((state) => state.workspace);
   const [isOpen, setIsOpen] = useState(false);
+  const { workSpaceId }: { workSpaceId: string } = useParams();
+
+  useEffect(() => {
+    if (workSpaceId && spaces && spaces.length > 0) {
+      dispatch(setSelectedProjectId(spaces[0]._id));
+    }
+  }, [workSpaceId, spaces, dispatch]);
 
   const toggleProjects = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
   };
 
-  const handleProjectClick = (index: number) => {
-    setSelectedProjectIndex(index);
+  const handleProjectClick = (projectId: string) => {
+    dispatch(setSelectedProjectId(projectId));
     setIsOpen(false);
   };
 
-  const displayedProject = projects[selectedProjectIndex];
-
-  const otherProjects = projects.filter(
-    (_, index) => index !== selectedProjectIndex
+  const displayedProject = spaces?.find(
+    (project) => project._id === selectedProjectId
   );
 
-  return (
-    <div className="w-[257px] h-[96px] overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md p-2">
-      <div className="flex items-center space-x-4">
-        <Avatar>
-          <AvatarImage src={displayedProject.image} alt="Project Icon" />
-          <AvatarFallback />
-        </Avatar>
-        <div className="flex-grow">
-          <h3 className="text-sm">{displayedProject.title}</h3>
-        </div>
-        <button onClick={toggleProjects} className="focus:outline-none">
-          {isOpen ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 20 20"
-              stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 15l7-7 7 7"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          )}
-        </button>
-      </div>
-      <p className="text-[10px]  text-gray-500">
-        {displayedProject.description}
-      </p>
+  const otherProjects =
+    spaces?.filter((project) => project._id !== selectedProjectId) || [];
 
-      {isOpen && otherProjects.length > 0 && (
-        <div className="mt-4">
-          {otherProjects.map((project, index) => (
-            <div
-              key={index}
-              className="border-t border-gray-300 pt-4 cursor-pointer"
-              onClick={() =>
-                handleProjectClick(
-                  projects.findIndex((p) => p.title === project.title)
-                )
-              }>
-              <div className="flex items-center space-x-4">
-                <Image
-                  width={48}
-                  height={48}
-                  src={project.image}
-                  alt="Profile"
-                  className="w-12 h-12 rounded-full"
+  return (
+    <div className="relative w-full bg-white  rounded-lg shadow-md p-4 dark:bg-gray-800">
+      {displayedProject ? (
+        <div className="flex items-center justify-between">
+          <div className="flex-grow">
+            <h3 className="text-sm font-medium">{displayedProject.name}</h3>
+            <p className="text-xs text-gray-500 max-w-48">
+              <CustomMarquee text={displayedProject.description} />
+            </p>
+          </div>
+          <button onClick={toggleProjects} className="focus:outline-none">
+            {isOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 20 20"
+                stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 15l7-7 7 7"
                 />
-                <div className="flex-grow">
-                  <p className="">{project.title}</p>
-                </div>
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+      ) : (
+        <NewSpaceButton>
+          <div className="flex justify-center cursor-pointer">
+            <IoMdAddCircleOutline
+              size={15}
+              className="mr-1 mt-1 text-gray-500"
+            />
+            <span className="text-gray-500">Add New Project</span>
+          </div>
+        </NewSpaceButton>
+      )}
+      {isOpen && otherProjects.length > 0 && (
+        <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto dark:bg-gray-900 ">
+          {otherProjects.map((project) => (
+            <div
+              key={project._id}
+              className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b dark:hover:bg-gray-800"
+              onClick={() => handleProjectClick(project._id)}>
+              <div className="flex-grow">
+                <p className="text-sm font-medium">{project.name}</p>
+                <p className="text-xs text-gray-500">{project.description}</p>
               </div>
-              <p className="mt-2 text-gray-500">{project.description}</p>
             </div>
           ))}
         </div>
