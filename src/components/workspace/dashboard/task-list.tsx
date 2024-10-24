@@ -19,11 +19,12 @@ const TaskList: React.FC = () => {
 
   const selectedSpace = spaces?.find((space) => space._id === selectedProjectId);
 
-  const isTask =
-    selectedSpace && selectedSpace.lists.every((list) => !list.tasks || list.tasks.length < 1);
+  const isTask = selectedSpace
+    ? selectedSpace.lists.some((list) => list.tasks && list.tasks.length > 0)
+    : false;
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2 dark:bg-darkBg">
+    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-sm">Task Lists</h2>
         <Link href={`/w/${workSpaceId}/spaces/${selectedProjectId}`}>
@@ -35,18 +36,13 @@ const TaskList: React.FC = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
         </Link>
       </div>
 
-      {!isTask && spaces ? (
+      {isTask ? (
         <div>
           <div className="max-h-[160px] overflow-scroll">
             {selectedSpace?.lists.map((list) => (
@@ -83,12 +79,7 @@ const TaskList: React.FC = () => {
                             viewBox="0 0 24 24"
                             stroke="currentColor"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>
                       </Link>
@@ -110,19 +101,14 @@ const TaskList: React.FC = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </Link>
           </div>
         </div>
       ) : (
-        <Image height={300} src={image} alt="No tasks available" className="opacity-15"/>
+        <Image height={300} src={image} alt="No tasks available" className="max-h-[200px] opacity-15" />
       )}
     </div>
   );

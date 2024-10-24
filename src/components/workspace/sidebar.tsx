@@ -65,7 +65,7 @@ const Sidebar: React.FC = () => {
         <AiFillHome className="text-xl text-black mt-1 dark:text-gray-300" />
       ),
       label: "Home",
-      href: "/home",
+      href: "/",
     },
     {
       icon: (
@@ -94,12 +94,8 @@ const Sidebar: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        await dispatch(fetchWorkspaceData());
         dispatch(setWorkSpaceId(workSpaceId));
-      } catch (error) {
-        console.log(error);
-      }
+        await dispatch(fetchWorkspaceData());
     };
     fetchData();
   }, [workSpaceId]);

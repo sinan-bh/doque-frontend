@@ -4,19 +4,21 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { setSelectedProjectId } from "@/lib/store/features/workspace-slice";
 import { NewSpaceButton } from "@/components/spaces/new-space-button";
 import { IoMdAddCircleOutline } from "react-icons/io";
-
+import { useParams } from "next/navigation";
+import CustomMarquee from "@/components/ui/marquee";
 
 const ProjectCard: React.FC = () => {
   const dispatch = useAppDispatch();
   const { spaces } = useAppSelector((state) => state.space);
   const { selectedProjectId } = useAppSelector((state) => state.workspace);
   const [isOpen, setIsOpen] = useState(false);
+  const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  useEffect(() => {
-    if (spaces && spaces.length > 0 && !selectedProjectId) {
+  useEffect(() => {    
+    if ((workSpaceId && spaces && spaces.length > 0) ) {
       dispatch(setSelectedProjectId(spaces[0]._id));
-    }
-  }, [spaces, selectedProjectId, dispatch]);
+    } 
+  }, [workSpaceId, spaces, dispatch]);
 
   const toggleProjects = () => {
     setIsOpen((prev) => !prev);
@@ -40,8 +42,8 @@ const ProjectCard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex-grow">
             <h3 className="text-sm font-medium">{displayedProject.name}</h3>
-            <p className="text-xs text-gray-500">
-              {displayedProject.description}
+            <p className="text-xs text-gray-500 max-w-48">
+            <CustomMarquee text={displayedProject.description} />
             </p>
           </div>
           <button onClick={toggleProjects} className="focus:outline-none">
@@ -80,11 +82,14 @@ const ProjectCard: React.FC = () => {
         </div>
       ) : (
         <NewSpaceButton>
-            <div className="flex justify-center cursor-pointer">
-              <IoMdAddCircleOutline size={15} className="mr-1 mt-1 text-gray-500" />
-              <span className="text-gray-500">Add New Project</span>
-            </div>
-          </NewSpaceButton>
+          <div className="flex justify-center cursor-pointer">
+            <IoMdAddCircleOutline
+              size={15}
+              className="mr-1 mt-1 text-gray-500"
+            />
+            <span className="text-gray-500">Add New Project</span>
+          </div>
+        </NewSpaceButton>
       )}
       {isOpen && otherProjects.length > 0 && (
         <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto dark:bg-gray-900 ">

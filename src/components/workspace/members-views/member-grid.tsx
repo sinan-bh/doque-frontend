@@ -2,9 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
 import { Users } from "@/lib/store/features/workspace-slice";
 
-
-const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {  
-  
+const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       {members?.map((member, i) => (
@@ -19,9 +17,10 @@ const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
             </Avatar>
           </div>
           <div className="ml-4">
-            <h3 className="text-md font-semibold text-gray-700 dark:text-gray-300">
-              {member.firstName}{member.lastName}
-            </h3>
+            <span className="text-md font-semibold text-gray-700 px-1">
+              {member.firstName}
+            </span>
+            <span className="text-md font-semibold text-gray-700 px-1">{member.lastName}</span>
             <p className="text-sm text-gray-500">{member.email}</p>
           </div>
         </div>
@@ -30,4 +29,4 @@ const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
   );
 };
 
-export default MembersGrid;  
+export default MembersGrid;

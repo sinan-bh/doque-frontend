@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoIosSearch, IoIosClose } from "react-icons/io";
 import axiosInstance from "@/utils/axios";
 import Link from "next/link";
@@ -13,22 +13,39 @@ export default function SearchField() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [searchHistory, setSearchHistory] = useState<Workspace[]>([]);
   const [showHistory, setShowHistory] = useState<boolean>(false);
-
   
+  const searchContainerRef = useRef<HTMLDivElement>(null); // Reference for the container
+
   useEffect(() => {
     const storedHistory = localStorage.getItem("searchHistory");
     if (storedHistory) {
       setSearchHistory(JSON.parse(storedHistory));
     }
-  }, []);
 
-  
-  const saveToSearchHistory = (term: string) => {
+    // Close dropdown on click outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current && 
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowHistory(false);
+        setSuggestions([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchContainerRef]);
+
+  const saveToSearchHistory = (workspace: Workspace) => {
     let history = [...searchHistory];
-    if (!history.includes(term)) {
-      history = [term, ...history].slice(0, 5); 
+    if (!history.some((item) => item.WorkspaceId === workspace.WorkspaceId)) {
+      history = [workspace, ...history].slice(0, 5);
       setSearchHistory(history);
       localStorage.setItem("searchHistory", JSON.stringify(history));
     }
@@ -67,19 +84,14 @@ export default function SearchField() {
   const clearSearch = () => {
     setSearchValue("");
     setSuggestions([]);
-    setShowHistory(true); 
+    setShowHistory(true);
   };
 
   const handleSearchSelect = (workspace: Workspace) => {
-    saveToSearchHistory(workspace.name);
+    saveToSearchHistory(workspace);
     setSearchValue("");
     setSuggestions([]);
-    setShowHistory(false); 
-  };
-
-  const handleHistoryClick = (term: string) => {
-    setSearchValue(term);
-    setShowHistory(false); 
+    setShowHistory(false);
   };
 
   const clearSearchHistory = () => {
@@ -92,7 +104,7 @@ export default function SearchField() {
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={searchContainerRef}>
       <span className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
         <IoIosSearch className="text-gray-400 text-xl" />
       </span>
@@ -104,7 +116,7 @@ export default function SearchField() {
         onChange={(e) => setSearchValue(e.target.value)}
         className="w-full px-8 text-sm py-1 pl-8 pr-8 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EDF1F4] shadow-[0px_2px_5px_rgba(0,0,0,0.1)] dark:bg-darkBg"
         onFocus={() => {
-          if (searchValue === "") setShowHistory(true); 
+          if (searchValue === "") setShowHistory(true);
         }}
       />
 
@@ -127,13 +139,15 @@ export default function SearchField() {
             </button>
           </div>
           <ul>
-            {searchHistory.map((term, index) => (
+            {searchHistory.map((workspace, index) => (
               <li
                 key={index}
                 className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
-                onClick={() => handleHistoryClick(term)}
+                onClick={() => handleClick(workspace)}
               >
-                {term}
+                <Link href={`/w/${workspace.WorkspaceId}/dashboard`}>
+                  {workspace.name}
+                </Link>
               </li>
             ))}
           </ul>
@@ -152,9 +166,7 @@ export default function SearchField() {
               href={`/w/${workspace.WorkspaceId}/dashboard`}
               onClick={() => handleClick(workspace)}
             >
-              <li className="px-4 py-2 cursor-pointer">
-                {workspace.name}
-              </li>
+              <li className="px-4 py-2 cursor-pointer">{workspace.name}</li>
             </Link>
           ))}
         </ul>

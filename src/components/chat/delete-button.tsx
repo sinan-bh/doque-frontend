@@ -9,10 +9,10 @@ export default function DeleteAndEditIcons({ onDelete }: IconProps) {
     <div className="flex space-x-2">
       <span
         onClick={onDelete}
-        className="text-red-500 cursor-pointer hover:text-red-700 transition"
+        className="text-gray-500 cursor-pointer hover:text-red-700 transition"
         aria-label="Delete message"
       >
-        🗑️
+        CLEAR
       </span>
     </div>
   );

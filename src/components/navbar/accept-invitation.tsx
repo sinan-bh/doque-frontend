@@ -1,38 +1,39 @@
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+"use client"
+
+import React, { useEffect } from "react";
 import Spinner from "../ui/spinner/spinner";
-import { useAppSelector } from "@/lib/store/hooks";
+import axiosInstance from "@/utils/axios";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type Invite = {
-    redirectUrl: string;
-}
 
-export default function Acceptinvitation({ token }: { token: string | null }) {
-    const [invite,setInvite] = useState<Invite | null>(null)
-    const {loggedUser } =useAppSelector((state)=>state.user)
 
-  
+export default function Acceptinvitation() {
+  const router = useRouter()
+  const searchParams = useSearchParams()  
+  const workspaceId = searchParams.get("workspaceId")
 
   useEffect(() => {
-    if (token && loggedUser?.id) {
+    console.log(workspaceId);
+    
+    if (workspaceId) {
       const fetchData = async () => {
         try {
-          const {data}  = await axios.get(
-            `/accept-invitation?token=${token}`);
-          setInvite(data)
-        } catch (err) {
-          if (err instanceof AxiosError && err.response?.status === 404) {
-            console.error("Token  not found");
-          } else {
-            console.error(err);
+          const res = await axiosInstance.get(
+            `/workspaces/${workspaceId}/accept-invitation`
+          );
+          console.log(res);
+          if(res.status === 200){
+            router.push(`/w/${workspaceId}/dashboard`)
           }
+
+        } catch (err) {
+          console.log(err);
+          router.push(`/w/${workspaceId}/dashboard`)
         }
       };
       fetchData();
     }
-  }, [token,loggedUser?.id]);
-
-
+  }, [workspaceId]);
 
   return (
     <div className="h-screen flex justify-center items-center">

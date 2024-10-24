@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,29 +12,37 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { fetchAllUsers } from "@/lib/store/features/workspace-slice";
 import axiosInstance from "@/utils/axios";
+import { useParams } from "next/navigation";
 
 type UserEmail = {
   email: string;
 };
 
 export default function InviteButton() {
-  const dispatch = useAppDispatch()
-  const {loggedUser}= useAppSelector((state)=>state.user)
-  const { workSpaceId, allUsers } = useSelector((state: RootState)=> state.workspace);
+  const dispatch = useAppDispatch();
+  const { allUsers } = useSelector(
+    (state: RootState) => state.workspace
+  );
   const [formData, setFormData] = useState({
     email: "",
   });
   const [suggestions, setSuggestions] = useState<UserEmail[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const {workSpaceId} : { workSpaceId: string} = useParams()
+
+  useEffect(() => {
+    if (workSpaceId) {
+      dispatch(fetchAllUsers());
+    }
+  }, [workSpaceId]);
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,7 +56,7 @@ export default function InviteButton() {
         const filteredSuggestions = allUsers.filter((user: UserEmail) =>
           user.email.toLowerCase().includes(value.toLowerCase())
         );
-        dispatch(fetchAllUsers())
+        dispatch(fetchAllUsers());
         setSuggestions(filteredSuggestions);
         setShowSuggestions(true);
         setShowSuggestions(true);
@@ -66,16 +74,16 @@ export default function InviteButton() {
     setShowSuggestions(false);
   };
 
-  const {toast} = useToast()
+  const { toast } = useToast();
 
   const handleSend = async () => {
-    setIsOpen(false)
+    setIsOpen(false);
     try {
       const resp = await axiosInstance.post(
         `/workspace/${workSpaceId}/invite`,
         { email: formData.email }
       );
-  
+
       if (resp.status == 200) {
         toast({
           title: "Sent",

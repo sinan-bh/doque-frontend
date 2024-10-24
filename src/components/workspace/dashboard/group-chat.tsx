@@ -9,10 +9,10 @@ import React, { useEffect } from "react";
 interface MessageProps {
   name: string;
   image: string;
-  isActive?: boolean;
+  // isActive?: boolean;
 }
 
-function ChatList({ name, image, isActive }: MessageProps) {
+function ChatList({ name, image }: MessageProps) {  
 
   return (
     <div className="flex flex-col items-center relative">
@@ -21,9 +21,10 @@ function ChatList({ name, image, isActive }: MessageProps) {
           <AvatarImage src={image} alt={`${name}'s Avatar`} />
           <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
-        {isActive && (
+        {/*-----comming soon----*/}
+        {/* {isActive && (
           <div className="absolute top-0 right-0 h-3 w-3 bg-green-400 rounded-full border border-white"></div>
-        )}
+        )} */}
       </div>
       <p className="text-xs font-semibold mt-1 text-center truncate w-full">
         {name}
@@ -36,11 +37,14 @@ export default function GroupChat() {
   const { users, members } = useAppSelector((state) => state.workspace);
   const dispatch = useAppDispatch();
   const { workSpaceId }: { workSpaceId: string } = useParams();
+  // const [isActive, setIsActive] = useState<boolean>(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchWorkspaceMembers({ workSpaceId }));
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    await dispatch(fetchWorkspaceMembers({ workSpaceId }));
+  };
+  // const value = window.navigator.onLine
+  // setIsActive(value)
     fetchData();
   }, [workSpaceId]);
 
@@ -60,7 +64,7 @@ export default function GroupChat() {
             key={index}
             name={message.firstName}
             image={message.image}
-            isActive={message.isActive}
+            // isActive={isActive}
           />
         ))}
       </div>

@@ -3,9 +3,6 @@
 import React, { useEffect, useState } from "react";
 import MembersGrid from "@/components/workspace/members-views/member-grid";
 import MembersList from "@/components/workspace/members-views/member-list";
-import TeamsGrid from "@/components/workspace/members-views/team-grid";
-import TeamsList from "@/components/workspace/members-views/team-list";
-import { teams } from "@/consts/members-datas";
 import { IoGrid, IoList } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,27 +19,39 @@ export default function Members() {
   const dispatch = useDispatch<AppDispatch>();
   const [activeTab, setActiveTab] = useState<"members" | "teams">("members");
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortType, setSortType] = useState<"name" | "">("");
+
   const handleTabSwitch = (tab: "members" | "teams") => setActiveTab(tab);
   const handleViewSwitch = (view: "grid" | "list") => setViewType(view);
+  
   const { members, users }: { members: Member[]; users: Users[] } = useSelector(
     (state: RootState) => state.workspace
   );
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
+  const filteredUsers = users
+    ?.filter(
+      (user) =>
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortType === "name") {
+        return `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
+      }
+      return 0; 
+    });
+
   const renderContent = () => {
     if (activeTab === "members") {
       return viewType === "grid" ? (
-        <MembersGrid members={users} />
+        <MembersGrid members={filteredUsers} />
       ) : (
-        <MembersList members={users} />
+        <MembersList members={filteredUsers} />
       );
-    } else {
-      return viewType === "grid" ? (
-        <TeamsGrid teams={teams} />
-      ) : (
-        <TeamsList teams={teams} />
-      );
-    }
+    } 
   };
 
   useEffect(() => {
@@ -78,16 +87,6 @@ export default function Members() {
             >
               Members
             </h2>
-            <h2
-              className={`text-base font-semibold cursor-pointer ${
-                activeTab === "teams"
-                  ? "border-b-2 border-blue-600"
-                  : "text-gray-600"
-              }`}
-              onClick={() => handleTabSwitch("teams")}
-            >
-              Teams
-            </h2>
           </div>
           <div className="flex items-center space-x-4 pb-2">
             <div className="relative flex items-center text-sm">
@@ -96,11 +95,16 @@ export default function Members() {
                 type="text"
                 className="pl-10 pr-4 py-2 border-none rounded-xl focus:outline-none"
                 placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <select className="ml-4 px-3 py-2 rounded-xl focus:outline-none">
+              <select
+                className="ml-4 px-3 py-2 rounded-xl focus:outline-none"
+                value={sortType}
+                onChange={(e) => setSortType(e.target.value as "name" | "")}
+              >
                 <option value="">Sort by</option>
                 <option value="name">Name</option>
-                <option value="date">Date Joined</option>
               </select>
             </div>
             <div className="flex items-center space-x-4">
