@@ -46,6 +46,7 @@ export default function ProfileSection() {
 
   const handleLogout = () => {
     dispatch(logout());
+    window.location.reload();
     router.push("/signin");
   };
 

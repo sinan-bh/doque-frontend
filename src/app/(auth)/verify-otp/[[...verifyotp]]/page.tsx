@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { BiLogIn } from "react-icons/bi";
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyOtp } from "@/lib/store/features/userSlice";
 import { AppDispatch, RootState } from "@/lib/store";
@@ -18,7 +17,6 @@ export default function VerifyEmail() {
 
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
-    console.log(email);
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
@@ -58,20 +56,21 @@ export default function VerifyEmail() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 w-full flex justify-center items-center">
-            <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+        <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
+            <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
-                    <div className="bg-green-500 rounded-full p-3 flex justify-center items-center shadow-md">
-                        <BiLogIn className="text-4xl text-white" />
+                    <div className="top-4 right-4 text-center font-bold">
+                        <span className="text-white text-3xl">Do</span>
+                        <span className="text-black text-3xl dark:text-gray-500">que</span>
                     </div>
                 </div>
-                <h1 className="text-2xl font-bold text-center mb-4 text-green-500">
+                <h1 className="text-2xl font-bold text-center mb-4 text-green-500 dark:text-white">
                     Verify Your Email
                 </h1>
-                <p className="text-gray-600 text-sm text-center mb-6">
+                <p className="text-gray-600 text-sm text-center mb-6 dark:text-gray-400">
                     An OTP has been sent to your email. Please enter the 6-digit OTP to verify your account.
                 </p>
-                <p className="text-sm font-semibold text-left mb-6 text-gray-800">
+                <p className="text-sm font-semibold text-left mb-6 text-gray-800 dark:text-white">
                     Enter OTP
                 </p>
                 {statusMessage && (
@@ -86,7 +85,7 @@ export default function VerifyEmail() {
                             maxLength={1}
                             value={digit}
                             onChange={(e) => handleOtpChange(e, index)}
-                            className="w-14 h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-14 h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
                             onFocus={() => setStatusMessage(null)}
                         />
                     ))}

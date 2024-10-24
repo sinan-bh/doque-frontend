@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { BiLogIn } from "react-icons/bi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import Link from 'next/link';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
@@ -44,18 +43,18 @@ export default function ResetPassword() {
     }, [dispatch]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-white to-[#E0F7FF] flex justify-center items-center">
-            <div className="bg-gradient-to-br from-[#E0F7FF] to-white p-10 rounded-2xl shadow-lg w-full max-w-md">
-
+        <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
+            <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
-                    <div className="bg-green-500 rounded-full p-4 flex justify-center items-center shadow-md">
-                        <BiLogIn className="text-4xl text-white" />
+                    <div className="top-4 right-4 text-center font-bold">
+                        <span className="text-white text-3xl">Do</span>
+                        <span className="text-black text-3xl dark:text-gray-500">que</span>
                     </div>
                 </div>
 
-                <h1 className="text-3xl font-bold text-center mb-4 text-green-500">Reset Password</h1>
+                <h1 className="text-3xl font-bold text-center mb-4 text-green-500 dark:text-white">Reset Password</h1>
 
-                <p className="text-gray-600 text-center mb-6">
+                <p className="text-gray-600 text-center mb-6 dark:text-gray-400">
                     Enter your new password below.
                 </p>
 
@@ -76,7 +75,7 @@ export default function ResetPassword() {
                                 setNewPassword(e.target.value);
                                 dispatch(clearMessages());
                             }}
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-white"
                             required
                         />
                         <button
@@ -99,7 +98,7 @@ export default function ResetPassword() {
                                 setConfirmPassword(e.target.value);
                                 dispatch(clearMessages());
                             }}
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-white"
                             required
                         />
                         <button

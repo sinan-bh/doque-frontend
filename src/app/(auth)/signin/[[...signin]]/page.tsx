@@ -48,40 +48,40 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center sm:px-20">
-        <div className="bg-white rounded-2xl shadow-2xl flex flex-col sm:flex-row w-full max-w-4xl">
+        <div className="bg-white rounded-2xl shadow-2xl flex flex-col sm:flex-row w-full max-w-4xl dark:bg-[#1F1A30]">
           <div className="w-full sm:w-3/5 p-5">
             <div className="text-left font-bold">
-              <span className="text-green-500 text-2xl">Do</span>
-              <span className="text-black text-2xl">que</span>
+              <span className="text-green-500 text-2xl dark:text-white">Do</span>
+              <span className="text-black text-2xl dark:text-gray-500">que</span>
             </div>
             <div className="py-10">
-              <h2 className="text-3xl font-bold text-green-500 mb-2">Sign In</h2>
-              <div className="border-2 w-10 border-green-500 inline-block mb-2"></div>
+              <h2 className="text-3xl font-bold text-green-500 mb-2 dark:text-white">Sign In</h2>
+              <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
               <p className="mb-10 text-gray-500">Sign in to your account</p>
               {error && <p className="text-red-500">{error}</p>}
               <form onSubmit={handleLogin} className="flex flex-col items-center mt-10">
-                <div className="bg-gray-100 w-64 p-2 flex items-center mb-3">
+                <div className="bg-gray-100 w-64 p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
                   <AiOutlineMail className="text-gray-400 m-2" />
                   <input
                     type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-100 outline-none text-sm flex-1"
+                    className="bg-gray-100 outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white "
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
                 </div>
-                <div className="bg-gray-100 w-64 p-2 flex items-center mb-3">
+                <div className="bg-gray-100 w-64 p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
                   <AiOutlineLock className="text-gray-400 m-2" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-100 outline-none text-sm flex-1"
+                    className="bg-gray-100 outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
@@ -104,11 +104,11 @@ export default function Login() {
               </form>
             </div>
           </div>
-          <div className="w-full sm:w-2/5 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center">
+          <div className="w-full sm:w-2/5 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center dark:bg-[#1F1A30]">
             <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
             <div className="border-2 w-10 border-white inline-block mb-2"></div>
             <p className="mb-10">Don&apos;t have an account? Sign up today and start your journey!</p>
-            <Link href="/signup" className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500">
+            <Link href="/signup" className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black">
               Sign Up
             </Link>
           </div>

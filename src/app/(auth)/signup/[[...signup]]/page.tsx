@@ -72,15 +72,15 @@ export default function Signup() {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
-        <div className="bg-white rounded-2xl shadow-2xl flex w-full max-w-4xl">
+        <div className="bg-white rounded-2xl shadow-2xl flex w-full max-w-4xl dark:bg-[#1F1A30]">
           <div className="w-1/2 p-10 flex flex-col justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-green-500 mb-2">
+              <h2 className="text-3xl font-bold text-green-500 mb-2 dark:text-white">
                 Create Account
               </h2>
-              <div className="border-2 w-10 border-green-500 inline-block mb-2"></div>
+              <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
               <p className="mb-6 text-gray-500">
                 Please fill in the details below to create your account.
               </p>
@@ -103,7 +103,7 @@ export default function Signup() {
                       type="text"
                       name="firstName"
                       placeholder="First Name"
-                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500"
+                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
                     />
                     <ErrorMessage
                       name="firstName"
@@ -117,7 +117,7 @@ export default function Signup() {
                       type="text"
                       name="lastName"
                       placeholder="Last Name"
-                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500"
+                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
                     />
                     <ErrorMessage
                       name="lastName"
@@ -131,7 +131,7 @@ export default function Signup() {
                       type="email"
                       name="email"
                       placeholder="Enter your email"
-                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500"
+                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
                     />
                     <ErrorMessage
                       name="email"
@@ -145,7 +145,7 @@ export default function Signup() {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       placeholder="Enter your password"
-                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500"
+                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
                     />
                     <div
                       className="absolute right-3 top-3 cursor-pointer text-gray-400"
@@ -168,7 +168,7 @@ export default function Signup() {
                       type={showPassword ? "text" : "password"}
                       name="confirmPassword"
                       placeholder="Confirm password"
-                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500"
+                      className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-md shadow-md focus:outline-none focus:border-green-500 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
                     />
                     <ErrorMessage
                       name="confirmPassword"
@@ -178,17 +178,15 @@ export default function Signup() {
                   </div>
                   {(successMessage || error) && (
                     <div
-                      className={`text-center mb-4 ${
-                        successMessage ? "text-green-600" : "text-red-600"
-                      }`}>
+                      className={`text-center mb-4 ${successMessage ? "text-green-600" : "text-red-600"
+                        }`}>
                       {successMessage || error}
                     </div>
                   )}
                   <button
                     type="submit"
-                    className={`w-full border-2 border-green-500 text-green-500 rounded-md px-12 py-3 font-semibold hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                    className={`w-full border-2 border-green-500 text-green-500 rounded-md px-12 py-3 font-semibold hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                     disabled={isSubmitting}>
                     {isSubmitting ? "Registering..." : "Register"}
                   </button>
@@ -196,10 +194,10 @@ export default function Signup() {
               )}
             </Formik>
           </div>
-          <div className="w-1/2 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative">
+          <div className="w-1/2 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative dark:bg-[#1F1A30]">
             <div className="absolute top-4 right-4 text-left font-bold">
               <span className="text-white text-2xl">Do</span>
-              <span className="text-black text-2xl">que</span>
+              <span className="text-black text-2xl dark:text-gray-500">que</span>
             </div>
             <h2 className="text-2xl font-bold mb-4 text-center">
               Welcome to Doque!
@@ -216,7 +214,7 @@ export default function Signup() {
             </p>
             <Link
               href="/signin"
-              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500">
+              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black">
               Sign In
             </Link>
           </div>

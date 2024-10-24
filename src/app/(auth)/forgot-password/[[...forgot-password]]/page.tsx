@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { AiOutlineMail } from 'react-icons/ai';
-import { BiLogIn } from "react-icons/bi";
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { forgotPassword } from '@/lib/store/features/userSlice';
@@ -35,17 +34,18 @@ export default function ForgotPassword() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-[#E0F7FF] to-white flex justify-center items-center">
-            <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md">
+        <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
+            <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
-                    <div className="bg-green-500 rounded-full p-4 flex justify-center items-center shadow-md">
-                        <BiLogIn className="text-4xl text-white" />
+                    <div className="top-4 right-4 text-center font-bold">
+                        <span className="text-white text-3xl">Do</span>
+                        <span className="text-black text-3xl dark:text-gray-500">que</span>
                     </div>
                 </div>
-                <h1 className="text-3xl font-bold text-center mb-4 text-green-500">
+                <h1 className="text-3xl font-bold text-center mb-4 text-green-500 dark:text-white">
                     Forgot Password?
                 </h1>
-                <p className="text-gray-600 text-center mb-6">
+                <p className="text-gray-600 text-center mb-6 dark:text-gray-400">
                     Enter your email to receive a link to reset your password.
                 </p>
                 {message && <p className="text-green-600 text-center mb-4">{message}</p>}
@@ -58,7 +58,7 @@ export default function ForgotPassword() {
                             value={forgetEmail || email}
                             onChange={handleEmailChange}
                             placeholder="Enter your email"
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 ease-in-out"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 ease-in-out dark:bg-[#383150] dark:text-white"
                             required
                             aria-label="Email address"
                         />
@@ -73,11 +73,11 @@ export default function ForgotPassword() {
                     </button>
                 </form>
                 <div className="flex justify-center items-center mt-8 text-sm text-gray-700">
-                    <Link href="/signup" className="text-[#242425] hover:underline">
+                    <Link href="/signup" className="text-[#242425] hover:underline dark:text-gray-300">
                         Create New Account
                     </Link>
-                    <span className="mx-4 text-gray-600">|</span>
-                    <Link href="/signin" className="text-[#242425] hover:underline">
+                    <span className="mx-4 text-gray-600 dark:text-gray-300">|</span>
+                    <Link href="/signin" className="text-[#242425] hover:underline dark:text-gray-300">
                         Login
                     </Link>
                 </div>
