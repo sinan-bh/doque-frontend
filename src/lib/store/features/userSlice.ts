@@ -80,7 +80,7 @@ export const loginUser = createAsyncThunk(
 // Fetch User Profile
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
-  async ({}, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     const userDetails = Cookies.get("user");
     const user = JSON.parse(userDetails || "");
     try {
