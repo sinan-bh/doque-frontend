@@ -71,7 +71,7 @@ export default function Members() {
         </header>
 
         {loading ? (
-          <div className="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center min-h-screen">
             <Spinner />
           </div>
         ) : error ? (
@@ -94,7 +94,9 @@ export default function Members() {
                         <Image
                           src={
                             member.image &&
-                            member.image.startsWith("https://res.cloudinary.com")
+                            member.image.startsWith(
+                              "https://res.cloudinary.com"
+                            )
                               ? member.image
                               : "/images/avatarFallback.png"
                           }

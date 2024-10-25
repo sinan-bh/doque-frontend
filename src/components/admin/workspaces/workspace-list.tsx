@@ -97,35 +97,39 @@ export default function WorkspaceList() {
         </div>
       </div>
 
-      <div className="mt-6 overflow-y-auto h-[calc(100vh-250px)]">
-        {loading && <Spinner />}
-        {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredWorkspaces
-              .slice(
-                (currentPage - 1) * itemsPerPage,
-                currentPage * itemsPerPage
-              )
-              .map((workspace) => {
-                const creator = getCreatorDetails(workspace.createdBy);
-                return (
-                  <WorkspaceCard
-                    key={workspace._id}
-                    workspace={workspace}
-                    creator={creator}
-                  />
-                );
-              })}
-          </ul>
-        )}
-      </div>
-
-       <Pagination
-       currentPage={currentPage}
-       totalPages={totalPages}
-       onPageChange={handlePageChange}
-     />
+      <div className="mt-6 relative">
+  {loading && (
+    <div className="min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+      <Spinner />
     </div>
+  )}
+  {error && <p className="text-red-500">{error}</p>}
+  {!loading && !error && (
+    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 overflow-y-auto h-[calc(100vh-250px)]">
+      {filteredWorkspaces
+        .slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )
+        .map((workspace) => {
+          const creator = getCreatorDetails(workspace.createdBy);
+          return (
+            <WorkspaceCard
+              key={workspace._id}
+              workspace={workspace}
+              creator={creator}
+            />
+          );
+        })}
+    </ul>
+  )}
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    onPageChange={handlePageChange}
+  />
+</div>
+</div>
+
   );
 }

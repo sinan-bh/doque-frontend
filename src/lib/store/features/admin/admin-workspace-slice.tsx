@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
 import { RootState } from "../../index";
 import { AdminMember } from "./admin-member-slice";
+import axiosInstance from "@/utils/axios";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export interface AdminWorkspace {
   _id: string;
@@ -23,10 +24,6 @@ interface WorkspaceState {
   error: string | null;
 }
 
-interface ErrorResponse {
-  message: string;
-}
-
 const initialState: WorkspaceState = {
   workspaces: [],
   loading: false,
@@ -43,8 +40,8 @@ export const fetchWorkspaces = createAsyncThunk<
     const token = getState().adminAuth.token;
 
     try {
-      const response = await axios.get(
-        `https://daily-grid-rest-api.onrender.com/api/admin/workspace?page=${page}&limit=${limit}`,
+      const response = await axiosInstance.get(
+        `/admin/workspace?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,10 +50,8 @@ export const fetchWorkspaces = createAsyncThunk<
       );
       return response.data.data;
     } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      return rejectWithValue(
-        axiosError.response?.data?.message || "Failed to fetch workspaces"
-      );
+      const errMesg = axiosErrorCatch(error);
+      return rejectWithValue(errMesg);
     }
   }
 );
@@ -71,21 +66,15 @@ export const fetchWorkspaceDetails = createAsyncThunk<
     const token = getState().adminAuth.token;
 
     try {
-      const response = await axios.get(
-        `https://daily-grid-rest-api.onrender.com/api/admin/workspace/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axiosInstance.get(`/admin/workspace/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data.data;
     } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      return rejectWithValue(
-        axiosError.response?.data?.message ||
-          "Failed to fetch workspace details"
-      );
+      const errMes = axiosErrorCatch(error);
+      return rejectWithValue(errMes);
     }
   }
 );
