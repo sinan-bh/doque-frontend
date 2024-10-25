@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
+import axiosInstance from "@/utils/axios";
+import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export interface AdminMember {
   _id: string;
@@ -30,29 +32,22 @@ const initialState: MembersState = {
 
 export const fetchMembers = createAsyncThunk(
   "members/fetchMembers",
-  async (_, { getState }) => {
+  async (_, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const token = state.adminAuth.token;
-    
 
-    const response = await fetch(
-      "https://daily-grid-rest-api.onrender.com/api/admin/users",
-      {
-        method: "GET",
+    try {
+      const response = await axiosInstance.get("/admin/users", {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
-      }
-    );
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch members");
+      return response.data.data;
+    } catch (error) {
+      const errMesg = axiosErrorCatch(error);
+      return rejectWithValue(errMesg);
     }
-
-    const data = await response.json();
-
-    return data.data;
   }
 );
 
@@ -60,29 +55,28 @@ export const toggleBlockMember = createAsyncThunk(
   "members/toggleBlockMember",
   async (
     { memberId, isBlocked }: { memberId: string; isBlocked: boolean },
-    { getState }
+    { getState, rejectWithValue }
   ) => {
     const state = getState() as RootState;
     const token = state.adminAuth.token;
 
     const action = isBlocked ? "unblock" : "block";
+    try {
+      await axiosInstance.patch(
+        `/admin/userblock/${memberId}?action=${action}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const response = await fetch(
-      `https://daily-grid-rest-api.onrender.com/api/admin/userblock/${memberId}?action=${action}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to block/unblock member");
+      return { memberId, isBlocked: !isBlocked };
+    } catch (error) {
+      const errMesg = axiosErrorCatch(error);
+      return rejectWithValue(errMesg);
     }
-
-    return { memberId, isBlocked: !isBlocked };
   }
 );
 
