@@ -1,5 +1,3 @@
-import React from "react";
-
 interface DashboardStatsProps {
   totalMembers: number;
   totalWorkspaces: number;

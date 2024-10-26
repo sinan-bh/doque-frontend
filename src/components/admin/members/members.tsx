@@ -8,8 +8,8 @@ import {
   selectError,
 } from "../../../lib/store/features/admin/admin-member-slice";
 import { FiSearch } from "react-icons/fi";
-import Spinner from "@/components/ui/spinner/spinner";
 import StatusButton from "./blockuser-btn";
+import MembersSkeleton from "@/components/ui/admin/members-skelton";
 
 export default function Members() {
   const dispatch = useAppDispatch();
@@ -72,7 +72,7 @@ export default function Members() {
 
         {loading ? (
           <div className="flex justify-center items-center min-h-screen">
-            <Spinner />
+            <MembersSkeleton />
           </div>
         ) : error ? (
           <p className="text-center text-red-500 dark:text-red-400">{error}</p>
