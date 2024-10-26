@@ -76,8 +76,12 @@ export default function Signup() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
-        <div className="bg-white rounded-2xl shadow-2xl flex w-full max-w-4xl dark:bg-[#1F1A30]">
-          <div className="w-1/2 p-10 flex flex-col justify-between">
+        <div className="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl dark:bg-[#1F1A30]">
+          <div className="w-full md:w-1/2 p-10 flex flex-col justify-between">
+            <div className="mb-6 flex items-center justify-start">
+              <span className="text-green-500 dark:text-white text-2xl font-bold">Do</span>
+              <span className="text-black text-2xl dark:text-gray-500 font-bold">que</span>
+            </div>
             <div>
               <h2 className="text-3xl font-bold text-green-500 mb-2 dark:text-white">
                 Create Account
@@ -196,11 +200,8 @@ export default function Signup() {
               )}
             </Formik>
           </div>
-          <div className="w-1/2 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative dark:bg-[#1F1A30]">
-            <div className="absolute top-4 right-4 text-left font-bold">
-              <span className="text-white text-2xl">Do</span>
-              <span className="text-black text-2xl dark:text-gray-500">que</span>
-            </div>
+
+          <div className="w-full md:w-1/2 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative dark:bg-[#1F1A30]">
             <h2 className="text-2xl font-bold mb-4 text-center">
               Welcome to Doque!
             </h2>
