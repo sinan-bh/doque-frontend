@@ -18,13 +18,6 @@ const initialState: AdminState = {
   error: null,
 };
 
-// const axiosInstance = axios.create({
-//   baseURL: "https://daily-grid-rest-api.onrender.com/api",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
 axiosInstance.interceptors.request.use(
   (config) => {
     const tokenData = Cookies.get("adminToken");
