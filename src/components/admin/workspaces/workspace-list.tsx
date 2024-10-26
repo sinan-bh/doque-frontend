@@ -12,11 +12,11 @@ import {
   fetchMembers,
   selectMembers,
 } from "../../../lib/store/features/admin/admin-member-slice";
-import Spinner from "@/components/ui/spinner/spinner";
 import SearchInput from "./search-input";
 import FilterDropdown from "./filter-drop-down";
 import WorkspaceCard from "./workspace-card";
 import Pagination from "@/components/ui/pagination";
+import WorkspaceCardSkeleton from "@/components/ui/admin/workspace-skelton";
 
 export default function WorkspaceList() {
   const dispatch = useAppDispatch();
@@ -98,38 +98,39 @@ export default function WorkspaceList() {
       </div>
 
       <div className="mt-6 relative">
-  {loading && (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
-      <Spinner />
+        {loading && (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 overflow-y-auto h-[calc(100vh-250px)]">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <WorkspaceCardSkeleton key={index} />
+            ))}
+          </ul>
+        )}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && !error && (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 overflow-y-auto h-[calc(100vh-250px)]">
+            {filteredWorkspaces
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+              .map((workspace) => {
+                const creator = getCreatorDetails(workspace.createdBy);
+                return (
+                  <WorkspaceCard
+                    key={workspace._id}
+                    workspace={workspace}
+                    creator={creator}
+                  />
+                );
+              })}
+          </ul>
+        )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
-  )}
-  {error && <p className="text-red-500">{error}</p>}
-  {!loading && !error && (
-    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 overflow-y-auto h-[calc(100vh-250px)]">
-      {filteredWorkspaces
-        .slice(
-          (currentPage - 1) * itemsPerPage,
-          currentPage * itemsPerPage
-        )
-        .map((workspace) => {
-          const creator = getCreatorDetails(workspace.createdBy);
-          return (
-            <WorkspaceCard
-              key={workspace._id}
-              workspace={workspace}
-              creator={creator}
-            />
-          );
-        })}
-    </ul>
-  )}
-  <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    onPageChange={handlePageChange}
-  />
-</div>
-</div>
-
   );
 }
