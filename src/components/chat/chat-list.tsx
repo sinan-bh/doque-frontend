@@ -59,7 +59,7 @@ export default function MessageList() {
         <div className="space-y-4">
           {messages?.messages?.map((item) => (
             <div key={item._id} className="flex items-start space-x-3">
-              {item.sender.image && (
+              {item.sender?.image && (
                 <Avatar className="w-8 h-8">
                   <AvatarImage
                     src={item.sender.image}
@@ -72,7 +72,7 @@ export default function MessageList() {
               <div className="flex-grow bg-white rounded-lg shadow-md p-4 border border-gray-200">
                 <div className="flex justify-between">
                   <p className="text-sm font-medium text-gray-900">
-                    {item.sender.firstName}
+                    {item.sender?.firstName}
                   </p>
                   <p className="text-xs text-gray-500">
                     {formatTimestamp(item.timestamp)}

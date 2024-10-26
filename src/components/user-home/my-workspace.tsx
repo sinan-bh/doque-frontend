@@ -21,7 +21,7 @@ export default function MyWorkSpace() {
 
   const usersWorkSpaces = workSpace.filter((workspace) => {
     const owner = workspace.members.find((member) => member.status === "owner");
-    return owner?.user._id === userId;
+    return owner?.user?._id === userId;
   });
 
   return (

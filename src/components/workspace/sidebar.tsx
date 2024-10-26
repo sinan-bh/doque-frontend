@@ -51,13 +51,13 @@ const Sidebar: React.FC = () => {
     ?.members.find((p) => p.status === "owner");
 
   useEffect(() => {
-    if (profile?.user._id) {
+    if (profile?.user?._id) {
       const fetchData = async () => {
-        dispatch(fetchWorkspaceUser({ userId: profile?.user._id }));
+        dispatch(fetchWorkspaceUser({ userId: profile?.user?._id }));
       };
       fetchData();
     }
-  }, [dispatched, workSpaceId, profile?.user._id]);
+  }, [dispatched, workSpaceId, profile?.user?._id]);
 
   const sidebarItems: SidebarIcon[] = [
     {
