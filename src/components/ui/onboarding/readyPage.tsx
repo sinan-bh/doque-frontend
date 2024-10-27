@@ -71,4 +71,5 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
       </h1>
     </div>
   );
+  
 }
