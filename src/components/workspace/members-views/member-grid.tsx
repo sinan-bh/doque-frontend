@@ -17,10 +17,10 @@ const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
             </Avatar>
           </div>
           <div className="ml-4">
-            <span className="text-sm sm:text-lg font-semibold text-gray-200 px-1">
+            <span className="text-sm sm:text-lg font-semibold text-gray-700 dark:text-gray-200 px-1">
               {member.firstName}
             </span>
-            <span className="text-sm sm:text-lg font-semibold text-gray-200 px-1">{member.lastName}</span>
+            <span className="text-sm sm:text-lg font-semibold text-gray-700 dark:text-gray-200 px-1">{member.lastName}</span>
             <p className="text-sm text-gray-500">{member.email}</p>
           </div>
         </div>

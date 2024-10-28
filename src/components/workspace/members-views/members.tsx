@@ -79,7 +79,7 @@ export default function Members() {
             <h2
               className={`text-base font-semibold cursor-pointer ${
                 activeTab === "members"
-                  ? "border-b-4 border-gray-700"
+                  ? "border-b-2 border-gray-300"
                   : "text-gray-600 dark:text-gray-300"
               }`}
               onClick={() => handleTabSwitch("members")}
@@ -131,7 +131,7 @@ export default function Members() {
             <div
               className={`p-2 rounded cursor-pointer ${
                 viewType === "grid"
-                  ? "bg-gray-600 dark:bg-gray-600"
+                  ? "bg-gray-600 dark:bg-gray-200"
                   : "bg-transparent"
               }`}
               onClick={() => handleViewSwitch("grid")}
@@ -139,14 +139,14 @@ export default function Members() {
             >
               <IoGrid
                 className={`text-gray-600 dark:text-gray-300 text-sm ${
-                  viewType === "grid" ? "text-gray-200" : ""
+                  viewType === "grid" ? "text-gray-100 dark:text-gray-600" : ""
                 }`}
               />
             </div>
             <div
               className={`p-2 rounded cursor-pointer ${
                 viewType === "list"
-                  ? "bg-gray-600 dark:bg-gray-600"
+                  ? "bg-gray-600 dark:bg-gray-200"
                   : "bg-transparent"
               }`}
               onClick={() => handleViewSwitch("list")}
@@ -154,7 +154,7 @@ export default function Members() {
             >
               <IoList
                 className={`text-gray-600 dark:text-gray-300 text-sm ${
-                  viewType === "list" ? "text-gray-200" : ""
+                  viewType === "list" ? "text-gray-100 dark:text-gray-600" : ""
                 }`}
               />
             </div>
