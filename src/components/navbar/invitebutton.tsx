@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { BiSolidUserPlus } from "react-icons/bi"; // Import the icon
 import {
   Dialog,
   DialogContent,
@@ -34,6 +35,7 @@ export default function InviteButton() {
   const [suggestions, setSuggestions] = useState<UserEmail[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false); // New state for screen size
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
   useEffect(() => {
@@ -41,6 +43,17 @@ export default function InviteButton() {
       dispatch(fetchAllUsers());
     }
   }, [workSpaceId]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 640); // sm breakpoint in Tailwind (640px)
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -56,7 +69,6 @@ export default function InviteButton() {
         );
         dispatch(fetchAllUsers());
         setSuggestions(filteredSuggestions);
-        setShowSuggestions(true);
         setShowSuggestions(true);
       } catch (error) {
         console.error(error);
@@ -85,7 +97,7 @@ export default function InviteButton() {
       if (resp.status == 200) {
         toast({
           title: "Sent",
-          description: "Invitation Send Successfully",
+          description: "Invitation sent successfully",
         });
       }
     } catch (error) {
@@ -98,61 +110,60 @@ export default function InviteButton() {
   };
 
   if (!workSpaceId) return null;
-  else {
-    return (
-      <div>
-        <Dialog onOpenChange={setIsOpen} open={isOpen}>
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              className="bg-white rounded-3xl hover:bg-transparent dark:bg-black">
-              Invite
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[525px]">
-            <DialogHeader>
-              <DialogTitle>Invite a Member</DialogTitle>
-              <DialogDescription>Add the member email</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4 relative">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <div className="col-span-3 relative">
-                  <Input
-                    name="email"
-                    id="email"
-                    className="w-full"
-                    autoComplete="off"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {showSuggestions && suggestions.length > 0 && (
-                    <ul className="absolute left-0 right-0 mt-1 bg-white dark:bg-zinc-900 border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-auto">
-                      {suggestions.map((suggestion, index) => (
-                        <li
-                          key={index}
-                          className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer"
-                          onClick={() =>
-                            handleSelectSuggestion(suggestion?.email)
-                          }>
-                          {suggestion?.email}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+
+  return (
+    <div>
+      <Dialog onOpenChange={setIsOpen} open={isOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            className="bg-white rounded p-2 hover:bg-transparent dark:bg-black"
+          >
+            {isSmallScreen ? <BiSolidUserPlus className="text-lg" /> : "Invite"}
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Invite a Member</DialogTitle>
+            <DialogDescription>Add the member email</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4 relative">
+              <Label htmlFor="email" className="text-right">
+                Email
+              </Label>
+              <div className="col-span-3 relative">
+                <Input
+                  name="email"
+                  id="email"
+                  className="w-full"
+                  autoComplete="off"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange(e)}
+                />
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="absolute left-0 right-0 mt-1 bg-white dark:bg-zinc-900 border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-auto">
+                    {suggestions.map((suggestion, index) => (
+                      <li
+                        key={index}
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer"
+                        onClick={() => handleSelectSuggestion(suggestion?.email)}
+                      >
+                        {suggestion?.email}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
-            <DialogFooter>
-              <Button onClick={handleSend} type="submit">
-                Send
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
-  }
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSend} type="submit">
+              Send
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
