@@ -17,6 +17,7 @@ import { AlertConfirm } from "../ui/alert-confirm";
 import { Button } from "../ui/button";
 import { FaTrash } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
+import { SortableItem } from "@/components/task-list/task-list-container";
 
 type StatusColumnProps = {
   workSpaceId: string;
@@ -67,11 +68,6 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleCreateTask();
-  };
-
-  const handleLabelClick = () => {
-    setIsEditing(true);
-    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,8 +124,8 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
 
   const handleEditLabelClick = () => {
     setIsEditing(true);
-    setCurrentLabel(label); // Set the current label to be editable
-    setTimeout(() => inputRef.current?.focus(), 0); // Focus the input field
+    setCurrentLabel(label);
+    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   return (
@@ -141,39 +137,43 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
         >
           {isExpanded ? <FiChevronDown /> : <FiChevronRight />}
         </button>
-        <span
-          className="flex-1 ml-2 inline-flex items-center py-2 px-1 rounded-xl text-white"
-          style={{ backgroundColor: color }}
-          onClick={handleLabelClick}
-        >
-          {isEditing ? (
-            <div className="flex items-center space-x-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={currentLabel}
-                onChange={handleLabelChange}
-                onBlur={handleLabelBlur}
-                onKeyDown={handleLabelKeyDown}
-                className="w-full bg-transparent text-white focus:outline-none"
-              />
-              <button
-                onClick={handleSaveLabel}
-                className="text-sm border border-gray-300 rounded bg-gray-200 text-gray-700"
-              >
-                Enter
-              </button>
-            </div>
-          ) : (
-            <>
-              <span className="mr-2 h-2 w-4 rounded border-2 border-white bg-white"></span>
-              {currentLabel}
-            </>
-          )}
-        </span>
+        <SortableItem id={id}>
+          <span
+            className="flex-1 ml-2 inline-flex items-center py-2 px-1 rounded-xl text-white"
+            style={{ backgroundColor: color }}
+          >
+            {isEditing ? (
+              <div className="flex items-center space-x-2">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={currentLabel}
+                  onChange={handleLabelChange}
+                  onBlur={handleLabelBlur}
+                  onKeyDown={handleLabelKeyDown}
+                  className="w-full bg-transparent text-white focus:outline-none"
+                />
+                <button
+                  onClick={handleSaveLabel}
+                  className="text-sm border border-gray-300 rounded bg-gray-200 text-gray-700"
+                >
+                  Enter
+                </button>
+              </div>
+            ) : (
+              <>
+                <span className="mr-2 h-2 w-4 rounded border-2 border-white bg-white"></span>
+                {currentLabel}
+              </>
+            )}
+          </span>
+        </SortableItem>
         <div className="px-1 flex justify-center gap-2">
-          <div className=" cursor-pointer border rounded-md p-1 hover:bg-gray-100" onClick={handleEditLabelClick}>
-            <FaEdit color="#000"/>
+          <div
+            className="cursor-pointer border rounded-md p-1 hover:bg-gray-100"
+            onClick={handleEditLabelClick}
+          >
+            <FaEdit color="#000" />
           </div>
           <ColorSelector currentColor={color} listId={id} name={currentLabel} />
           <AlertConfirm
