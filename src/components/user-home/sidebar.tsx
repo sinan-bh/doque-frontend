@@ -42,6 +42,7 @@ export default function Sidebar() {
         window.innerWidth < 640
       ) {
         setIsSidebarOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -68,7 +69,6 @@ export default function Sidebar() {
         <div
           ref={sidebarRef}
           className={`transition-all duration-300 ${
-          className={`${
             window.innerWidth < 640
               ? "fixed left-0 top-0 h-full max-w-72 w-full z-50"
               : "relative sm:w-1/4 md:w-[260px]"
