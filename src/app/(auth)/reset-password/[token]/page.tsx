@@ -43,18 +43,18 @@ export default function ResetPassword() {
     }, [dispatch]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-[#353535]">
-            <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md dark:bg-[#1F1A30]">
+        <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-gray-100 dark:bg-[#353535] sm:px-6 lg:px-8">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
-                    <div className="top-4 right-4 text-center font-bold">
-                        <span className="text-green-500 text-3xl">Do</span>
-                        <span className="text-black text-3xl dark:text-gray-500">que</span>
+                    <div className="text-center font-bold text-3xl">
+                        <span className="text-green-500">Do</span>
+                        <span className="text-black dark:text-gray-500">que</span>
                     </div>
                 </div>
 
-                <h1 className="text-3xl font-bold text-center mb-4 text-green-500 dark:text-white">Reset Password</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-green-500 dark:text-white">Reset Password</h1>
 
-                <p className="text-gray-600 text-center mb-6 dark:text-gray-400">
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-6 dark:text-gray-400">
                     Enter your new password below.
                 </p>
 
@@ -64,9 +64,9 @@ export default function ResetPassword() {
                     <p className="text-red-600 text-center mb-4">Passwords do not match.</p>
                 )}
 
-                <form onSubmit={handleResetPassword} className="space-y-6">
+                <form onSubmit={handleResetPassword} className="space-y-6 sm:space-y-8">
                     <div className="relative">
-                        <RiLockPasswordLine className="absolute left-3 top-4 text-[#5E6061]" />
+                        <RiLockPasswordLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#5E6061]" />
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="New Password"
@@ -75,13 +75,13 @@ export default function ResetPassword() {
                                 setNewPassword(e.target.value);
                                 dispatch(clearMessages());
                             }}
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-black"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-[#383150] dark:text-white"
                             required
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-4 text-[#5E6061]"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#5E6061]"
                             aria-label="Toggle password visibility"
                         >
                             {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
@@ -89,7 +89,7 @@ export default function ResetPassword() {
                     </div>
 
                     <div className="relative">
-                        <RiLockPasswordLine className="absolute left-3 top-4 text-[#5E6061]" />
+                        <RiLockPasswordLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#5E6061]" />
                         <input
                             type={showConfirmPassword ? 'text' : 'password'}
                             placeholder="Confirm Password"
@@ -98,13 +98,13 @@ export default function ResetPassword() {
                                 setConfirmPassword(e.target.value);
                                 dispatch(clearMessages());
                             }}
-                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-white text-black dark:bg-[#383150] dark:text-black"
+                            className="block w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 dark:bg-[#383150] dark:text-white"
                             required
                         />
                         <button
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-3 top-4 text-[#5E6061]"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#5E6061]"
                             aria-label="Toggle confirm password visibility"
                         >
                             {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
@@ -113,14 +113,14 @@ export default function ResetPassword() {
 
                     <button
                         type="submit"
-                        className="w-full bg-green-500 text-xl text-white font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                        className="w-full bg-green-500 text-base sm:text-xl text-white font-semibold px-4 py-3 rounded-2xl shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
                         disabled={loading}
                     >
                         {loading ? "Resetting..." : "Reset Password"}
                     </button>
                 </form>
 
-                <div className="flex justify-center items-center mt-6 text-sm text-gray-700">
+                <div className="flex justify-center items-center mt-6 sm:mt-8 text-xs sm:text-sm text-gray-700">
                     <Link href="/signin" className="text-[#242425] hover:underline">
                         Back to Login
                     </Link>
