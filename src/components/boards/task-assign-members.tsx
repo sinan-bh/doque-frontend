@@ -88,15 +88,15 @@ export default function AssignTaskToMembers({
                   )}
                   {members.map((member) => {
                     const isAssigned = existingMembers.includes(
-                      member.user._id
+                      member.user?._id
                     );
                     return (
                       <CommandItem
-                        value={member.user._id}
-                        key={member.user._id}
+                        value={member.user?._id}
+                        key={member.user?._id}
                         className="flex justify-between">
                         <div className="flex flex-col items-start">
-                          <span>{member.user.firstName}</span>
+                          <span>{member.user?.firstName}</span>
                         </div>
                         <Button
                           variant="outline"
@@ -107,7 +107,7 @@ export default function AssignTaskToMembers({
                               setValues((prev) => ({
                                 ...prev!,
                                 assignedTo: prev?.assignedTo?.filter(
-                                  (m) => m !== member.user._id
+                                  (m) => m !== member.user?._id
                                 ),
                               }));
                               return;
@@ -116,7 +116,7 @@ export default function AssignTaskToMembers({
                               ...prev!,
                               assignedTo: [
                                 ...(prev?.assignedTo || []),
-                                member.user._id,
+                                member.user?._id,
                               ],
                             }));
                           }}>
@@ -147,7 +147,7 @@ export default function AssignTaskToMembers({
               <AvatarFallback />
             </Avatar>
             <p className="text-xs text-zinc-700">
-              {members.find((m) => member === m.user._id)?.user.firstName}
+              {members.find((m) => member === m.user?._id)?.user?.firstName}
             </p>
           </div>
         ))}

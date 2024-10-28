@@ -8,7 +8,7 @@ const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
       {members?.map((member, i) => (
         <div key={i} className="bg-white rounded-lg shadow-md p-6 flex dark:bg-darkBg">
           <div className="text-center">
-            <Avatar className="w-16 h-16" key={i}>
+            <Avatar className="w-10 h-10 sm:w-12 sm:h-12" key={i}>
               <AvatarImage
                 src={member.image || "/images/avatarFallback.png"}
                 alt="Avatar"
@@ -17,10 +17,10 @@ const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
             </Avatar>
           </div>
           <div className="ml-4">
-            <span className="text-md font-semibold text-gray-700 px-1">
+            <span className="text-sm sm:text-lg font-semibold text-gray-200 px-1">
               {member.firstName}
             </span>
-            <span className="text-md font-semibold text-gray-700 px-1">{member.lastName}</span>
+            <span className="text-sm sm:text-lg font-semibold text-gray-200 px-1">{member.lastName}</span>
             <p className="text-sm text-gray-500">{member.email}</p>
           </div>
         </div>

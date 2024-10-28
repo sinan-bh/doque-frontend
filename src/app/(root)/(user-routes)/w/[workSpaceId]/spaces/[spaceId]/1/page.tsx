@@ -1,4 +1,4 @@
-import BoardsContainer from "@/components/boards/boards-container";
+import TaskList from '@/components/task-list/task-list-container'
 import TaskDetails from "@/components/boards/task-details";
 import { cookies } from "next/headers";
 import { getSpaceDetails } from "@/utils/space-utils";
@@ -15,22 +15,20 @@ export default async function Page({
     params.spaceId,
     userCookie?.value
   );
-
-
   return (
     <div className="mt-4 overflow-hidden">
-      {error && <p>{error}</p>}
-      {spaceDetails && (
-        <>
-          {searchParams["task"] && searchParams["list"] && (
-            <TaskDetails
-              listId={searchParams["list"]}
-              taskId={searchParams["task"]}
-            />
-          )}
-          <BoardsContainer />
-        </>
-      )}
-    </div>
-  );
+    {error && <p>{error}</p>}
+    {spaceDetails && (
+      <>
+        {searchParams["task"] && searchParams["list"] && (
+          <TaskDetails
+            listId={searchParams["list"]}
+            taskId={searchParams["task"]}
+          />
+        )}
+        <TaskList />
+      </>
+    )}
+  </div>
+  )
 }

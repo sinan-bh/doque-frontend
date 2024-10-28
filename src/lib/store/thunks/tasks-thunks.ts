@@ -15,6 +15,7 @@ export const getSpace = createAsyncThunk(
         id: list._id,
         title: list.name,
         color: list.color,
+        task: list.tasks
       }));
 
       // Extract tasks from lists and transform them
