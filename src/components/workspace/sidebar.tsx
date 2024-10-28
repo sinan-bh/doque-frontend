@@ -114,8 +114,8 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`fixed sm:relative md:relative lg:relative z-50 h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white ${
-        isCollapsed ? "w-16" : "w-64"
+      className={`fixed sm:relative md:relative lg:relative z-50 h-full border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
+        isCollapsed ? "w-14" : "w-64"
       }`}
     >
       <div
@@ -127,7 +127,7 @@ const Sidebar: React.FC = () => {
         <BsLayoutSidebarInset className="text-xl sm:fixed left-5 top-6 z-50 " />
       </div>
       <div className="relative">
-        <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer dark:bg-gray-950">
+        <div className="flex items-center justify-between p-3 rounded-md cursor-pointer">
           <div className="flex items-center h-10 ">
             <Avatar className={`${isCollapsed ? "h-6 w-6" : "h-8 w-8"}`}>
               <AvatarImage src={workspaceUser?.image} alt="Workspace logo" />
@@ -150,10 +150,10 @@ const Sidebar: React.FC = () => {
         {dropdownOpen && (
           <div
             onMouseLeave={() => setDropdownOpen(false)}
-            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-lg z-50 dark:bg-gray-950"
+            className="absolute top-full left-0 w-full bg-white border dark:border-gray-600 rounded-lg z-50 dark:bg-darkBg"
           >
-            <div className="border-b-2 border-gray-600 p-2">
-              <h3 className="text-md font-semibold text-black dark:text-gray-300">
+            <div className="border-b-2 border-gray-200 dark:border-gray-600 p-2">
+              <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">
                 Workspaces
               </h3>
             </div>
@@ -173,7 +173,7 @@ const Sidebar: React.FC = () => {
               )}
             </div>
             <AddWorkSpaceBtn>
-              <div className="flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-900 cursor-pointer">
+              <div className="flex items-center justify-center p-2 border-t-2 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-900 cursor-pointer">
                 <FaPlus className="mr-2" />
                 <h3 className="text-md text-black dark:text-gray-300">
                   Add Workspace
@@ -184,7 +184,7 @@ const Sidebar: React.FC = () => {
         )}
       </div>
 
-      <div className="flex-1 bg-gray-200 rounded-md mt-3 flex flex-col dark:bg-gray-950">
+      <div className="flex-1 rounded-md mt-3 flex flex-col">
         <div className="p-2">
           {!isCollapsed &&
             sidebarItems.map((item, index) => (

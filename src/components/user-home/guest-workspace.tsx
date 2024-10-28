@@ -7,7 +7,7 @@ import ProjectCard from "./project-card";
 import Cookies from "js-cookie";
 
 export default function GuestWorkSpaces() {
-  const [carouselRef] = useEmblaCarousel({ loop: true });
+  const [carouselRef] = useEmblaCarousel({ loop: false });
   const { workSpace } = useAppSelector((state) => state.workspace);
 
   const userId = JSON.parse(Cookies.get("user") || "{}").id;

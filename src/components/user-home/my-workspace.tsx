@@ -11,7 +11,7 @@ import { Skeleton } from "../ui/skeleton";
 const loadingCards = [1, 2, 3];
 
 export default function MyWorkSpace() {
-  const [carouselRef] = useEmblaCarousel({ loop: true });
+  const [carouselRef] = useEmblaCarousel({ loop: false });
   const { workSpace, loading, error } = useAppSelector(
     (state) => state.workspace
   );

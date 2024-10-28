@@ -6,7 +6,7 @@ import { TemplateCard } from "./template-card";
 import { templateList } from "@/consts/templates";
 
 export default function TemplateCarousel() {
-  const [carouselRef] = useEmblaCarousel({ loop: true });
+  const [carouselRef] = useEmblaCarousel({ loop: false });
 
   return (
     <div className="relative">
