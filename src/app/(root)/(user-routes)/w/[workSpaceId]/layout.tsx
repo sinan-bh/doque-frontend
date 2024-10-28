@@ -7,7 +7,7 @@ export default function layout({ children }: { children: ReactNode }) {
     <div className="flex h-full">
       <Sidebar />
       <Chat />
-      <div className="w-full h-full overflow-auto">{children}</div>
+      <div className="w-full ml-11 h-full overflow-auto sm:ml-0">{children}</div>
     </div>
   );
 }
