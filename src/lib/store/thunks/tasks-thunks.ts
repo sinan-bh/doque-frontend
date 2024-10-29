@@ -15,7 +15,7 @@ export const getSpace = createAsyncThunk(
         id: list._id,
         title: list.name,
         color: list.color,
-        task: list.tasks
+        task: list.tasks,
       }));
 
       // Extract tasks from lists and transform them
@@ -30,7 +30,13 @@ export const getSpace = createAsyncThunk(
         }))
       );
 
-      return { lists: cols, tasks: taskRows };
+      const space = {
+        _id: data.data._id,
+        name: data.data.name,
+        description: data.data.description,
+      };
+
+      return { lists: cols, tasks: taskRows, space };
     } catch (error) {
       const errorMsg = axiosErrorCatch(error);
       return rejectWithValue(errorMsg);
