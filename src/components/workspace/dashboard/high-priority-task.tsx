@@ -1,6 +1,5 @@
 "use client";
 
-// import StackedAvatars from "@/components/ui/stacked-avatars";
 import { useAppSelector } from "@/lib/store/hooks";
 import { formatedDate } from "@/components/workspace/dashboard/task-list";
 import React, { useState } from "react";
@@ -38,7 +37,7 @@ const HighPriorityTask: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-[180px] bg-white  rounded-lg shadow-md p-2 space-y-2 dark:bg-gray-800">
+    <div className="w-full h-[180px] bg-white  rounded-lg shadow-md p-2 space-y-2  dark:bg-darkBg">
       {highPriorityTasks.length > 0 ? (
         <div className="space-y-2">
           <div className="flex justify-between items-center">
@@ -80,7 +79,6 @@ const HighPriorityTask: React.FC = () => {
               </button>
             </div>
           </div>
-          {/* <div className="flex flex-col"> */}
             <Link
               href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${highPriorityTasks[currentIndex]?._id}&list=${highPriorityTasks[currentIndex]?.listId}`}
               className="flex flex-col py-2"
@@ -110,7 +108,6 @@ const HighPriorityTask: React.FC = () => {
                 </span>
               </div>
             </Link>
-          {/* </div> */}
         </div>
       ) : (
         <div>

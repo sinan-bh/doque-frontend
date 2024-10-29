@@ -27,7 +27,7 @@ export default function SearchBar() {
         tasks.filter(
           (task) =>
             task.title.toLowerCase().includes(query.toLowerCase()) ||
-            task.description.toLowerCase().includes(query.toLowerCase())
+            task.description?.toLowerCase().includes(query.toLowerCase())
         )
       );
     }

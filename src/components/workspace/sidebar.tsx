@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
@@ -25,11 +23,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchWorkspaceUser } from "@/lib/store/features/userSlice";
 import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 import { EditWorkSpace } from "./edit-workspace";
-
-// interface Workspace {
-//   name: string;
-//   WorkspaceId: string;
-// }
+import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
 interface SidebarIcon {
   icon: ReactNode;
@@ -42,6 +36,7 @@ const Sidebar: React.FC = () => {
   const { workSpace } = useSelector((state: RootState) => state.workspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string>("");
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const dispatched = useAppDispatch();
   const { workspaceUser } = useAppSelector((state) => state.user);
   const { workSpaceId }: { workSpaceId: string } = useParams();
@@ -61,30 +56,22 @@ const Sidebar: React.FC = () => {
 
   const sidebarItems: SidebarIcon[] = [
     {
-      icon: (
-        <AiFillHome className="text-xl text-black mt-1 dark:text-gray-300" />
-      ),
+      icon: <AiFillHome className="text-xl" />,
       label: "Home",
       href: "/",
     },
     {
-      icon: (
-        <RiDashboardFill className="text-xl text-black  mt-1 dark:text-gray-300" />
-      ),
+      icon: <RiDashboardFill className="text-xl" />,
       label: "Dashboard",
       href: `/w/${workSpaceId}/dashboard`,
     },
     {
-      icon: (
-        <BsFillPeopleFill className="text-xl text-black mt-1 dark:text-gray-300" />
-      ),
+      icon: <BsFillPeopleFill className="text-xl" />,
       label: "Members",
       href: `/w/${workSpaceId}/members`,
     },
     {
-      icon: (
-        <FaCalendar className="text-xl text-black mt-1 dark:text-gray-300" />
-      ),
+      icon: <FaCalendar className="text-xl" />,
       label: "Calendar",
       href: `/w/${workSpaceId}/calendar`,
     },
@@ -110,6 +97,7 @@ const Sidebar: React.FC = () => {
 
   const handleRouteChange = (route: string) => {
     setActiveRoute(route);
+    setIsCollapsed(true);
     router.push(route);
   };
 
@@ -119,19 +107,46 @@ const Sidebar: React.FC = () => {
     dispatch(fetchSpacesData(workSpaceId));
   }, [workSpaceId]);
 
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+    setDropdownOpen(false);
+  };
+
   return (
     <div
-      className={`relative h-full p-2 flex-shrink-0 flex flex-col transition-all duration-300 w-64`}>
+      className={`fixed sm:relative md:relative lg:relative z-50 h-full border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
+        isCollapsed ? "w-14" : "w-64"
+      }`}
+    >
+      <div
+        className={`flex items-center p-2 cursor-pointer ${
+          isCollapsed ? "justify-center" : ""
+        }`}
+        onClick={toggleCollapse}
+      >
+        <MdKeyboardDoubleArrowRight
+          className={`text-3xl sm:fixed bg-gray-200 p-1 rounded-lg left-5 top-5 z-50 transition-transform duration-500`}
+          style={{
+            transform: isCollapsed
+              ? "rotateY(180deg) "
+              : "rotateY(0deg) ",
+            perspective: "500px",
+          }}
+        />
+      </div>
+
       <div className="relative">
-        <div className="flex items-center justify-between p-3 bg-gray-200 rounded-md cursor-pointer dark:bg-gray-950">
-          <div className="flex items-center h-10 pl-1">
-            <Avatar className="h-8 w-8">
+        <div className="flex items-center justify-between p-3 rounded-md cursor-pointer">
+          <div className="flex items-center h-10">
+            <Avatar className={`${isCollapsed ? "h-6 w-6" : "h-8 w-8"}`}>
               <AvatarImage src={workspaceUser?.image} alt="Workspace logo" />
               <AvatarFallback />
             </Avatar>
-            <h2 className="text-md text-black ml-2 h-5 overflow-hidden dark:text-gray-300">
-              {main?.name}
-            </h2>
+            {!isCollapsed && (
+              <h2 className="text-md text-black ml-2 h-5 overflow-hidden dark:text-gray-300">
+                {main?.name}
+              </h2>
+            )}
           </div>
           <IoIosArrowDown
             className={`text-black transform transition-transform duration-300 cursor-pointer dark:text-gray-300 ${
@@ -144,9 +159,10 @@ const Sidebar: React.FC = () => {
         {dropdownOpen && (
           <div
             onMouseLeave={() => setDropdownOpen(false)}
-            className="absolute top-full left-0 w-full bg-gray-300 shadow-xl rounded-lg z-50 dark:bg-gray-950">
-            <div className="border-b-2 border-gray-600 p-2">
-              <h3 className="text-md font-semibold text-black dark:text-gray-300">
+            className="absolute top-full left-0 w-full bg-white border dark:border-gray-600 rounded-lg z-50 dark:bg-darkBg"
+          >
+            <div className="border-b-2 border-gray-200 dark:border-gray-600 p-2">
+              <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">
                 Workspaces
               </h3>
             </div>
@@ -166,7 +182,7 @@ const Sidebar: React.FC = () => {
               )}
             </div>
             <AddWorkSpaceBtn>
-              <div className="flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-900 cursor-pointer">
+              <div className="flex items-center justify-center p-2 border-t-2 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-900 cursor-pointer">
                 <FaPlus className="mr-2" />
                 <h3 className="text-md text-black dark:text-gray-300">
                   Add Workspace
@@ -177,38 +193,64 @@ const Sidebar: React.FC = () => {
         )}
       </div>
 
-      <div className="flex-1 bg-gray-200 rounded-md mt-3 flex flex-col dark:bg-gray-950">
-        <div className="p-4">
-          {sidebarItems.map((item, index) => (
-            <div
-              key={index}
-              className={`flex items-center p-2 cursor-pointer ${
-                activeRoute === item.href
-                  ? "border-l-4 border-black dark:border-gray-300"
-                  : "hover:border-l-4 border-transparent"
-              }`}
-              onClick={() => handleRouteChange(item.href)}>
-              <div className="flex items-center">
-                <div>{item.icon}</div>
-                <h2 className="ml-3 text-black h-5 overflow-hidden dark:text-gray-300">
-                  {item.label}
-                </h2>
+      <div className="flex-1 rounded-md mt-3 flex flex-col">
+        <div className="p-2">
+          {!isCollapsed &&
+            sidebarItems.map((item, index) => (
+              <div
+                key={index}
+                className={`flex items-center p-2 cursor-pointer ${
+                  activeRoute === item.href
+                    ? "border-l-4 border-black dark:border-gray-300"
+                    : "hover:border-l-4 border-transparent"
+                }`}
+                onClick={() => handleRouteChange(item.href)}
+              >
+                <div className="flex items-center">
+                  <div>{item.icon}</div>
+                  <h2 className="ml-3 text-black h-5 overflow-hidden dark:text-gray-300">
+                    {item.label}
+                  </h2>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+
+          {isCollapsed &&
+            sidebarItems.map((item, index) => (
+              <div
+                key={index}
+                className={`flex items-center cursor-pointer ${
+                  isCollapsed ? "p-2 mt-1" : ""
+                } ${
+                  activeRoute === item.href
+                    ? "border-l-4 border-black dark:border-gray-300"
+                    : "hover:border-l-4 border-transparent"
+                }`}
+                onClick={() => handleRouteChange(item.href)}
+              >
+                <div className="flex items-center">
+                  <div>{item.icon}</div>
+                </div>
+              </div>
+            ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto hide-scrollbar max-h-64 p-4">
-          {<Spaces />}
-        </div>
+        {!isCollapsed && (
+          <div className="flex-1 overflow-y-auto hide-scrollbar max-h-64 p-4">
+            {<Spaces />}
+          </div>
+        )}
 
         <EditWorkSpace
-          initialData={{ name: main?.name || "", visibility: true }}>
-          <div className="mt-auto flex items-center p-2 pl-6 hover:bg-gray-300 rounded-lg cursor-pointer dark:hover:bg-gray-900">
+          initialData={{ name: main?.name || "", visibility: true }}
+        >
+          <div className="mt-auto flex items-center p-2 pl-3 hover:bg-gray-300 rounded-lg cursor-pointer dark:hover:bg-gray-900">
             <FiSettings className="text-xl text-black dark:text-gray-300" />
-            <h1 className="ml-3 font-medium text-black h-6 overflow-hidden dark:text-gray-300">
-              Settings
-            </h1>
+            {!isCollapsed && (
+              <h1 className="ml-3 font-medium text-black h-6 overflow-hidden dark:text-gray-300">
+                Settings
+              </h1>
+            )}
           </div>
         </EditWorkSpace>
       </div>

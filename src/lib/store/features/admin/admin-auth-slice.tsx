@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import axiosInstance from "@/utils/admin/axios";
 import Cookies from "js-cookie";
 
 interface AdminState {
@@ -16,13 +17,6 @@ const initialState: AdminState = {
   isAuthenticated: !!Cookies.get("adminToken"),
   error: null,
 };
-
-const axiosInstance = axios.create({
-  baseURL: "https://daily-grid-rest-api.onrender.com/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 
 axiosInstance.interceptors.request.use(
   (config) => {

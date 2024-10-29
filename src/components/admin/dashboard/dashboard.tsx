@@ -13,7 +13,11 @@ import {
 import DashboardStats from "./dashboard-status/dashboard-status";
 import WorkspaceStatistics from "./dashboard-status/workspace-statics";
 import ActivityChart from "./dashboard-status/activity-chart";
-import Spinner from "@/components/ui/spinner/spinner";
+import {
+  DashboardStatsSkeleton,
+  WorkspaceStatisticsSkeleton,
+  ActivityChartSkeleton,
+} from "../../ui/admin/dashboard-skelton";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
@@ -39,10 +43,12 @@ export default function Dashboard() {
   const isLoading = memberLoading || workspaceLoading;
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen ml-10 bg-gray-100 dark:bg-gray-900">
       {isLoading ? (
-        <div className="flex justify-center items-center min-h-screen">
-          <Spinner />
+        <div className="overflow-auto max-h-[90vh]">
+          <DashboardStatsSkeleton />
+          <WorkspaceStatisticsSkeleton />
+          <ActivityChartSkeleton />
         </div>
       ) : (
         <div className="overflow-auto max-h-[90vh]">

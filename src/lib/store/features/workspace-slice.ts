@@ -144,12 +144,15 @@ export const createList = createAsyncThunk(
     try {
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.todo,
+        color: "#808080"
       });
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.doing,
+        color: "#1591ea"
       });
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.completed,
+        color: "#5ce65c"
       });
     } catch (error) {
       console.error(error);
@@ -199,11 +202,20 @@ export const fetchUserProfiles = createAsyncThunk(
   "workspace/fetchUserProfiles",
   async ({ members }: { members: Member[] }, { rejectWithValue }) => {
     try {
+      if (!Array.isArray(members) || members.length === 0) {
+        return rejectWithValue("No members provided");
+      }
       const userPromises = members.map((member) => {
         return axiosInstance.get(`/userprofile/${member.user}`);
       });
-      const userResponses = await Promise.all(userPromises);
-      const fetchedUsers = userResponses.map((resp) => resp.data.data);
+     const userResponses = await Promise.allSettled(userPromises);
+      const fetchedUsers = userResponses
+        .filter((result) => result.status === "fulfilled") 
+        .map((result) => result.value.data.data); 
+      const rejectedResponses = userResponses.filter((result) => result.status === "rejected");
+      if (rejectedResponses.length > 0) {
+        console.error("Some requests failed:", rejectedResponses);
+      }
       return fetchedUsers;
     } catch (error) {
       console.error(error);

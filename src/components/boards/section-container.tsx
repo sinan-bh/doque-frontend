@@ -5,7 +5,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "../ui/button";
-import { FaTrash } from "react-icons/fa6";
+import { FaPlus, FaTrash } from "react-icons/fa6";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Column, TaskRow } from "@/types/spaces";
@@ -119,16 +119,14 @@ export default function SectionContainer({
     <div
       style={style}
       ref={setNodeRef}
-      className={` w-64 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white dark:bg-zinc-900
+      className={`sm:w-64 w-40 h-[600px] flex-shrink-0 p-2 rounded-md cursor-default shadow-sm border overflow-y-auto bg-white dark:bg-zinc-900
        ${isDragging && !isOverLay && "opacity-50"} `}
       {...attributes}>
-      <div
-        className="flex justify-between gap-2 p-2 cursor-pointer"
-        {...listeners}>
+      <div className="flex gap-2 cursor-pointer" {...listeners}>
         {!editMode ? (
           <h2
             onClick={() => setEditMode(true)}
-            className="font-semibold cursor-text min-w-40 hover:border rounded-md px-3 py-1 ">
+            className="font-semibold cursor-text hover:border rounded-md px-3 py-1 ">
             {section.title}
           </h2>
         ) : (
@@ -151,7 +149,15 @@ export default function SectionContainer({
       </div>
 
       <div className="flex justify-between items-center">
-        <NewTaskButton listId={section.id} />
+        <NewTaskButton listId={section.id}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex sm:gap-2 items-center my-2 ">
+            <span className="hidden sm:inline">Create Task</span>{" "}
+            <FaPlus size={10} />
+          </Button>
+        </NewTaskButton>
         <div className="flex gap-2">
           <ColorSelector
             currentColor={section.color}

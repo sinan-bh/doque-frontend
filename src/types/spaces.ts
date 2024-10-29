@@ -36,7 +36,7 @@ export type TaskRow = {
   id: string;
   column: string;
   title: string;
-  description: string;
+  description: string | undefined;
   assignedTo?: string[];
   dueDate?: string;
   priority?: string;
@@ -44,12 +44,14 @@ export type TaskRow = {
   createdAt?: string;
   updatedAt?: string;
   color?: string;
+  status?: string;
 };
 
 export type Column = {
   id: string;
   title: string;
   color?: string;
+  task?: TaskRow[];
 };
 
 export type TaskFormValues = {

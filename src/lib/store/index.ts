@@ -4,6 +4,7 @@ import tasksSlice from "./features/tasks-slice";
 import userSlice from "./features/userSlice";
 import workspaceReducer from "@/lib/store/features/workspace-slice";
 import messageReducer from "@/lib/store/features/message-slice";
+import calendarSlice from "@/lib/store/features/calendar-slice";
 import adminAuthReducer from "@/lib/store/features/admin/admin-auth-slice";
 import adminmMembersReducer from "@/lib/store/features/admin/admin-member-slice";
 import adminWorkspaceReducer from "@/lib/store/features/admin/admin-workspace-slice";
@@ -16,6 +17,7 @@ export const makeStore = () => {
       user: userSlice,
       workspace: workspaceReducer,
       message: messageReducer,
+      calendar: calendarSlice,
       adminAuth: adminAuthReducer,
       adminMembers: adminmMembersReducer,
       adminWorkspace: adminWorkspaceReducer,

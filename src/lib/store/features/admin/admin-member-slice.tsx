@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
-import axiosInstance from "@/utils/axios";
+import axiosInstance from "@/utils/admin/axios";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 export interface AdminMember {

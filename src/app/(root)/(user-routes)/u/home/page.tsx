@@ -14,14 +14,11 @@ export default async function Workspace() {
 
     const parsedUserCookie: { token: string } = JSON.parse(userCookie);
 
-    const res = await fetch(
-      "https://daily-grid-rest-api.onrender.com/api/workspace",
-      {
-        headers: {
-          Authorization: `Bearer ${parsedUserCookie.token}`,
-        },
-      }
-    );
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/workspace", {
+      headers: {
+        Authorization: `Bearer ${parsedUserCookie.token}`,
+      },
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch workspace data.");
@@ -34,8 +31,8 @@ export default async function Workspace() {
     }
 
     return (
-      <div className="w-full p-4 flex-grow bg-[#EDF1F4] overflow-auto hide-scrollbar dark:bg-gray-950">
-        <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">
+      <div className="w-full p-4 flex-grow bg-white overflow-auto hide-scrollbar dark:bg-gray-950">
+        <h1 className="text-1xl sm:text-2xl md:text-2xl text-[#3B3C3D] font-bold ml-5 mb-4">
           My Workspaces
         </h1>
 
@@ -43,7 +40,7 @@ export default async function Workspace() {
 
         <GuestWorkSpaces />
 
-        <h1 className="text-3xl text-[#3B3C3D] font-bold ml-5 mb-4">
+        <h1 className="text-1xl sm:text-2xl md:text-2xl text-[#3B3C3D] font-bold ml-5 mb-4">
           Templates
         </h1>
         <TemplateCarousel />
