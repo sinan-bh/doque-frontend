@@ -82,13 +82,18 @@ export default function VerifyEmail() {
             <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
                     <div className="text-center font-bold text-3xl">
-                        <span className="text-green-500">Do</span>
-                        <span className="text-black dark:text-gray-500">que</span>
+                        <span className="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent text-2xl font-bold dark:text-white">
+                            DO
+                        </span>
+                        <span className="text-black text-2xl dark:text-gray-500 font-bold">QUE</span>
                     </div>
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-green-500 dark:text-white">
+                <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 
+               bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent 
+               dark:text-white">
                     Verify Your Email
                 </h1>
+
                 <p className="text-sm sm:text-base text-gray-600 text-center mb-6 dark:text-gray-400">
                     An OTP has been sent to your email. Please enter the 6-digit OTP to verify your account.
                 </p>
@@ -109,19 +114,29 @@ export default function VerifyEmail() {
                             onChange={(e) => handleOtpChange(e, index)}
                             onKeyDown={(e) => handleBackspace(e, index)}
                             onPaste={handlePaste}
-                            className="w-full h-12 sm:h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#383150] dark:text-white"
+                            className="w-full h-12 sm:h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md 
+                 focus:outline-none focus:ring-2 focus:ring-green-500 
+                 transition duration-300 ease-in-out 
+                 dark:bg-[#383150] dark:text-white
+                 hover:border-green-400 focus:border-green-600"
                             onFocus={() => setStatusMessage(null)}
+                            aria-label={`OTP digit ${index + 1}`}
                         />
                     ))}
                 </div>
+
                 <button
                     type="button"
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="w-full bg-green-500 text-base sm:text-xl text-white font-semibold px-4 py-2 sm:py-3 rounded-2xl shadow-md hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-green-500 text-base sm:text-xl text-white font-semibold 
+             px-4 py-2 sm:py-3 rounded-2xl shadow-md 
+             hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
+             focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
                 >
                     {loading ? 'Verifying...' : 'Submit'}
                 </button>
+
             </div>
         </div>
     );

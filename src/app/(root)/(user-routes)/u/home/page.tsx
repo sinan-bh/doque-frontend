@@ -14,7 +14,7 @@ export default async function Workspace() {
 
     const parsedUserCookie: { token: string } = JSON.parse(userCookie);
 
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/workspaces", {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/workspace", {
       headers: {
         Authorization: `Bearer ${parsedUserCookie.token}`,
       },
