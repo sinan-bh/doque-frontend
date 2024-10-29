@@ -94,7 +94,6 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
-                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
