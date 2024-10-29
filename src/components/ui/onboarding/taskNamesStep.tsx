@@ -50,19 +50,21 @@ export default function TaskNameStep({
   );
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center p-6">
-      <header className="absolute top-0 left-0 w-full py-6 flex justify-between items-center px-10">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6">
+      <header className="absolute top-0 left-0 w-full py-4 md:py-6 flex justify-between items-center px-4 md:px-10">
         <div className="flex items-center space-x-2">
-          <h1 className="font-megrim text-black font-bold text-2xl">DOQUE</h1>
+          <h1 className="font-megrim text-black font-bold text-xl md:text-2xl">
+            DOQUE
+          </h1>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl mt-16">
-        <div className="space-y-6 md:mt-14">
-          <h2 className="text-2xl font-semibold text-black">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mt-12 md:mt-16">
+        <div className="space-y-6 md:mt-14 px-4 mt-10">
+          <h2 className="text-xl md:text-2xl font-semibold text-black">
             Start by organizing your tasks
           </h2>
-          <p className="text-gray-700">
+          <p className="text-sm md:text-base text-gray-700">
             You can move tasks between the lists as you progress.
           </p>
 
@@ -103,9 +105,8 @@ export default function TaskNameStep({
               Back
             </button>
             <button
-              className={`text-indigo-600 font-semibold hover:underline ${
-                !allFieldsFilled ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`text-indigo-600 font-semibold hover:underline ${!allFieldsFilled ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               onClick={handleCreateWorkSpace}
               disabled={!allFieldsFilled}
             >
@@ -114,10 +115,10 @@ export default function TaskNameStep({
           </div>
         </div>
 
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center px-4">
           <div className="w-full md:w-96 h-auto bg-white shadow-lg rounded-lg p-6">
             <h3 className="font-semibold mb-4">
-              <div className="h-8 pl-5 bg-indigo-100 text-indigo-600 rounded-lg flex items-center">
+              <div className="h-8 pl-5 bg-indigo-100 text-indigo-600 rounded-lg flex items-center truncate">
                 {previousSpaceName} / {previousBoardName}
               </div>
             </h3>
