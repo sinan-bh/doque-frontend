@@ -28,19 +28,17 @@ export default function SpacesMenu() {
         <>
           <Link
             href={`/w/${workSpaceId}/spaces`}
-            className="pl-4 pr-1 inline-block ml-4 text-xs"
-          >
+            className="pl-4 pr-1 hidden sm:inline-block text-xs">
             <Button variant="ghost">Spaces</Button>
           </Link>
-          <span>{">"}</span>
+          <span className="hidden sm:inline">{">"}</span>
         </>
       )}
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger
             className="ring-0 border-0 focus-visible:ring-offset-0 focus-visible:ring-0"
-            asChild
-          >
+            asChild>
             <span className="pl-4 pr-1 inline-block -ml-4 text-xs">
               <Button variant="ghost">{spaceDetails?.name || "Spaces"}</Button>
             </span>
@@ -56,8 +54,7 @@ export default function SpacesMenu() {
                 <DropdownMenuItem key={space._id}>
                   <Link
                     className="w-full"
-                    href={`/w/${workSpaceId}/spaces/${space._id}`}
-                  >
+                    href={`/w/${workSpaceId}/spaces/${space._id}`}>
                     {space.name}
                   </Link>
                 </DropdownMenuItem>

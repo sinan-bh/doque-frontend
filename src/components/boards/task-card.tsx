@@ -43,29 +43,29 @@ export default function TaskCard({ task }: { task: TaskRow }) {
 
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      <Card className={`overflow-hidden  ${isDragging && "opacity-50"}`}>
+      <Card
+        className={`overflow-hidden rounded-lg  ${isDragging && "opacity-50"}`}>
         <div
-          className={clsx("h-5", {
+          className={clsx("sm:h-5 h-3", {
             "bg-red-300": task?.priority === "high",
             "bg-yellow-300": task?.priority === "medium",
             "bg-green-300": task?.priority === "low",
           })}></div>
         <Link href={`${pathName}?task=${task.id}&list=${task.column}`}>
-          <CardHeader className="py-4">
-            <CardTitle className="text-ellipsis h-fit overflow-hidden whitespace-nowrap leading-normal">
+          <CardHeader className="px-2 py-0 sm:py-2">
+            <CardTitle className="text-ellipsis h-fit overflow-hidden whitespace-nowrap leading-normal text-sm sm:text-base">
               {task.title}
             </CardTitle>
-
-            <CardDescription className="text-xs m-0 text-ellipsis overflow-hidden whitespace-nowrap">
+            <CardDescription className="hidden sm:block text-xs h-4 m-0 text-ellipsis overflow-hidden whitespace-nowrap">
               {task.description}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="grid grid-cols-2 items-center">
+          <CardContent className="space-y-2 sm: px-2">
+            <div className="grid grid-cols-2 items-center h-6">
               {task?.priority && (
                 <p
                   className={clsx(
-                    "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
+                    "sm:text-sm text-xs flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
                     {
                       "text-red-700": task?.priority === "high",
                       "text-yellow-700": task?.priority === "medium",

@@ -50,7 +50,6 @@ export default function BoardsContainer() {
   );
   const [prevState, setPrevState] = useState<string>(JSON.stringify(lists));
 
-
   useEffect(() => {
     dispatch(getSpace(spaceId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -233,7 +232,7 @@ export default function BoardsContainer() {
           loading={loading.getSpaceDetails}
           error={error.getSpaceDetails}>
           <>
-            <div className="flex gap-4 w-screen-lg overflow-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
+            <div className="flex sm:gap-4 gap-2 overflow-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
               <SortableContext
                 items={columnsIds}
                 strategy={horizontalListSortingStrategy}>

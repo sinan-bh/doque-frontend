@@ -147,7 +147,6 @@ export function EditSpace({
               id="space_desc"
               onChange={(e) => setSpaceDesc(e.target.value)}
               value={spaceDesc}
-              required
               className="col-span-3"
             />
           </div>
