@@ -14,14 +14,11 @@ export default async function Workspace() {
 
     const parsedUserCookie: { token: string } = JSON.parse(userCookie);
 
-    const res = await fetch(
-      "https://daily-grid-rest-api.onrender.com/api/workspace",
-      {
-        headers: {
-          Authorization: `Bearer ${parsedUserCookie.token}`,
-        },
-      }
-    );
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/workspaces", {
+      headers: {
+        Authorization: `Bearer ${parsedUserCookie.token}`,
+      },
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch workspace data.");

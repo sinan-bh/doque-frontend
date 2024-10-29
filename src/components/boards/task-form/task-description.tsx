@@ -1,15 +1,14 @@
-import { TaskFormValues } from "@/types/spaces";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { BsCardText } from "react-icons/bs";
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
+import { Button } from "../../ui/button";
+import { Textarea } from "../../ui/textarea";
 
 export default function TaskDescription({
-  values,
-  setValues,
+  description,
+  setDescription,
 }: {
-  values: TaskFormValues | null;
-  setValues: Dispatch<SetStateAction<TaskFormValues | null>>;
+  description?: string;
+  setDescription: (description: string) => void;
 }) {
   const [editOpen, setEditOpen] = useState(false);
   return (
@@ -26,23 +25,22 @@ export default function TaskDescription({
           Edit
         </Button>
       </span>
-      {editOpen || !values?.description ? (
+      {editOpen || !description ? (
         <Textarea
           autoFocus
-          onChange={(e) =>
-            setValues((prev) => ({ ...prev!, description: e.target.value }))
-          }
+          // setValues((prev) => ({ ...prev!, description: e.target.value }
+          onChange={(e) => setDescription(e.target.value)}
           onBlur={() => {
             setEditOpen(false);
           }}
           disabled={!editOpen}
           className="my-2 disabled:cursor-default"
           placeholder="Add description here"
-          value={values?.description}
+          value={description}
         />
       ) : (
         <pre className="border bg-zinc-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-400 px-4 py-2 min-h-16 rounded-md my-2 font-normal font-sans">
-          {values?.description}
+          {description}
         </pre>
       )}
     </div>

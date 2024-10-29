@@ -28,7 +28,8 @@ import { CSS } from "@dnd-kit/utilities";
 export default function TaskListContainer() {
   const dispatch = useAppDispatch();
   const { tasks, lists, loading } = useAppSelector((state) => state.tasks);
-  const { workSpaceId, spaceId }: { workSpaceId: string; spaceId: string } = useParams();
+  const { workSpaceId, spaceId }: { workSpaceId: string; spaceId: string } =
+    useParams();
   const [orderedLists, setOrderedLists] = useState(lists || []);
 
   useEffect(() => {
@@ -47,7 +48,9 @@ export default function TaskListContainer() {
 
     if (over) {
       if (active.id !== over.id) {
-        const oldIndex = orderedLists.findIndex((list) => list.id === active.id);
+        const oldIndex = orderedLists.findIndex(
+          (list) => list.id === active.id
+        );
         const newIndex = orderedLists.findIndex((list) => list.id === over.id);
 
         if (oldIndex !== -1 && newIndex !== -1) {
@@ -78,16 +81,16 @@ export default function TaskListContainer() {
         onClick={handleCreateList}
         size="sm"
         variant="outline"
-        className="flex gap-2 items-center my-2"
-      >
+        className="flex gap-2 items-center my-2">
         Add List <FaPlus size={10} />
       </Button>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={orderedLists.map((list) => list.id)} strategy={verticalListSortingStrategy}>
+        onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={orderedLists.map((list) => list.id)}
+          strategy={verticalListSortingStrategy}>
           <div className="w-fit">
             {orderedLists?.map((list) => (
               <div key={list.id} id={list.id}>
@@ -108,8 +111,15 @@ export default function TaskListContainer() {
   );
 }
 
-export function SortableItem({ id, children }: { id: string; children: React.ReactNode }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+export function SortableItem({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,

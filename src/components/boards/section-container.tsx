@@ -5,7 +5,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "../ui/button";
-import { FaTrash } from "react-icons/fa6";
+import { FaPlus, FaTrash } from "react-icons/fa6";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Column, TaskRow } from "@/types/spaces";
@@ -151,7 +151,14 @@ export default function SectionContainer({
       </div>
 
       <div className="flex justify-between items-center">
-        <NewTaskButton listId={section.id} />
+        <NewTaskButton listId={section.id}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex gap-2 items-center my-2">
+            Create new task <FaPlus size={10} />
+          </Button>
+        </NewTaskButton>
         <div className="flex gap-2">
           <ColorSelector
             currentColor={section.color}
