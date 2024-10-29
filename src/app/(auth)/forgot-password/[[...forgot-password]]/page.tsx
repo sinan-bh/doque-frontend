@@ -38,13 +38,18 @@ export default function ForgotPassword() {
             <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md dark:bg-[#1F1A30]">
                 <div className="flex justify-center mb-6">
                     <div className="text-center font-bold text-3xl">
-                        <span className="text-green-500">Do</span>
-                        <span className="text-black dark:text-gray-500">que</span>
+                        <span className="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent text-2xl font-bold dark:text-white">
+                            DO
+                        </span>
+                        <span className="text-black text-2xl dark:text-gray-500 font-bold">QUE</span>
                     </div>
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-green-500 dark:text-white">
+                <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 
+               bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent 
+               dark:text-white">
                     Forgot Password?
                 </h1>
+
                 <p className="text-sm sm:text-base text-gray-600 text-center mb-6 dark:text-gray-400">
                     Enter your email to receive a link to reset your password.
                 </p>
@@ -65,12 +70,17 @@ export default function ForgotPassword() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full border-2 border-green-500 text-green-500 text-base sm:text-xl font-semibold px-4 py-2 sm:py-3 rounded-2xl shadow-md hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 ease-in-out"
+                        className="w-full border-2 border-green-500 text-green-500 text-base sm:text-xl font-semibold 
+             px-4 py-2 sm:py-3 rounded-2xl shadow-md 
+             hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
+             hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 
+             transition duration-300 ease-in-out"
                         disabled={loading}
                         aria-label="Send reset link"
                     >
                         {loading ? "Sending..." : "Send Link"}
                     </button>
+
                 </form>
                 <div className="flex justify-center items-center mt-6 sm:mt-8 text-xs sm:text-sm text-gray-700">
                     <Link href="/signup" className="text-[#242425] hover:underline dark:text-gray-300">
