@@ -9,7 +9,7 @@ import MyTask from "./my-task";
 
 export default function DashboardProject() {
   return (
-    <div className="max-w-3xl h-auto min-h-[calc(100vh-150px)] bg-white rounded-lg shadow-md p-4 dark:bg-darkBg">
+    <div className="max-w-full h-auto min-h-[calc(100vh-150px)] bg-white rounded-lg shadow-md p-4 dark:bg-darkBg">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 mb-4">
         <div className="font-extrabold text-xl dark:text-gray-300 mb-2 sm:mb-0">
           Project

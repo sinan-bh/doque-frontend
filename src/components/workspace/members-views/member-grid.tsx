@@ -22,9 +22,6 @@ const MembersGrid: React.FC<{ members: Users[] }> = ({ members }) => {
             </span>
             <span className="text-sm sm:text-lg font-semibold text-gray-700 dark:text-gray-200 px-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px] sm:max-w-[200px]">{member.lastName}</span>
             <p className="text-sm text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{member.email}</p>
-
-            <span className="text-sm sm:text-lg font-semibold text-gray-700 dark:text-gray-200 px-1">{member.lastName}</span>
-            <p className="text-sm text-gray-500">{member.email}</p>
           </div>
         </div>
       ))}

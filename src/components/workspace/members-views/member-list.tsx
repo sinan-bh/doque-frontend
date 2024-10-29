@@ -20,7 +20,7 @@ const MembersList: React.FC<{ members: Users[] }> = ({ members }) => {
                 {item.firstName} {item.lastName}
               </h3>
             </div>
-            <h2 className="text-sm sm:text-lg text-gray-500 sm:hidden block">
+            <h2 className="text-sm sm:text-lg text-center text-gray-500 sm:hidden block">
               {item.email}
             </h2>
           </div>

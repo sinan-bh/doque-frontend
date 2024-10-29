@@ -18,11 +18,11 @@ interface Message {
 
 const Comment: React.FC<Message> = ({ messages }) => {
   return (
-    <div className="pt-2">
+    <div>
       {messages?.slice(-3).reverse().map((comment) => (
         <div
           key={comment._id}
-          className="w-full h-8 flex items-center bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition overflow-hidden dark:bg-darkBg"
+          className="w-full my-1 h-8 flex items-centerrounded-lg shadow-sm transition overflow-hidden dark:bg-darkBg"
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src={comment.sender.image} alt="Project Icon" />
@@ -34,22 +34,7 @@ const Comment: React.FC<Message> = ({ messages }) => {
               {comment.content}
             </p>
           </div>
-          <button className="ml-4 text-gray-600 hover:text-gray-800 flex-shrink-0">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
+          
         </div>
       ))}
     </div>
@@ -77,22 +62,25 @@ const CommentsList = () => {
   };
 
   return (
-    <div className="w-full  bg-white rounded-lg shadow-md p-2 space-y-2 mt-2 overflow-hidden dark:bg-darkBg">
-      <div className="flex justify-between">
-        <div className="font-semibold text-sm text-gray-500 dark:text-gray-300">
-          New Comments
-        </div>
-        <div>
-          <IoMdRefresh 
-            onClick={handleRefreshClick} 
-            className={`transition-transform duration-500 ${isRotating ? 'rotate-180' : ''}`} // Apply rotation class
-          />
-        </div>
+    <div className="w-full h-44 bg-white rounded-lg shadow-md p-4 space-y-3 mt-4 overflow-hidden dark:bg-darkBg">
+    <div className="flex justify-between items-center border-b pb-2 border-gray-200 dark:border-gray-700">
+      <div className="font-semibold text-sm text-gray-600 dark:text-gray-300">
+        New Comments
       </div>
-      <div className="space-y-2 overflow-auto">
-        <Comment {...messages} />
+      <div>
+        <IoMdRefresh 
+          onClick={handleRefreshClick} 
+          className={`cursor-pointer transition-transform duration-500 ${
+            isRotating ? 'rotate-180' : ''
+          } hover:text-gray-600 dark:hover:text-gray-400`}
+        />
       </div>
     </div>
+    <div className="space-y-2 overflow-auto  px-1">
+      <Comment {...messages} />
+    </div>
+  </div>
+  
   );
 };
 
