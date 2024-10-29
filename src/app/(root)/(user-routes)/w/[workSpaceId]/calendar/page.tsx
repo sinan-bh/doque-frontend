@@ -1,54 +1,45 @@
-"use client";
-import Calendar from "@/components/workspace/calendar/calendar";
-import MonthCalendar from "@/components/workspace/calendar/month-calendar";
-import WeekCalendar from "@/components/workspace/calendar/week-calendar";
-import React, { useState } from "react";
+import CalendarsContainer from "@/components/workspace/calendar/calendar-container";
+import moment from "moment";
+import Link from "next/link";
 
 type Toggle = "Day" | "Week" | "Month";
 
-function Page() {
-  const [activeTab, setActiveTab] = useState<Toggle>("Day");
-  const date = new Date();
+function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const activeTab = searchParams["tab"] || ("Day" as Toggle);
 
-  const formattedDate = date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const today = moment();
 
   return (
-    <div className="flex ml-11">
-      <div>
-        <div className="py-3 w-full flex justify-between">
-          <div>
-            <h1 className="font-extrabold text-3xl">Calendar</h1>
-            <span>
-              <i>{formattedDate}</i>
-            </span>
-          </div>
-          <div className="p-3">
-            <div className="inline-flex bg-gray-100 rounded-2xl  border border-gray-300 border-2">
-              {["Day", "Week", "Month"].map((tab) => (
+    <div className="p-4 w-full">
+      <div className="py-3 w-full flex justify-between">
+        <div>
+          <h1 className="font-semibold text-3xl">Calendar</h1>
+          <span>
+            Today: <i>{today.format("MMMM Do YYYY, dddd")}</i>
+          </span>
+        </div>
+        <div className="p-3">
+          <div className="inline-flex bg-zinc-100 dark:bg-zinc-800  dark:text-zinc-200  rounded-full">
+            {["Day", "Week", "Month"].map((tab) => (
+              <Link href={`calendar?tab=${tab}`} key={tab}>
                 <button
-                  key={tab}
-                  className={`px-4 py-2 rounded-xl focus:outline-none ${
-                    activeTab === tab ? "bg-gray-300 text-black" : "text-black "
-                  }`}
-                  onClick={() => setActiveTab(tab as "Day" | "Week" | "Month")}>
+                  className={`px-4 py-2 rounded-full focus:outline-none  ${
+                    activeTab === tab
+                      ? "bg-zinc-700 dark:bg-zinc-200 dark:text-gray-900 text-gray-200"
+                      : " hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                  }`}>
                   {tab}
                 </button>
-              ))}
-            </div>
+              </Link>
+            ))}
           </div>
         </div>
-        {activeTab === "Day" ? (
-          <Calendar />
-        ) : activeTab === "Week" ? (
-          <WeekCalendar />
-        ) : (
-          <MonthCalendar />
-        )}
       </div>
+      <CalendarsContainer activeTab={activeTab} />
     </div>
   );
 }

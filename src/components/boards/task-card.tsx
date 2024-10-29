@@ -2,8 +2,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
   Card,
+  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -14,6 +14,7 @@ import { FaRegClock } from "react-icons/fa6";
 
 import Link from "next/link";
 import clsx from "clsx";
+import { getRemainingTime } from "@/utils/space-utils";
 
 export default function TaskCard({ task }: { task: TaskRow }) {
   const {
@@ -38,9 +39,11 @@ export default function TaskCard({ task }: { task: TaskRow }) {
     transition,
   };
 
+  const { color: dueDateColor } = getRemainingTime(task.dueDate);
+
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      <Card className={`overflow-hidden ${isDragging && "opacity-50"}`}>
+      <Card className={`overflow-hidden  ${isDragging && "opacity-50"}`}>
         <div
           className={clsx("h-5", {
             "bg-red-300": task?.priority === "high",
@@ -48,45 +51,51 @@ export default function TaskCard({ task }: { task: TaskRow }) {
             "bg-green-300": task?.priority === "low",
           })}></div>
         <Link href={`${pathName}?task=${task.id}&list=${task.column}`}>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle className="py-2 rounded-md">{task.title}</CardTitle>
-            </div>
-            <CardDescription className="text-xs text-ellipsis overflow-hidden whitespace-nowrap">
+          <CardHeader className="py-4">
+            <CardTitle className="text-ellipsis h-fit overflow-hidden whitespace-nowrap leading-normal">
+              {task.title}
+            </CardTitle>
+
+            <CardDescription className="text-xs m-0 text-ellipsis overflow-hidden whitespace-nowrap">
               {task.description}
             </CardDescription>
           </CardHeader>
-          <CardFooter className="flex justify-between">
-            {task?.priority && (
-              <p
-                className={clsx(
-                  "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
-                  {
-                    "text-red-700": task?.priority === "high",
-                    "text-yellow-700": task?.priority === "medium",
-                    "text-green-700": task?.priority === "low",
-                  }
-                )}>
-                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-              </p>
-            )}
-            {task.dueDate && (
-              <p className="flex items-center gap-2">
-                <FaRegClock className="text-zinc-500" />
+          <CardContent className="space-y-2">
+            <div className="grid grid-cols-2 items-center">
+              {task?.priority && (
+                <p
+                  className={clsx(
+                    "text-sm flex items-center gap-2 cursor-pointer border-yellow-800 w-[120px]",
+                    {
+                      "text-red-700": task?.priority === "high",
+                      "text-yellow-700": task?.priority === "medium",
+                      "text-green-700": task?.priority === "low",
+                    }
+                  )}>
+                  {task.priority.charAt(0).toUpperCase() +
+                    task.priority.slice(1)}
+                </p>
+              )}
+
+              {task.assignedTo?.length ? (
+                <StackedAvatars
+                  members={task.assignedTo.map((member) => ({ _id: member }))}
+                  size="sm"
+                  max={3}
+                />
+              ) : null}
+            </div>
+            <p className={`flex items-center gap-2 ${dueDateColor}`}>
+              <FaRegClock className={`${!dueDateColor && "text-gray-500 "}`} />
+              {task.dueDate ? (
                 <span className="text-xs">
                   {new Date(task.dueDate).toLocaleDateString()}
                 </span>
-              </p>
-            )}
-
-            {task.assignedTo?.length ? (
-              <StackedAvatars
-                members={task.assignedTo.map((member) => ({ _id: member }))}
-                size="sm"
-                max={3}
-              />
-            ) : null}
-          </CardFooter>
+              ) : (
+                <span className="text-xs text-gray-500 ">Not set</span>
+              )}
+            </p>
+          </CardContent>
         </Link>
       </Card>
     </div>

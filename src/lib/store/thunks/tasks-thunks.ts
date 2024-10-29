@@ -121,13 +121,7 @@ export const createTask = createAsyncThunk<
   {
     spaceId: string;
     listId: string;
-    taskData: {
-      description?: string;
-      dueDate?: string;
-      priority?: number;
-      assignedTo?: string;
-      title: string;
-    };
+    taskData: TaskFormValues;
     onSuccess: () => void;
   },
   { rejectValue: string }
