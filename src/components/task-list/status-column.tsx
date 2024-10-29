@@ -129,47 +129,51 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
   };
 
   return (
-    <div className="max-w-full py-1">
-      <div className="flex items-center py-1 rounded-lg shadow">
-        <button
-          onClick={toggleExpand}
-          className="text-gray-500 focus:outline-none">
-          {isExpanded ? <FiChevronDown /> : <FiChevronRight />}
-        </button>
-        <SortableItem id={id}>
-          <span
-            className="flex-1 ml-2 inline-flex items-center py-2 px-1 rounded-xl text-white"
-            style={{ backgroundColor: color }}>
-            {isEditing ? (
-              <div className="flex items-center space-x-2">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={currentLabel}
-                  onChange={handleLabelChange}
-                  onBlur={handleLabelBlur}
-                  onKeyDown={handleLabelKeyDown}
-                  className="w-full bg-transparent text-white focus:outline-none"
-                />
-                <button
-                  onClick={handleSaveLabel}
-                  className="text-sm border border-gray-300 rounded bg-gray-200 text-gray-700">
-                  Enter
-                </button>
-              </div>
-            ) : (
-              <>
-                <span className="mr-2 h-2 w-4 rounded border-2 border-white bg-white"></span>
-                {currentLabel}
-              </>
-            )}
-          </span>
-        </SortableItem>
+    <div className="w-full sm:w-[500px] py-1">
+      <div className="flex items-center justify-between py-1 rounded-lg shadow">
+        <div className="flex ">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleExpand}
+            className="text-gray-500 focus:outline-none">
+            {isExpanded ? <FiChevronDown /> : <FiChevronRight />}
+          </Button>
+          <SortableItem id={id}>
+            <span
+              className="flex-1 ml-2 inline-flex items-center px-4 py-1 rounded-xl text-white"
+              style={{ backgroundColor: color }}>
+              {isEditing ? (
+                <div className="flex items-center space-x-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={currentLabel}
+                    onChange={handleLabelChange}
+                    onBlur={handleLabelBlur}
+                    onKeyDown={handleLabelKeyDown}
+                    className="w-full bg-transparent text-white focus:outline-none"
+                  />
+                  <button
+                    onClick={handleSaveLabel}
+                    className="text-sm border border-gray-300 rounded bg-gray-200 text-gray-700">
+                    Enter
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <span className="mr-2 h-2 w-4 rounded border-2 border-white bg-white"></span>
+                  {currentLabel}
+                </>
+              )}
+            </span>
+          </SortableItem>
+        </div>
         <div className="px-1 flex justify-center gap-2">
           <div
-            className="cursor-pointer border rounded-md p-1 hover:bg-gray-100"
+            className="cursor-pointer border rounded-md p-1 dark:border-none dark:hover:bg-gray-800"
             onClick={handleEditLabelClick}>
-            <FaEdit color="#000" />
+            <FaEdit  />
           </div>
           <ColorSelector currentColor={color} listId={id} name={currentLabel} />
           <AlertConfirm

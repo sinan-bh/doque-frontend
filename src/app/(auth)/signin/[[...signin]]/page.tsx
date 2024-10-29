@@ -53,11 +53,15 @@ export default function Login() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 w-full max-w-4xl bg-white rounded-2xl shadow-2xl dark:bg-[#1F1A30]">
           <div className="p-5 flex flex-col justify-center">
             <div className="text-left font-bold">
-              <span className="text-green-500 text-2xl dark:text-white">Do</span>
-              <span className="text-black text-2xl dark:text-gray-500">que</span>
+              <span className="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent text-2xl font-bold dark:text-white">
+                DO
+              </span>
+              <span className="text-black text-2xl dark:text-gray-500 font-bold">QUE</span>
             </div>
             <div className="py-10">
-              <h2 className="text-3xl font-bold text-green-500 mb-2 dark:text-white">Sign In</h2>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent mb-2 dark:text-white">
+                Sign In
+              </h2>
               <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
               <p className="mb-10 text-gray-500">Sign in to your account</p>
               {error && <p className="text-red-500">{error}</p>}
@@ -97,15 +101,18 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold 
+             hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
+             hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   {loading ? "Logging in..." : "Sign In"}
                 </button>
+
               </form>
             </div>
           </div>
 
-          <div className="bg-green-500 text-white rounded-br-2xl rounded-bl-2xl sm:rounded-bl-none sm:rounded-tr-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center dark:bg-[#1F1A30]">
+          <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-br-2xl rounded-bl-2xl sm:rounded-bl-none sm:rounded-tr-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center dark:bg-[#1F1A30]">
             <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
             <div className="border-2 w-10 border-white inline-block mb-2"></div>
             <p className="mb-10">Don&apos;t have an account? Sign up today and start your journey!</p>

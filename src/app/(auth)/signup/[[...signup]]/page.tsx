@@ -79,13 +79,16 @@ export default function Signup() {
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl dark:bg-[#1F1A30]">
           <div className="w-full md:w-1/2 p-10 flex flex-col justify-between">
             <div className="mb-6 flex items-center justify-start">
-              <span className="text-green-500 dark:text-white text-2xl font-bold">Do</span>
-              <span className="text-black text-2xl dark:text-gray-500 font-bold">que</span>
+              <span className="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent text-2xl font-bold dark:text-white">
+                DO
+              </span>
+              <span className="text-black text-2xl dark:text-gray-500 font-bold">QUE</span>
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-green-500 mb-2 dark:text-white">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent mb-2 dark:text-white">
                 Create Account
               </h2>
+
               <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
               <p className="mb-6 text-gray-500">
                 Please fill in the details below to create your account.
@@ -191,17 +194,21 @@ export default function Signup() {
                   )}
                   <button
                     type="submit"
-                    className={`w-full border-2 border-green-500 text-green-500 rounded-md px-12 py-3 font-semibold hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    disabled={isSubmitting}>
+                    className={`w-full border-2 border-green-500 text-green-500 rounded-md px-12 py-3 font-semibold 
+              hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
+              hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 
+              ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "Registering..." : "Register"}
                   </button>
+
                 </Form>
               )}
             </Formik>
           </div>
 
-          <div className="w-full md:w-1/2 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative dark:bg-[#1F1A30]">
+          <div className="w-full md:w-1/2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative dark:bg-[#1F1A30]">
             <h2 className="text-2xl font-bold mb-4 text-center">
               Welcome to Doque!
             </h2>

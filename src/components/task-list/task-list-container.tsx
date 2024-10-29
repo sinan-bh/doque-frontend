@@ -1,7 +1,6 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 import { createList, getSpace } from "@/lib/store/thunks/tasks-thunks";
 import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa6";
@@ -34,7 +33,6 @@ export default function TaskListContainer() {
 
   useEffect(() => {
     if (spaceId) dispatch(getSpace(spaceId));
-    if (workSpaceId) dispatch(fetchSpacesData(workSpaceId));
   }, [workSpaceId, spaceId, dispatch]);
 
   useEffect(() => {
@@ -91,20 +89,18 @@ export default function TaskListContainer() {
         <SortableContext
           items={orderedLists.map((list) => list.id)}
           strategy={verticalListSortingStrategy}>
-          <div className="w-fit">
-            {orderedLists?.map((list) => (
-              <div key={list.id} id={list.id}>
-                <StatusColumn
-                  workSpaceId={workSpaceId}
-                  spaceId={spaceId}
-                  label={list.title}
-                  id={list.id}
-                  color={list.color}
-                  tasks={tasks}
-                />
-              </div>
-            ))}
-          </div>
+          {orderedLists?.map((list) => (
+            <div key={list.id} id={list.id}>
+              <StatusColumn
+                workSpaceId={workSpaceId}
+                spaceId={spaceId}
+                label={list.title}
+                id={list.id}
+                color={list.color}
+                tasks={tasks}
+              />
+            </div>
+          ))}
         </SortableContext>
       </DndContext>
     </div>

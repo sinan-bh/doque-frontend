@@ -1,4 +1,4 @@
-import { Column, Space, TaskRow } from "@/types/spaces";
+import { Column, TaskRow } from "@/types/spaces";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createList,
@@ -15,7 +15,11 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 interface TasksState {
   tasks: TaskRow[];
-  currentSpace: Space | null;
+  currentSpace: {
+    _id: string;
+    name: string;
+    description: string;
+  } | null;
   lists: Column[];
   loading: {
     getSpaceDetails: boolean;
@@ -46,7 +50,7 @@ const initialState: TasksState = {
   currentSpace: null,
   lists: [],
   loading: {
-    getSpaceDetails: false,
+    getSpaceDetails: true,
     createList: false,
     updateList: false,
     deleteList: false,
@@ -145,6 +149,7 @@ const tasksSlice = createSlice({
       .addCase(getSpace.fulfilled, (state, action) => {
         state.lists = action.payload.lists;
         state.tasks = action.payload.tasks;
+        state.currentSpace = action.payload.space;
         state.loading.getSpaceDetails = false;
       })
       .addCase(getSpace.rejected, (state, action) => {

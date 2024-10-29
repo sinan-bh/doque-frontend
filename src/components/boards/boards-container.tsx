@@ -36,6 +36,7 @@ import {
   swapTasks,
 } from "@/lib/store/features/tasks-slice";
 import LoadingBox from "./loading-box";
+import SectionContainerSkeleton from "./section-skeleton";
 
 export default function BoardsContainer() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
@@ -49,7 +50,6 @@ export default function BoardsContainer() {
     (state) => state.tasks
   );
   const [prevState, setPrevState] = useState<string>(JSON.stringify(lists));
-
 
   useEffect(() => {
     dispatch(getSpace(spaceId));
@@ -229,11 +229,18 @@ export default function BoardsContainer() {
             <LoadingBox loading={loading.moveTask} text="Moving task.." />
           </div>
         </div>
-        <HandleLoading
-          loading={loading.getSpaceDetails}
-          error={error.getSpaceDetails}>
-          <>
-            <div className="flex gap-4 w-screen-lg overflow-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
+        <div className="flex sm:gap-4 gap-2 overflow-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
+          <HandleLoading
+            loadingComponent={
+              <>
+                <SectionContainerSkeleton />
+                <SectionContainerSkeleton />
+                <SectionContainerSkeleton />
+              </>
+            }
+            loading={loading.getSpaceDetails}
+            error={error.getSpaceDetails}>
+            <>
               <SortableContext
                 items={columnsIds}
                 strategy={horizontalListSortingStrategy}>
@@ -245,20 +252,20 @@ export default function BoardsContainer() {
                   />
                 ))}
               </SortableContext>
-            </div>
-            <DragOverlay>
-              {activeColumn ? (
-                <SectionContainer
-                  section={activeColumn}
-                  tasks={tasks.filter(
-                    (task) => task.column === activeColumn.id
-                  )}
-                />
-              ) : null}
-              {activeTask ? <TaskCard task={activeTask} /> : null}
-            </DragOverlay>
-          </>
-        </HandleLoading>
+              <DragOverlay>
+                {activeColumn ? (
+                  <SectionContainer
+                    section={activeColumn}
+                    tasks={tasks.filter(
+                      (task) => task.column === activeColumn.id
+                    )}
+                  />
+                ) : null}
+                {activeTask ? <TaskCard task={activeTask} /> : null}
+              </DragOverlay>
+            </>
+          </HandleLoading>
+        </div>
       </div>
     </DndContext>
   );

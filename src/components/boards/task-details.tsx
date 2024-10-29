@@ -29,6 +29,8 @@ import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 import PrioritySelector from "./task-form/priority-selector";
 import StatusSelector from "./task-form/status-selector";
 import moment from "moment";
+import { XIcon } from "lucide-react";
+import TaskDetailsSkeleton from "./task-details-skeleton";
 
 export default function TaskDetails({
   taskId,
@@ -38,7 +40,7 @@ export default function TaskDetails({
   listId: string;
 }) {
   const [data, setData] = useState<Task | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [taskDetailsLoading, setInitialLoading] = useState(true);
   const [titleEditOpen, setTitleEditOpen] = useState(false);
   const [values, setValues] = useState<TaskFormValues | null>(null);
 
@@ -204,26 +206,35 @@ export default function TaskDetails({
   return (
     <div
       onClick={handleClickOutside}
-      className="fixed bg-black top-0 left-0 h-screen w-screen bg-opacity-50 z-40">
+      className="fixed bg-black top-0 left-0 h-screen w-screen bg-opacity-50 z-50">
       <div className="absolute w-full h-full flex justify-center items-center">
-        {initialLoading && <p className="text-white">Loading...</p>}
+        {taskDetailsLoading && <TaskDetailsSkeleton />}
         {data && (
-          <Card className="task-details-section overflow-hidden w-[600px]">
+          <Card className="task-details-section overflow-hidden sm:w-[600px]">
             <div
-              className={clsx("h-10", {
+              className={clsx("h-10 flex justify-end items-center px-2", {
                 "bg-red-300": values?.priority === "high",
                 "bg-yellow-200": values?.priority === "medium",
                 "bg-green-300": values?.priority === "low",
-              })}></div>
+              })}>
+              <Button
+                title="Close"
+                size="icon"
+                variant="ghost"
+                className="hover:bg-black hover:bg-opacity-20 text-zinc-700 dark:text-zinc-700 dark:hover:text-black dark:hover:bg-opacity-20 p-1 h-8 w-8"
+                onClick={() => router.push(pathname)}>
+                <XIcon className="" />
+              </Button>
+            </div>
 
             <CardHeader>
-              <div className="flex justify-between">
-                <CardTitle className="flex gap-4 items-center text- xl">
+              <div className="flex justify-between flex-wrap">
+                <CardTitle className="flex gap-x-4 items-center">
                   <div onClick={() => setTitleEditOpen(true)}>
                     {!titleEditOpen && (
-                      <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 h-9 hover:border rounded-md px-3 py-1 text-sm">
-                        {values?.title}{" "}
-                        <CiEdit className="text-zinc-800 dark:text-zinc-200" />
+                      <h2 className="flex items-center cursor-text justify-between gap-2 min-w-40 hover:border rounded-md px-3 py-2">
+                        {values?.title}
+                        <CiEdit className="text-zinc-800 flex-shrink-0 dark:text-zinc-200" />
                       </h2>
                     )}
                     {titleEditOpen && (
@@ -246,7 +257,7 @@ export default function TaskDetails({
                     )}
                   </div>
                 </CardTitle>
-                <div>
+                <div className="flex flex-wrap gap-x-2 items-center px-3">
                   <p className="text-zinc-700 text-xs">Created At</p>
                   <div className="flex items-center gap-2 text-sm">
                     <FaRegClock />
@@ -271,7 +282,7 @@ export default function TaskDetails({
                   }))
                 }
               />
-              <div className="flex justify-between my-4">
+              <div className="flex justify-between my-4 flex-wrap gap-2">
                 <DueDatePicker
                   dueDate={values?.dueDate}
                   setDueDate={(dueDate) =>
@@ -332,7 +343,7 @@ export default function TaskDetails({
                 onConfirm={handleTaskDelete}
                 message="Are you sure you want to delete this task?"
                 description="This action is permanent and cannot be undone">
-                <Button variant="destructive">
+                <Button size="sm" variant="destructive">
                   Delete task <IoTrashOutline />
                 </Button>
               </AlertConfirm>

@@ -17,14 +17,15 @@ export default function Page() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, userProfile]);
+
   const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
   };
 
   return (
-    <div className="p-8 min-h-screen bg-[#EDF1F4] dark:bg-darkBg">
-      <div className="flex justify-around items-center p-4 rounded-lg mb-8">
-        <div className=" items-center">
+    <div className="p-4 md:p-8 min-h-screen bg-[#EDF1F4] dark:bg-darkBg">
+      <div className="flex flex-col md:flex-row md:justify-around items-center p-4 rounded-lg mb-8 space-y-4 md:space-y-0">
+        <div className="flex flex-col items-center space-y-3 md:space-y-0 md:items-start">
           <Avatar className="w-16 h-16">
             <AvatarImage
               src={
@@ -35,8 +36,8 @@ export default function Page() {
             />
             <AvatarFallback />
           </Avatar>
-          <div className="mt-3">
-            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+          <div className="mt-3 text-center md:text-left">
+            <h1 className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100">
               {userProfile?.firstName} {userProfile?.lastName}
             </h1>
             <h3 className="text-sm text-gray-600 dark:text-gray-200">
@@ -44,20 +45,21 @@ export default function Page() {
             </h3>
           </div>
         </div>
-        <div className="bg-lime-300 p-0.5 rounded-lg dark:text-black">
+        <div className="bg-lime-300 p-1 rounded-lg dark:text-black">
           <h1 className="text-sm">Online</h1>
         </div>
       </div>
 
-      <div className="flex-col pl-20 pr-20">
-        <div className="flex mb-3 gap-8 pl-10 border-b-2 border-gray-300">
+      <div className="flex flex-col px-4 md:px-20">
+        <div className="flex mb-3 gap-8 justify-center md:justify-start border-b-2 border-gray-300">
           <h2
             onClick={() => handleTabClick("activity")}
             className={`text-lg font-semibold cursor-pointer ${
               activeTab === "activity"
-                ? "text-black border-b-2  dark:text-gray-100 border-gray-100"
+                ? "text-black border-b-2 dark:text-gray-100 border-gray-100"
                 : "text-gray-500 dark:text-gray-300"
-            }`}>
+            }`}
+          >
             Activity
           </h2>
           <h2
@@ -66,14 +68,15 @@ export default function Page() {
               activeTab === "cards"
                 ? "text-black border-b-2 dark:text-gray-100 border-gray-100"
                 : "text-gray-500 dark:text-gray-400"
-            }`}>
+            }`}
+          >
             Cards
           </h2>
         </div>
 
         {activeTab === "activity" ? (
           <div>
-            <div className="pl-4 p-3 rounded-lg flex items-center space-x-4">
+            <div className="p-3 rounded-lg flex items-center space-x-4">
               <Avatar className="w-10 h-10">
                 <AvatarImage src={userProfile?.image} alt="User Profile" />
                 <AvatarFallback />
