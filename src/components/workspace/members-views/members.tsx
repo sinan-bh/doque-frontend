@@ -72,14 +72,14 @@ export default function Members() {
   }, [members]);
 
   return (
-    <div>
-      <div className="border-b border-gray-300 mb-4 relative dark:border-gray-600">
-        <div className="flex sm:flex-row justify-between ">
+    <div className="relative">
+      <div className="mb-4 dark:border-gray-600 sticky top-0 z-10 bg-white dark:bg-darkBg">
+        <div className="flex flex-col sm:flex-row justify-between">
           <div className="flex mt-2">
             <h2
-              className={`text-base font-semibold cursor-pointer ${
+              className={`text-base font-medium sm:font-semibold md:font-medium lg:font-medium cursor-pointer ${
                 activeTab === "members"
-                  ? "border-b-4 border-gray-700"
+                  ? "sm:border-b-2 border-gray-500"
                   : "text-gray-600 dark:text-gray-300"
               }`}
               onClick={() => handleTabSwitch("members")}
@@ -87,7 +87,8 @@ export default function Members() {
               Members
             </h2>
           </div>
-          <div className="flex items-center pb-2">
+
+          <div className="flex flex-wrap items-center justify-end mt-4 sm:mt-0 gap-2">
             <div className="relative flex items-center text-sm">
               <FiSearch
                 size={16}
@@ -95,22 +96,17 @@ export default function Members() {
               />
               <input
                 type="text"
-                className="pl-10 w-56 sm:w-72 pr-4 py-2 border-b-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 focus:outline-none"
+                className="pl-10 w-44 sm:w-72 pr-4 py-2 border-b-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 focus:outline-none"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-          </div>
-        </div>
 
-        <div className="flex items-center justify-end mt-4 gap-2 sm:mt-0">
-          <div className="relative flex items-center">
             <FiFilter
               className="w-5 h-5 text-sm text-gray-600 dark:text-gray-300 cursor-pointer"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             />
-
             {isDropdownOpen && (
               <div className="absolute right-0 mt-20 w-40 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-600">
                 <ul className="py-1">
@@ -126,43 +122,49 @@ export default function Members() {
                 </ul>
               </div>
             )}
-          </div>
-          <div className="flex items-center">
-            <div
-              className={`p-2 rounded cursor-pointer ${
-                viewType === "grid"
-                  ? "bg-gray-600 dark:bg-gray-600"
-                  : "bg-transparent"
-              }`}
-              onClick={() => handleViewSwitch("grid")}
-              title="Grid View"
-            >
-              <IoGrid
-                className={`text-gray-600 dark:text-gray-300 text-sm ${
-                  viewType === "grid" ? "text-gray-200" : ""
+
+            <div className="flex items-center">
+              <div
+                className={`p-2 rounded cursor-pointer ${
+                  viewType === "grid"
+                    ? "bg-gray-600 dark:bg-gray-200"
+                    : "bg-transparent"
                 }`}
-              />
-            </div>
-            <div
-              className={`p-2 rounded cursor-pointer ${
-                viewType === "list"
-                  ? "bg-gray-600 dark:bg-gray-600"
-                  : "bg-transparent"
-              }`}
-              onClick={() => handleViewSwitch("list")}
-              title="List View"
-            >
-              <IoList
-                className={`text-gray-600 dark:text-gray-300 text-sm ${
-                  viewType === "list" ? "text-gray-200" : ""
+                onClick={() => handleViewSwitch("grid")}
+                title="Grid View"
+              >
+                <IoGrid
+                  className={`text-gray-600 dark:text-gray-300 text-sm ${
+                    viewType === "grid" ? "text-white dark:text-gray-600" : ""
+                  }`}
+                />
+              </div>
+              <div
+                className={`p-2 rounded cursor-pointer ${
+                  viewType === "list"
+                    ? "bg-gray-600 dark:bg-gray-200"
+                    : "bg-transparent"
                 }`}
-              />
+                onClick={() => handleViewSwitch("list")}
+                title="List View"
+              >
+                <IoList
+                  className={`text-gray-600 dark:text-gray-300 text-sm ${
+                    viewType === "list" ? "text-white dark:text-gray-600" : ""
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div>{renderContent()}</div>
+
+        <hr className="mt-2 bg-gray-300"/>
+        <div
+          className="overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 200px)" }}
+        >
+          <div>{renderContent()}</div>
+        </div>
       </div>
     </div>
   );

@@ -17,24 +17,18 @@ import { useToast } from "@/hooks/use-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import clsx from "clsx";
 import { Input } from "../ui/input";
-import AssignTaskToMembers from "./task-assign-members";
-import TaskDescription from "./task-description";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import DueDatePicker from "./due-date-picker";
+import AssignTaskToMembers from "./task-form/task-assign-members";
+import TaskDescription from "./task-form/task-description";
+import DueDatePicker from "./task-form/due-date-picker";
 import { AlertConfirm } from "../ui/alert-confirm";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { deleteTask, updateTask } from "@/lib/store/thunks/tasks-thunks";
 import { ToastAction } from "../ui/toast";
 import axiosInstance from "@/utils/axios";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
+import PrioritySelector from "./task-form/priority-selector";
+import StatusSelector from "./task-form/status-selector";
+import moment from "moment";
 
 export default function TaskDetails({
   taskId,
@@ -48,20 +42,22 @@ export default function TaskDetails({
   const [titleEditOpen, setTitleEditOpen] = useState(false);
   const [values, setValues] = useState<TaskFormValues | null>(null);
 
-  const { lists } = useAppSelector((state) => state.tasks);
+  const initialData = useMemo(() => {
+    return JSON.stringify({
+      title: data?.title,
+      description: data?.description,
+      assignedTo: data?.assignedTo,
+      priority: data?.priority,
+      dueDate: data?.dueDate
+        ? moment(data?.dueDate).format("YYYY-MM-DDTHH:mm")
+        : undefined,
+      status: data?.status,
+    });
+  }, [data]);
 
   const changesMade = useMemo(() => {
-    return (
-      JSON.stringify({
-        title: data?.title,
-        description: data?.description,
-        assignedTo: data?.assignedTo,
-        dueDate: data?.dueDate,
-        priority: data?.priority,
-        status: data?.status,
-      }) !== JSON.stringify(values)
-    );
-  }, [data, values]);
+    return initialData !== JSON.stringify(values);
+  }, [initialData, values]);
 
   const { toast } = useToast();
 
@@ -87,7 +83,9 @@ export default function TaskDetails({
           description: data.description,
           assignedTo: data.assignedTo,
           priority: data.priority,
-          dueDate: data.dueDate,
+          dueDate: data.dueDate
+            ? moment(data.dueDate).format("YYYY-MM-DDTHH:mm")
+            : undefined,
           status: data.status,
         });
       } catch (error) {
@@ -230,6 +228,7 @@ export default function TaskDetails({
                     )}
                     {titleEditOpen && (
                       <Input
+                        required
                         type="text"
                         autoFocus
                         value={values?.title}
@@ -263,108 +262,65 @@ export default function TaskDetails({
             </CardHeader>
 
             <CardContent className="max-h-[350px] overflow-y-auto">
-              <TaskDescription values={values} setValues={setValues} />
+              <TaskDescription
+                description={values?.description}
+                setDescription={(description) =>
+                  setValues((prev) => ({
+                    ...prev!,
+                    description,
+                  }))
+                }
+              />
               <div className="flex justify-between my-4">
                 <DueDatePicker
                   dueDate={values?.dueDate}
-                  setValues={setValues}
+                  setDueDate={(dueDate) =>
+                    setValues((prev) => ({
+                      ...prev!,
+                      dueDate,
+                    }))
+                  }
                 />
 
                 <div>
                   <p>Priority</p>
-
-                  <Select
-                    value={values?.priority}
-                    onValueChange={(value) => {
+                  <PrioritySelector
+                    priority={values?.priority || "medium"}
+                    setPriority={(priority) =>
                       setValues((prev) => ({
                         ...prev!,
-                        priority: value,
-                      }));
-                    }}>
-                    <SelectTrigger
-                      className={clsx(
-                        "text-sm flex items-center gap-2 cursor-pointer w-[120px]",
-                        {
-                          "text-red-700 border-red-700":
-                            values?.priority === "high",
-                          "text-yellow-700 border-yellow-700":
-                            values?.priority === "medium",
-                          "text-green-700 border-green-700":
-                            values?.priority === "low",
-                        }
-                      )}>
-                      <SelectValue>
-                        {values?.priority && (
-                          <>
-                            {values.priority.charAt(0).toUpperCase() +
-                              values.priority.slice(1)}
-                          </>
-                        )}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="task-details-section">
-                      <SelectGroup>
-                        <SelectLabel>Priority</SelectLabel>
-                        <SelectItem className="text-green-800" value="low">
-                          Low
-                        </SelectItem>
-                        <SelectItem className="text-yellow-700" value="medium">
-                          Medium
-                        </SelectItem>
-                        <SelectItem className="text-red-700" value="high">
-                          High
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                        priority,
+                      }))
+                    }
+                  />
                 </div>
                 <div>
                   <p>Status</p>
-
-                  <Select
-                    value={values?.status}
-                    onValueChange={(value) => {
+                  <StatusSelector
+                    status={values?.status}
+                    setStatus={(status) =>
                       setValues((prev) => ({
                         ...prev!,
-                        status: value,
-                      }));
-                    }}>
-                    <SelectTrigger className="text-sm flex items-center gap-2 cursor-pointer  w-[120px]">
-                      <SelectValue
-                        style={{
-                          color: lists.find(
-                            (list) => list.id === values?.status
-                          )?.color,
-                          borderColor: lists.find(
-                            (list) => list.id === values?.status
-                          )?.color,
-                        }}>
-                        {
-                          lists.find((list) => list.id === values?.status)
-                            ?.title
-                        }
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="task-details-section">
-                      <SelectGroup>
-                        {lists.map((list) => (
-                          <SelectItem
-                            key={list.id}
-                            value={list.id}
-                            style={{
-                              color: list.color,
-                            }}>
-                            {list.title}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                        status,
+                      }))
+                    }
+                  />
                 </div>
               </div>
               <AssignTaskToMembers
                 existingMembers={values?.assignedTo || []}
-                setValues={setValues}
+                assignMember={(member) =>
+                  setValues((prev) => ({
+                    ...prev,
+                    assignedTo: [...(prev?.assignedTo || []), member],
+                  }))
+                }
+                removeMember={(member) =>
+                  setValues((prev) => ({
+                    ...prev,
+                    assignedTo: prev?.assignedTo?.filter((m) => m !== member),
+                  }))
+                }
               />
             </CardContent>
 

@@ -15,10 +15,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TaskFormValues } from "@/types/spaces";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import axiosInstance from "@/utils/axios";
 import { useParams } from "next/navigation";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
@@ -30,10 +29,12 @@ type Member = {
 
 export default function AssignTaskToMembers({
   existingMembers,
-  setValues,
+  assignMember,
+  removeMember,
 }: {
-  existingMembers: string[];
-  setValues: Dispatch<SetStateAction<TaskFormValues | null>>;
+  existingMembers?: string[];
+  assignMember: (member: string) => void;
+  removeMember: (member: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [members, setMembers] = useState<Member[]>([]);
@@ -87,7 +88,7 @@ export default function AssignTaskToMembers({
                     </CommandEmpty>
                   )}
                   {members.map((member) => {
-                    const isAssigned = existingMembers.includes(
+                    const isAssigned = existingMembers?.includes(
                       member.user?._id
                     );
                     return (
@@ -104,21 +105,10 @@ export default function AssignTaskToMembers({
                           title="Add member"
                           onClick={() => {
                             if (isAssigned) {
-                              setValues((prev) => ({
-                                ...prev!,
-                                assignedTo: prev?.assignedTo?.filter(
-                                  (m) => m !== member.user?._id
-                                ),
-                              }));
+                              removeMember(member.user?._id);
                               return;
                             }
-                            setValues((prev) => ({
-                              ...prev!,
-                              assignedTo: [
-                                ...(prev?.assignedTo || []),
-                                member.user?._id,
-                              ],
-                            }));
+                            assignMember(member.user?._id);
                           }}>
                           {isAssigned ? (
                             "Remove"
@@ -138,19 +128,28 @@ export default function AssignTaskToMembers({
         </Popover>
       </div>
       <div className="flex items-center gap-2 flex-wrap ">
-        {existingMembers.map((member) => (
-          <div
-            key={member}
-            className="flex flex-col justify-center items-center">
-            <Avatar className="border-2 border-white w-12 h-12">
-              <AvatarImage src={"/images/avatarFallback.png"} alt={"Avatar"} />
-              <AvatarFallback />
-            </Avatar>
-            <p className="text-xs text-zinc-700">
-              {members.find((m) => member === m.user?._id)?.user?.firstName}
-            </p>
-          </div>
-        ))}
+        {existingMembers?.length ? (
+          <>
+            {existingMembers.map((member) => (
+              <div
+                key={member}
+                className="flex flex-col justify-center items-center">
+                <Avatar className="border-2 border-white w-12 h-12">
+                  <AvatarImage
+                    src={"/images/avatarFallback.png"}
+                    alt={"Avatar"}
+                  />
+                  <AvatarFallback />
+                </Avatar>
+                <p className="text-xs text-zinc-700">
+                  {members.find((m) => member === m.user?._id)?.user.firstName}
+                </p>
+              </div>
+            ))}
+          </>
+        ) : (
+          <p className="text-xs">No members assigned..</p>
+        )}
       </div>
     </div>
   );

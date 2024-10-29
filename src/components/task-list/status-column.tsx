@@ -17,6 +17,7 @@ import { AlertConfirm } from "../ui/alert-confirm";
 import { Button } from "../ui/button";
 import { FaTrash } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
+import { SortableItem } from "@/components/task-list/task-list-container";
 
 type StatusColumnProps = {
   workSpaceId: string;
@@ -67,11 +68,6 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleCreateTask();
-  };
-
-  const handleLabelClick = () => {
-    setIsEditing(true);
-    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,8 +124,8 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
 
   const handleEditLabelClick = () => {
     setIsEditing(true);
-    setCurrentLabel(label); // Set the current label to be editable
-    setTimeout(() => inputRef.current?.focus(), 0); // Focus the input field
+    setCurrentLabel(label);
+    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   return (
@@ -137,56 +133,54 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
       <div className="flex items-center py-1 rounded-lg shadow">
         <button
           onClick={toggleExpand}
-          className="text-gray-500 focus:outline-none"
-        >
+          className="text-gray-500 focus:outline-none">
           {isExpanded ? <FiChevronDown /> : <FiChevronRight />}
         </button>
-        <span
-          className="flex-1 ml-2 inline-flex items-center py-2 px-1 rounded-xl text-white"
-          style={{ backgroundColor: color }}
-          onClick={handleLabelClick}
-        >
-          {isEditing ? (
-            <div className="flex items-center space-x-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={currentLabel}
-                onChange={handleLabelChange}
-                onBlur={handleLabelBlur}
-                onKeyDown={handleLabelKeyDown}
-                className="w-full bg-transparent text-white focus:outline-none"
-              />
-              <button
-                onClick={handleSaveLabel}
-                className="text-sm border border-gray-300 rounded bg-gray-200 text-gray-700"
-              >
-                Enter
-              </button>
-            </div>
-          ) : (
-            <>
-              <span className="mr-2 h-2 w-4 rounded border-2 border-white bg-white"></span>
-              {currentLabel}
-            </>
-          )}
-        </span>
+        <SortableItem id={id}>
+          <span
+            className="flex-1 ml-2 inline-flex items-center py-2 px-1 rounded-xl text-white"
+            style={{ backgroundColor: color }}>
+            {isEditing ? (
+              <div className="flex items-center space-x-2">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={currentLabel}
+                  onChange={handleLabelChange}
+                  onBlur={handleLabelBlur}
+                  onKeyDown={handleLabelKeyDown}
+                  className="w-full bg-transparent text-white focus:outline-none"
+                />
+                <button
+                  onClick={handleSaveLabel}
+                  className="text-sm border border-gray-300 rounded bg-gray-200 text-gray-700">
+                  Enter
+                </button>
+              </div>
+            ) : (
+              <>
+                <span className="mr-2 h-2 w-4 rounded border-2 border-white bg-white"></span>
+                {currentLabel}
+              </>
+            )}
+          </span>
+        </SortableItem>
         <div className="px-1 flex justify-center gap-2">
-          <div className=" cursor-pointer border rounded-md p-1 hover:bg-gray-100" onClick={handleEditLabelClick}>
-            <FaEdit color="#000"/>
+          <div
+            className="cursor-pointer border rounded-md p-1 hover:bg-gray-100"
+            onClick={handleEditLabelClick}>
+            <FaEdit color="#000" />
           </div>
           <ColorSelector currentColor={color} listId={id} name={currentLabel} />
           <AlertConfirm
             message="Are you sure you want to delete this List?"
             description="All tasks in this section will be deleted!!"
             confirmText="Delete"
-            onConfirm={handleDeleteList}
-          >
+            onConfirm={handleDeleteList}>
             <Button
               variant="outline"
               size="icon"
-              className="hover:text-red-700 h-6 w-6"
-            >
+              className="hover:text-red-700 h-6 w-6">
               <FaTrash />
             </Button>
           </AlertConfirm>
@@ -197,13 +191,11 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
           {currentTasks?.map((task) => (
             <Link
               href={`/w/${workSpaceId}/spaces/${spaceId}/1?task=${task.id}&list=${id}`}
-              key={task.id}
-            >
+              key={task.id}>
               <div className="max-w-fit ml-6 py-2">
                 <span
                   className="mr-2 w-fit rounded border-2 border-black"
-                  style={{ backgroundColor: color }}
-                ></span>
+                  style={{ backgroundColor: color }}></span>
                 {task.title}
               </div>
             </Link>
@@ -221,8 +213,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
             </div>
             <div
               className="mt-2 h-6 text-sm px-1 border border-gray-300 text-gray-400 rounded cursor-pointer"
-              onClick={handleCreateTask}
-            >
+              onClick={handleCreateTask}>
               Enter
             </div>
           </div>

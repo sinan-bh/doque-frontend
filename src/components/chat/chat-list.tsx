@@ -43,50 +43,51 @@ export default function MessageList() {
   }, 60000);
 
   return (
-    <div className="h-full overflow-y-auto p-2 space-y-4">
-      {!isOnline && (
-        <p className="text-center text-red-500">
-          You are offline. Please check your internet connection.
-        </p>
-      )}
-      {(!messages || messages?.messages?.length < 1) && (
-        <p className="h-full text-gray-500 flex justify-center items-center ">
-          No messages yet!
-        </p>
-      )}
-      {error && <p>Something went wrong</p>}
-      {messages?.messages && (
-        <div className="space-y-4">
-          {messages?.messages?.map((item) => (
-            <div key={item._id} className="flex items-start space-x-3">
-              {item.sender?.image && (
-                <Avatar className="w-8 h-8">
-                  <AvatarImage
-                    src={item.sender.image}
-                    alt={item.sender.firstName}
-                  />
-                  <AvatarFallback />
-                </Avatar>
-              )}
-
-              <div className="flex-grow bg-white rounded-lg shadow-md p-4 border border-gray-200">
-                <div className="flex justify-between">
-                  <p className="text-sm font-medium text-gray-900">
-                    {item.sender?.firstName}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {formatTimestamp(item.timestamp)}
-                  </p>
-                </div>
-
-                <p className="mt-1 text-gray-700 whitespace-pre-wrap">
-                  {item.content}
+    <div className="h-full p-2 space-y-4">
+    {!isOnline && (
+      <p className="text-center text-red-500">
+        You are offline. Please check your internet connection.
+      </p>
+    )}
+    {(!messages || messages?.messages?.length < 1) && (
+      <p className="h-full text-gray-500 flex justify-center items-center">
+        No messages yet!
+      </p>
+    )}
+    {error && <p>Something went wrong</p>}
+    {messages?.messages && (
+      <div className="space-y-4">
+        {messages?.messages?.map((item) => (
+          <div key={item._id} className="flex items-start space-x-3">
+            {item.sender?.image && (
+              <Avatar className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0">
+                <AvatarImage
+                  src={item.sender.image}
+                  alt={item.sender.firstName}
+                />
+                <AvatarFallback />
+              </Avatar>
+            )}
+  
+            <div className="flex-grow bg-white rounded-lg shadow-md p-3 border border-gray-200 max-w-56 sm:max-w-lg md:max-w-2xl">
+              <div className="flex flex-col sm:flex-row justify-between">
+                <p className="text-sm font-medium text-gray-900">
+                  {item.sender?.firstName}
+                </p>
+                <p className="text-xs text-gray-500 sm:text-right">
+                  {formatTimestamp(item.timestamp)}
                 </p>
               </div>
+  
+              <p className="mt-1 text-gray-700 whitespace-pre-wrap break-words">
+                {item.content}
+              </p>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+  
   );
 }

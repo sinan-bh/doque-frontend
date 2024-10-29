@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   format,
   addMonths,
@@ -13,22 +13,34 @@ import {
   isSameDay,
   isToday,
 } from "date-fns";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
-import { setChosenDate } from "@/lib/store/features/workspace-slice";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import moment from "moment";
 
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
-type calendar = {
-  className: string;
-}
+const CalendarSmall = ({ className }: { className?: string }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const chosenDateParam = searchParams.get("date");
+  const chosenDate = chosenDateParam
+    ? moment(chosenDateParam, "MM-DD").toDate()
+    : new Date();
 
-const CalendarSmall: React.FC<calendar> = ({ className }) => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { chosenDate } = useSelector((state: RootState)=> state.workspace);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isYearPickerOpen, setYearPickerOpen] = useState(false);
   const [isMonthPickerOpen, setMonthPickerOpen] = useState(false);
@@ -51,8 +63,22 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   const onYearSelect = (year: number) => {
     const newDate = new Date(year, currentMonth.getMonth(), 1);
     setCurrentMonth(newDate);
-    dispatch(setChosenDate(newDate));
     setYearPickerOpen(false);
+  };
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const setChosenDate = (date: Date) => {
+    const formattedDate = moment(date).format("MM-DD");
+    router.push(`${pathname}?${createQueryString("date", formattedDate)}`);
   };
 
   useEffect(() => {
@@ -78,7 +104,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   }, []);
 
   const renderHeader = () => (
-    <div className="flex justify-between items-center w-[300px] py-5">
+    <div className="flex justify-between items-center min-w-[300px] py-5">
       <button onClick={prevMonth} className="text-gray-500 hover:text-black">
         &#x276E;
       </button>
@@ -86,21 +112,18 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
         <div className="relative inline-block">
           <div
             className="cursor-pointer p-2 rounded-lg hover:bg-gray-100"
-            onClick={() => setMonthPickerOpen(!isMonthPickerOpen)}
-          >
+            onClick={() => setMonthPickerOpen(!isMonthPickerOpen)}>
             {format(currentMonth, "MMMM")}
           </div>
           {isMonthPickerOpen && (
             <div
               ref={monthPickerRef}
-              className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll"
-            >
+              className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll">
               {months.map((month, index) => (
                 <div
                   key={index}
                   className="cursor-pointer hover:bg-blue-100 p-2 rounded-lg"
-                  onClick={() => onMonthSelect(index)}
-                >
+                  onClick={() => onMonthSelect(index)}>
                   {month}
                 </div>
               ))}
@@ -111,8 +134,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
         <div className="relative inline-block">
           <div
             className="cursor-pointer p-2 rounded-lg hover:bg-gray-100"
-            onClick={() => setYearPickerOpen(!isYearPickerOpen)}
-          >
+            onClick={() => setYearPickerOpen(!isYearPickerOpen)}>
             {format(currentMonth, "yyyy")}
           </div>
           {isYearPickerOpen && renderYearPicker()}
@@ -127,16 +149,14 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
   const renderYearPicker = () => (
     <div
       ref={yearPickerRef}
-      className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll"
-    >
+      className="absolute z-10 bg-white shadow-lg p-3 mt-1 rounded-lg w-40 max-h-60 overflow-y-scroll">
       {years.map((year) => (
         <div
           key={year}
           className={`cursor-pointer hover:bg-blue-100 p-2 rounded-lg flex justify-between items-center ${
             year === currentMonth.getFullYear() ? "font-bold" : ""
           }`}
-          onClick={() => onYearSelect(year)}
-        >
+          onClick={() => onYearSelect(year)}>
           <span>{year}</span>
           {year === currentMonth.getFullYear() && (
             <span className="text-blue-500">&#10003;</span>
@@ -189,8 +209,7 @@ const CalendarSmall: React.FC<calendar> = ({ className }) => {
                 ? "bg-blue-500 text-white rounded-full"
                 : "text-gray-700 hover:bg-gray-200 rounded-full"
             }`}
-            onClick={() => dispatch(setChosenDate(cloneDay))}
-          >
+            onClick={() => setChosenDate(cloneDay)}>
             <span>{formattedDate}</span>
           </div>
         );

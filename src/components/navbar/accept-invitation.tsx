@@ -14,9 +14,13 @@ export default function Acceptinvitation() {
     if (workspaceId) {
       const fetchData = async () => {
         try {
+          console.log('iddddd', workspaceId);
+          
           const res = await axiosInstance.get(
             `/workspaces/${workspaceId}/accept-invitation`
           );
+          console.log(res);
+          
           if (res.status === 200) {
             router.push(`/w/${workspaceId}/dashboard`);
           }

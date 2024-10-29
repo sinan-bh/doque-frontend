@@ -1,58 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-interface Task {
-  id: string;
-  workspaceName: string;
-  taskName: string;
-  workspaceUrl: string;
-}
-
-const sampleTasks: Task[] = [
-  {
-    id: "1",
-    workspaceName: "Development Workspaceeeeeeeeeeeeeeeeeeee",
-    taskName:
-      "Fix Login Bug dl;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    workspaceUrl: "/workspace/1",
-  },
-  {
-    id: "2",
-    workspaceName: "Marketing Wddddddddddddddddddddorkspace",
-    taskName: "Prepare Campaign",
-    workspaceUrl: "/workspace/2",
-  },
-  {
-    id: "3",
-    workspaceName: "Design Workspace",
-    taskName: "UI Mockupfffffffffffffffffffffffffff",
-    workspaceUrl: "/workspace/3",
-  },
-  {
-    id: "4",
-    workspaceName: "Sales Workspace",
-    taskName: "Client Outreach",
-    workspaceUrl: "/workspace/4",
-  },
-  {
-    id: "5",
-    workspaceName: "HR Workspace",
-    taskName: "Employee Onboarding",
-    workspaceUrl: "/workspace/5",
-  },
-  {
-    id: "6",
-    workspaceName: "Finance Workspace",
-    taskName: "Budget Planning",
-    workspaceUrl: "/workspace/6",
-  },
-];
+import { useAppSelector } from "@/lib/store/hooks";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import Cookies from "js-cookie";
+import { FaPlus } from "react-icons/fa";
 
 export default function MyTask() {
+  const { spaces } = useAppSelector((state) => state.space);
+  const { selectedProjectId } = useAppSelector((state) => state.workspace);
+  const { workSpaceId }: { workSpaceId: string } = useParams();
+  const selectedSpace = spaces?.find(
+    (space) => space._id === selectedProjectId
+  );
+  const [userId, setUserId] = useState<string | undefined>("");
+
+  useEffect(() => {
+    const userCokeis = JSON.parse(Cookies.get("user") || "{}");
+    setUserId(userCokeis.id);
+  }, [workSpaceId]);
+
+  const assignedTask = selectedSpace?.lists.flatMap((list) =>
+    list.tasks.filter((task) =>
+      task.assignedTo.find((id) => id === userId && task)
+    )
+  );
+
   const settings = {
     dots: true,
     infinite: false,
@@ -83,29 +60,37 @@ export default function MyTask() {
       <h3 className="text-gray-600 text-lg font-semibold dark:text-gray-300">
         My Tasks
       </h3>
-      <Slider {...settings} className="mt-4">
-        {sampleTasks.map((task) => (
-          <div
-            key={task.id}
-            className="group flex-shrink-0 w-60 h-28 border border-gray-500 dark:bg-gray-800 p-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300"
-          >
-            <div>
-              <p
-                className="text-sm font-medium dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap "
-                title={task.workspaceName}
-              >
-                {task.workspaceName}
-              </p>
-              <p
-                className="text-xs text-gray-600 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap "
-                title={task.taskName}
-              >
-                {task.taskName}
-              </p>
+      {assignedTask && assignedTask.length > 0 ? (
+        <Slider {...settings} className="mt-4">
+          {assignedTask.map((task) => (
+            <div
+              key={task._id}
+              className="group flex-shrink-0 w-60 h-28 border border-gray-500 dark:bg-gray-800 p-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300">
+              <Link
+                href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${task._id}&list=${task.status}`}>
+                <p
+                  className="text-sm font-medium dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap "
+                  title={task.title}>
+                  {task.title}
+                </p>
+                <p
+                  className="text-xs text-gray-600 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap "
+                  title={task.description}>
+                  {task.description}
+                </p>
+              </Link>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      ) : (
+        <div className="group flex-shrink-0 w-40 h-28 border border-gray-500 dark:bg-gray-800 p-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300">
+          <Link href={`/w/${workSpaceId}/spaces/${selectedProjectId}`}>
+            <p className="flex justify-center items-center h-full text-gray-400 cursor-pointer">
+              <FaPlus /> Assign Task
+            </p>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

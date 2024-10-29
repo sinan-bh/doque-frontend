@@ -1,162 +1,125 @@
-"use client"; 
+"use client";
 
-import { RootState } from "@/lib/store";
-import { FC, useState } from "react";
-import { useSelector } from "react-redux";
+import { useParams, useSearchParams } from "next/navigation";
+import moment from "moment";
+import { PlusIcon } from "lucide-react";
+import { useAppSelector } from "@/lib/store/hooks";
+import LoadingBox from "@/components/boards/loading-box";
+import clsx from "clsx";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import CreateTask from "./create-task";
 
-type TimeSlot = string; 
-type Tasks = { [key: string]: string[] }; 
+type TimeSlot = { hour: number; display: string };
 
 const generateTimeSlots = (): TimeSlot[] => {
   const times: TimeSlot[] = [];
-  for (let hour = 9; hour < 24; hour++) {
-    const timeString = `${hour % 12 === 0 ? 12 : hour % 12}:00 ${hour < 12 ? "AM" : "PM"}`;
-    times.push(timeString);
+  for (let hour = 6; hour < 24; hour++) {
+    const timeString = `${hour % 12 === 0 ? 12 : hour % 12}:00 ${
+      hour < 12 ? "AM" : "PM"
+    }`;
+    times.push({ hour, display: timeString });
   }
-  for (let hour = 0; hour < 9; hour++) {
+  for (let hour = 0; hour < 6; hour++) {
     const timeString = `${hour === 0 ? 12 : hour}:00 AM`;
-    times.push(timeString);
+    times.push({ hour, display: timeString });
   }
   return times;
 };
 
-const DayCalendar: FC = () => {
-  const { chosenDate } = useSelector((state: RootState)=> state.workspace); 
+const DayCalendar = () => {
+  const { workSpaceId } = useParams();
+  const searchParams = useSearchParams();
+  const { allTasks, error, loading } = useAppSelector(
+    (state) => state.calendar
+  );
+
+  const chosenDateParam = searchParams.get("date");
+  const chosenDate = chosenDateParam
+    ? moment(chosenDateParam, "MM-DD").toDate()
+    : new Date();
 
   const times: TimeSlot[] = generateTimeSlots();
-  const [tasks, setTasks] = useState<Tasks>({});
-  const [selectedTime, setSelectedTime] = useState<null | string>(null);
-  const [newTask, setNewTask] = useState<string>("");
-  const [customTime, setCustomTime] = useState<string>("");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const getDisplayedDate = () => {
-    if (chosenDate) {
-      return new Date(chosenDate); 
+  // Filter tasks based on the chosen date
+  const filteredTasks = allTasks.filter((task) => {
+    if (!task.dueDate) return false;
+    return moment(task.dueDate).isSame(chosenDate, "day");
+  });
+
+  // Group tasks by their time slots
+  const tasksByTimeSlot: {
+    [key: string]: {
+      _id: string;
+      priority: string;
+      title: string;
+      listId: string;
+      spaceId: string;
+    }[];
+  } = {};
+
+  filteredTasks.forEach((task) => {
+    const taskTime = moment(task.dueDate).format("h");
+    if (!tasksByTimeSlot[taskTime]) {
+      tasksByTimeSlot[taskTime] = [];
     }
-    return new Date(); 
-  };
-
-  const displayedDate = getDisplayedDate();
-
-  const handleAddOrEditTask = () => {
-    const timeToSet = customTime || selectedTime;
-    if (timeToSet && newTask.trim()) {
-      setTasks((prevTasks) => {
-        const updatedTasks = { ...prevTasks };
-        
-        if (!updatedTasks[timeToSet]) {
-          updatedTasks[timeToSet] = [];
-        }
-        
-        if (isEditing && editIndex !== null) {
-          updatedTasks[timeToSet][editIndex] = newTask; 
-        } else {
-          if (!updatedTasks[timeToSet].includes(newTask)) {
-            updatedTasks[timeToSet].push(newTask);
-          }
-        }
-        return updatedTasks;
-      });
-      resetModal();
-    }
-  };
-
-  const handleDeleteTask = () => {
-    if (selectedTime && editIndex !== null) {
-      setTasks((prevTasks) => {
-        const updatedTasks = { ...prevTasks };
-        
-        updatedTasks[selectedTime]?.splice(editIndex, 1);
-        return updatedTasks;
-      });
-      resetModal();
-    }
-  };
-
-  const resetModal = () => {
-    setSelectedTime(null);
-    setNewTask("");
-    setCustomTime("");
-    setIsEditing(false);
-    setEditIndex(null);
-  };
-
-  const openEditModal = (time: string, index: number) => {
-    setSelectedTime(time);
-    setNewTask(tasks[time][index] || ""); 
-    setIsEditing(true);
-    setEditIndex(index);
-  };
-
-  const openAddModal = (time: string) => {
-    setSelectedTime(time);
-    setNewTask("");
-    setCustomTime("");
-    setIsEditing(false); 
-  };
+    tasksByTimeSlot[taskTime].push(task);
+  });
 
   return (
-    <div className="w-full h-[400px] dark:bg-darkBg">
-      <h2 className="text-2xl font-bold mb-4 underline">
-        {displayedDate.toLocaleDateString("en-US", { weekday: "long" })}
-      </h2>
-      <div className="space-y-4 w-[600px] h-[350px] overflow-y-scroll ">
+    <div className="w-full h-full  bg-white p-4 dark:bg-darkBg">
+      <div className="flex justify-between">
+        <h2 className="text-lg">
+          {moment(chosenDate).format("DD MMMM YYYY, dddd")}
+        </h2>
+        <LoadingBox loading={loading} text="Fetching data.." />
+        {error && <p className="text-red-500">{error}</p>}
+      </div>
+      {filteredTasks.length ? (
+        <p className="text-gray-500">
+          {filteredTasks.length} {`task${filteredTasks.length > 1 ? "s" : ""}`}
+        </p>
+      ) : (
+        <p className="text-gray-500">No tasks found for this day</p>
+      )}
+      <div className="max-h-[350px] px-4 overflow-y-scroll w-full">
         {times.map((time, idx) => (
-          <div key={idx} className="relative hover:bg-gray-100 transition dark:hover:bg-gray-900">
-            <div className={`flex items-center cursor-pointer`} onClick={() => openAddModal(time)}>
-              <div className="w-20 text-right  font-medium">{time}</div>
-              <div className="flex-grow border-t border-gray-300 relative">
-                <div className="grid grid-cols-3 gap-2">
-                  {tasks[time]?.map((task, taskIndex) => (
+          <div
+            key={idx}
+            className="flex items-center justify-between w-full border-b border-gray-900 dark:border-gray-200">
+            <div className="flex gap-2 w-full h-full items-center ">
+              <div className="font-medium flex-shrink-0 h-full flex items-center justify-end w-24 col-span-1">
+                {time.display} -
+              </div>
+              <div className="w-full px-2 flex flex-wrap py-2 gap-2 items-center">
+                {tasksByTimeSlot[time.hour]?.map((task) => (
+                  <Link
+                    key={task._id}
+                    href={`/w/${workSpaceId}/spaces/${task.spaceId}?task=${task._id}&list=${task.listId}`}>
                     <div
-                      key={taskIndex}
-                      className="bg-gray-200 rounded-full py-1 px-2 text-sm text-black cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openEditModal(time, taskIndex);
-                      }}
-                    >
-                      {task}
+                      className={clsx(
+                        "rounded-lg py-2 px-4  w-fit cursor-pointer text-gray-900 max-w-80 overflow-hidden text-ellipsis whitespace-nowrap hover:bg-opacity-90 hover:scale-105 transition-transform",
+                        {
+                          "bg-red-300": task?.priority === "high",
+                          "bg-yellow-300": task?.priority === "medium",
+                          "bg-green-300": task?.priority === "low",
+                        }
+                      )}>
+                      <h3>{task.title}</h3>
                     </div>
-                  ))}
-                </div>
+                  </Link>
+                ))}
               </div>
             </div>
+
+            <CreateTask dueTime={{ chosenDate, hour: time.hour }}>
+              <Button size="icon" variant="ghost">
+                <PlusIcon />
+              </Button>
+            </CreateTask>
           </div>
         ))}
       </div>
-
-      {selectedTime !== null && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-md shadow-lg max-w-sm w-full">
-            <h3 className="text-lg font-semibold mb-4">{isEditing ? "Edit Task" : "Add Task"}</h3>
-            <label className="block mb-2">Task Description</label>
-            <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded-md mb-4"
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Enter task description"
-            />
-            <label className="block mb-2">Custom Time (Optional)</label>
-            <input
-              type="time"
-              className="w-full p-2 border border-gray-300 rounded-md mb-4"
-              value={customTime}
-              onChange={(e) => setCustomTime(e.target.value)}
-            />
-            <div className="flex justify-end mt-4">
-              <button className="px-4 py-2 bg-gray-300 rounded-md" onClick={resetModal}>Cancel</button>
-              {isEditing && <button className="px-4 py-2 bg-red-500 text-white rounded-md" onClick={handleDeleteTask}>Delete Task</button>}
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleAddOrEditTask}>
-                {isEditing ? "Save Changes" : "Add Task"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

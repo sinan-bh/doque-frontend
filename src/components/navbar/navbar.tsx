@@ -11,7 +11,7 @@ export default function Navbar() {
     <nav className="bg-[#EDF1F4] dark:bg-darkBg  z-20">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         <Link href="/">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 sm:ml-10">
             <Image
               src="/images/DOQ_LOGO.png"
               alt="Logo"
