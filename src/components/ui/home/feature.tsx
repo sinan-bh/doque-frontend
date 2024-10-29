@@ -39,8 +39,8 @@ const Feature: React.FC = () => {
   return (
     <div className="container mx-auto px-6 py-12">
       <div className="max-w-6xl mx-auto text-center mb-10">
-        <h2 className="text-3xl text-gray-800">Features</h2>
-        <p className="text-gray-600 text-lg mt-4">
+        <h2 className="text-2xl md:text-3xl text-gray-800">Features</h2>
+        <p className="text-gray-600 text-base md:text-lg mt-4">
           Discover what makes DOQUE the best tool for managing your projects and
           tasks.
         </p>
@@ -50,9 +50,9 @@ const Feature: React.FC = () => {
         {features.map((feature, index) => (
           <div
             key={index}
-            className="p-6 bg-white/30 backdrop-blur-md rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out text-center">
+            className="p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out text-center">
             <div className="text-4xl mb-4">{feature.icon}</div>
-            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+            <h3 className="text-xl font-medium md:font-semibold mb-2">{feature.title}</h3>
             <p className="text-gray-600">{feature.description}</p>
           </div>
         ))}

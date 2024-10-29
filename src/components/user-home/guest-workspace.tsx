@@ -24,6 +24,7 @@ export default function GuestWorkSpaces() {
           <h2 className="text-1xl sm:text-2xl md:text-2xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">
             Guest Workspaces
           </h2>
+          <hr />
           <div className="relative">
             <div ref={carouselRef} className="overflow-hidden">
               <div className="flex py-4 ml-4">
