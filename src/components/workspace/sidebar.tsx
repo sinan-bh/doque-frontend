@@ -95,6 +95,23 @@ const Sidebar: React.FC = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== "undefined" && window.innerWidth < 640) {
+        setIsCollapsed(true);
+      } else {
+        setIsCollapsed(false);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+      handleResize();
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
   const handleRouteChange = (route: string) => {
     setActiveRoute(route);
     setIsCollapsed(true);
@@ -114,7 +131,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`fixed sm:relative md:relative lg:relative z-50 h-full border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
+      className={`fixed sm:relative md:relative lg:relative z-50 h-[calc(100vh-75px)] border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
         isCollapsed ? "w-14" : "w-64"
       }`}
     >
@@ -127,9 +144,7 @@ const Sidebar: React.FC = () => {
         <MdKeyboardDoubleArrowRight
           className={`text-3xl sm:fixed bg-gray-200 p-1 rounded-lg left-5 top-5 z-50 transition-transform duration-500`}
           style={{
-            transform: isCollapsed
-              ? "rotateY(180deg) "
-              : "rotateY(0deg) ",
+            transform: isCollapsed ? "rotateY(180deg) " : "rotateY(0deg) ",
             perspective: "500px",
           }}
         />
@@ -137,7 +152,7 @@ const Sidebar: React.FC = () => {
 
       <div className="relative">
         <div className="flex items-center justify-between p-3 rounded-md cursor-pointer">
-          <div className="flex items-center h-10">
+          <div className="flex items-center h-2 sm:h-10 md:h-10 lg:h-10">
             <Avatar className={`${isCollapsed ? "h-6 w-6" : "h-8 w-8"}`}>
               <AvatarImage src={workspaceUser?.image} alt="Workspace logo" />
               <AvatarFallback />
@@ -236,9 +251,7 @@ const Sidebar: React.FC = () => {
         </div>
 
         {!isCollapsed && (
-          <div className="flex-1 overflow-y-auto hide-scrollbar max-h-64 p-4">
-            {<Spaces />}
-          </div>
+          <div className="relative flex-1 p-4">{<Spaces />}</div>
         )}
 
         <EditWorkSpace
