@@ -1,11 +1,13 @@
 "use client";
 
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import React from "react";
 import image from "../../../../public/images/spaceImage.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import CreateTask from "../calendar/create-task";
+import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 
 export const formatedDate = (date: number | string | Date) => {
   const formated = new Date(date);
@@ -13,6 +15,7 @@ export const formatedDate = (date: number | string | Date) => {
 };
 
 const TaskList: React.FC = () => {
+  const dispatch = useAppDispatch()
   const { spaces } = useAppSelector((state) => state.space);
   const { selectedProjectId } = useAppSelector((state) => state.workspace);
   const { workSpaceId } = useParams<{ workSpaceId: string }>();
@@ -29,7 +32,7 @@ const TaskList: React.FC = () => {
     <div className="w-full h-72 bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2  dark:bg-darkBg ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-sm">Task Lists</h2>
-        <Link href={`/w/${workSpaceId}/spaces/${selectedProjectId}`}>
+        <CreateTask  onSuccess={()=> dispatch(fetchSpacesData(workSpaceId))}>
           <button className="focus:outline-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -45,12 +48,11 @@ const TaskList: React.FC = () => {
               />
             </svg>
           </button>
-        </Link>
+        </CreateTask>
       </div>
-
       {isTask ? (
         <div>
-          <div className="max-h-[185px] overflow-scroll">
+          <div className="h-[185px] overflow-scroll">
             {selectedSpace?.lists.map((list) => (
               <div key={list._id} className="flex flex-col justify-between p-1">
                 <div className="flex flex-col">
