@@ -116,7 +116,7 @@ export function EditSpace({
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[500px]">
+      <DialogContent className="sm:w-[500px]">
         <DialogHeader>
           <DialogTitle>Edit space</DialogTitle>
           <DialogDescription>
@@ -127,8 +127,8 @@ export function EditSpace({
           onSubmit={handleEditSpace}
           id="edit_space_form"
           className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="space_name" className="text-right">
+          <div className="grid sm:grid-cols-4 items-center sm:gap-4">
+            <Label htmlFor="space_name" className="sm:text-right font-semibold">
               Space Name
             </Label>
             <Input
@@ -139,8 +139,8 @@ export function EditSpace({
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="space_desc" className="text-right">
+          <div className="grid sm:grid-cols-4 items-center sm:gap-4">
+            <Label htmlFor="space_desc" className="sm:text-right font-semibold">
               Description
             </Label>
             <Input
@@ -151,18 +151,21 @@ export function EditSpace({
             />
           </div>
         </form>
-        <DialogFooter className="grid grid-cols-4">
+        <DialogFooter className="grid sm:grid-cols-4 grid-cols-2">
           <AlertConfirm
             message="Are you sure you want to delete this space?"
             description="All the tasks and lists in this space will be deleted!!"
             confirmText="Delete space"
             onConfirm={handleDeleteSpace}>
-            <Button size={"sm"} className="self-start" variant="destructive">
+            <Button
+              size={"sm"}
+              className="self-start w-fit"
+              variant="destructive">
               Delete space
             </Button>
           </AlertConfirm>
           {!loadingSpaces.updateSpace && (
-            <DialogClose className="col-start-3" asChild>
+            <DialogClose className="col-start-3 hidden sm:block" asChild>
               <Button size={"sm"} variant="ghost">
                 Cancel
               </Button>
@@ -170,7 +173,7 @@ export function EditSpace({
           )}
           <Button
             size={"sm"}
-            className="col-start-4 px-4"
+            className="sm:col-start-4 w-fit col-start-3 px-4"
             form="edit_space_form"
             disabled={loadingSpaces.updateSpace}
             type="submit">

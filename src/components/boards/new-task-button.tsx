@@ -38,8 +38,6 @@ const TaskCreateSchema = Yup.object().shape({
   members: Yup.array().of(Yup.string()).default([]),
 });
 
-
-
 export function NewTaskButton({
   listId,
   spaceId,
@@ -51,7 +49,7 @@ export function NewTaskButton({
   spaceId?: string;
   dueTime?: { chosenDate: Date; hour?: number };
   children: React.ReactNode;
-  onSuccess?: ()=> void;
+  onSuccess?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -101,7 +99,7 @@ export function NewTaskButton({
           onSuccess() {
             resetForm();
             if (onSuccess) {
-              onSuccess()
+              onSuccess();
             }
             toast({
               description: "Task created",
@@ -132,10 +130,10 @@ export function NewTaskButton({
 
         <form
           onSubmit={handleSubmit}
-          className="grid gap-4 py-4 overflow-x-auto"
+          className="grid gap-4 py-4 overflow-auto max-h-[calc(100vh-20rem)]"
           id="create_task_form">
-          <div className="grid grid-cols-5 items-center gap-2">
-            <Label htmlFor="title" className="text-right">
+          <div className="grid sm:grid-cols-5 items-center sm:gap-2">
+            <Label htmlFor="title" className="sm:text-right">
               Task Title
             </Label>
             <Input
@@ -154,8 +152,8 @@ export function NewTaskButton({
             )}
           </div>
 
-          <div className="grid grid-cols-5 items-center gap-2">
-            <Label htmlFor="description" className="text-right">
+          <div className="grid sm:grid-cols-5 items-center sm:gap-2">
+            <Label htmlFor="description" className="sm:text-right">
               Description
             </Label>
             <Textarea
@@ -174,7 +172,7 @@ export function NewTaskButton({
             )}
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap gap-2">
             <div>
               <DueDatePicker
                 dueDate={values.dueDate}
@@ -227,7 +225,7 @@ export function NewTaskButton({
           />
         </form>
 
-        <DialogFooter className="items-center">
+        <DialogFooter>
           {touched.status && errors.status && (
             <p className="text-sm text-left text-red-500">{errors.status}</p>
           )}
