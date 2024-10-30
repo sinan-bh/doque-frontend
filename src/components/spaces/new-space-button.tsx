@@ -40,7 +40,7 @@ export function NewSpaceButton({ children }: { children: React.ReactNode }) {
         spaceData: { name: spaceName, description: spaceDesc },
         workspaceId: workSpaceId,
         onSuccess: () => {
-          dispatch(fetchCalendarData({workSpaceId}))
+          dispatch(fetchCalendarData({ workSpaceId }));
           toast({
             title: "Space created",
             description: "Space has been created successfully",
@@ -78,7 +78,7 @@ export function NewSpaceButton({ children }: { children: React.ReactNode }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[500px]">
+      <DialogContent className="sm:w-[500px]">
         <DialogHeader>
           <DialogTitle>Create new space</DialogTitle>
           <DialogDescription>
@@ -90,8 +90,8 @@ export function NewSpaceButton({ children }: { children: React.ReactNode }) {
           onSubmit={handleCreateSpace}
           id="create_space_form"
           className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="space_name" className="text-right">
+          <div className="grid sm:grid-cols-4 items-center sm:gap-4">
+            <Label htmlFor="space_name" className="sm:text-right font-semibold">
               Space Name
             </Label>
             <Input
@@ -102,8 +102,8 @@ export function NewSpaceButton({ children }: { children: React.ReactNode }) {
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="space_desc" className="text-right">
+          <div className="grid sm:grid-cols-4 items-center sm:gap-4">
+            <Label htmlFor="space_desc" className="sm:text-right font-semibold">
               Description
             </Label>
             <Input
