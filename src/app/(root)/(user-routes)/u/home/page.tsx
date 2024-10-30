@@ -18,7 +18,7 @@ export default async function Workspace() {
       headers: {
         Authorization: `Bearer ${parsedUserCookie.token}`,
       },
-    });    
+    });
 
     if (!res.ok) {
       throw new Error("Failed to fetch workspace data.");
@@ -31,11 +31,11 @@ export default async function Workspace() {
     }
 
     return (
-      <div className="w-full p-4 flex-grow bg-pattern overflow-auto hide-scrollbar dark:bg-gray-950">
+      <div className="w-full p-4 flex-grow overflow-auto hide-scrollbar bg-pattern dark:bg-pattern-dark dark:bg-dark">
         <h1 className="text-1xl sm:text-2xl md:text-2xl text-[#3B3C3D] font-bold ml-5 mb-4">
           My Workspaces
         </h1>
-        <hr />
+        <hr /> 
 
         <MyWorkSpace />
 

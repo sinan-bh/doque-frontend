@@ -37,7 +37,7 @@ const ProjectCard: React.FC = () => {
     spaces?.filter((project) => project._id !== selectedProjectId) || [];
 
   return (
-    <div className="relative w-full bg-white  rounded-lg shadow-md p-4  dark:bg-darkBg">
+    <div className="relative w-full bg-white bg-opacity-60  rounded-lg shadow-md p-4  dark:bg-darkBg">
       {displayedProject ? (
         <div className="flex items-center justify-between">
           <div className="flex-grow">
@@ -90,11 +90,11 @@ const ProjectCard: React.FC = () => {
         </NewSpaceButton>
       )}
       {isOpen && otherProjects.length > 0 && (
-        <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-y-auto  dark:bg-darkBg ">
+        <div className="absolute left-0 w-full max-h-72 mt-4 bg-white border border-gray-500 rounded-lg shadow-lg z-10 overflow-y-auto  dark:bg-darkBg">
           {otherProjects.map((project) => (
             <div
               key={project._id}
-              className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b dark:hover:bg-gray-800"
+              className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b border-gray-700 dark:hover:bg-gray-800"
               onClick={() => handleProjectClick(project._id)}>
               <div className="flex-grow">
                 <p className="text-sm font-medium">{project.name}</p>

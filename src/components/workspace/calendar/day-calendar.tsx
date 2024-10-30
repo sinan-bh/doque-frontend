@@ -67,7 +67,7 @@ const DayCalendar = () => {
   });
 
   return (
-    <div className="w-full h-full  bg-white p-4 dark:bg-darkBg">
+    <div className="w-full h-[70vh] pb-12 bg-white p-4 dark:bg-darkBg">
       <div className="flex justify-between">
         <h2 className="text-lg">
           {moment(chosenDate).format("DD MMMM YYYY, dddd")}
@@ -82,7 +82,7 @@ const DayCalendar = () => {
       ) : (
         <p className="text-gray-500">No tasks found for this day</p>
       )}
-      <div className="max-h-[350px] px-4 overflow-y-scroll w-full">
+      <div className="h-full px-4 overflow-y-scroll w-full">
         {times.map((time, idx) => (
           <div
             key={idx}

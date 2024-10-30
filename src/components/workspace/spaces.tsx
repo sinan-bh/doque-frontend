@@ -62,7 +62,7 @@ const Spaces: React.FC = () => {
             <div className="mt-4 max-h-40 sm:max-h-56 md:max-h-56 lg:max-h-56 overflow-y-auto">
               {spaces.map((space) => (
                 <div key={space._id}>
-                  <div className="flex justify-between items-center p-1 cursor-pointer">
+                  <div className="flex justify-between items-center p-1 cursor-pointer rounded hover:bg-gray-200">
                     <Link href={`/w/${workSpaceId}/spaces/${space._id}`}>
                       <h2 className="font-medium text-md text-black dark:text-gray-300">
                         {space.name}

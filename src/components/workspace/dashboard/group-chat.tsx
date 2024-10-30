@@ -56,7 +56,7 @@ useEffect(() => {
   }, [members]);
 
   return (
-    <div className="text-lg mt-2 p-4 bg-white h-80 rounded-lg shadow-md space-y-2 dark:bg-darkBg">
+    <div className="text-lg mt-2 p-4 bg-white bg-opacity-50 h-80 rounded-lg shadow-md space-y-2 dark:bg-darkBg dark:bg-opacity-80">
       <div className="text-1xl font-semibold text-gray-600 dark:text-gray-300">Message</div>
       <div className="grid grid-cols-3 gap-4">
         {users?.map((message, index) => (

@@ -45,7 +45,7 @@ export default function ProjectCard({ workSpaceId }: { workSpaceId: string }) {
       className="shrink-0 basis-[120px] sm:basis-[200px] md:basis-[250px] mr-4 mb-4"
     >
       <Card className="w-[160px] sm:w-[200px] md:w-[250px]  h-full shadow-lg hover:shadow-xl
-       bg-gradient-to-br from-[#349ca25f] via-white to-[#C4DBF6] hover:scale-105 transition-transform rounded-lg border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:from-gray-800 dark:hover:via-gray-700 dark:hover:to-gray-900">
+       bg-gradient-to-br from-[#349ca25f] via-white to-[#C4DBF6] hover:scale-105 transition-transform rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:from-gray-800 dark:via-gray-700 dark:to-gray-900">
         <HandleLoading
           error={error}
           loading={loading}

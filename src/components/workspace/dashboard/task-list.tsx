@@ -29,7 +29,7 @@ const TaskList: React.FC = () => {
     : false;
 
   return (
-    <div className="w-full h-72 bg-white border border-gray-200 rounded-lg shadow-md p-2 mt-2  dark:bg-darkBg ">
+    <div className="w-full h-72 bg-white bg-opacity-60 border border-gray-200 rounded-lg shadow-md p-2 mt-2  dark:bg-darkBg dark:bg-opacity-80">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-sm">Task Lists</h2>
         <CreateTask  onSuccess={()=> dispatch(fetchSpacesData(workSpaceId))}>

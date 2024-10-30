@@ -17,6 +17,18 @@ const config: Config = {
         foreground: "var(--foreground)",
         darkBg:"#242424",
       },
+      backgroundColor: {
+        'pattern': '#ecf8f8',
+        'pattern-dark': '#1a1a1a',
+      },
+      backgroundImage: {
+        'pattern': 'linear-gradient(33deg, rgba(0, 0, 0, 0.05) 25%, transparent 60%, transparent 50%, transparent 75%, transparent)',
+        'pattern-dark': 'linear-gradient(33deg, rgba(255, 255, 255, 0.1) 25%, transparent 60%, transparent 50%, transparent 75%, transparent)',
+      },
+      backgroundSize: {
+        'pattern': '20px 20px',
+        'pattern-dark': '20px 20px',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

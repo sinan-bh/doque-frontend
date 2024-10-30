@@ -73,7 +73,7 @@ export default function Members() {
 
   return (
     <div className="relative">
-      <div className="mb-4 dark:border-gray-600 sticky top-0 z-10 bg-white dark:bg-darkBg">
+      <div className="mb-4 dark:border-gray-600 sticky top-0 z-10 dark:bg-darkBg">
         <div className="flex flex-col sm:flex-row justify-between">
           <div className="flex mt-2">
             <h2
