@@ -95,7 +95,6 @@ const Sidebar: React.FC = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-
   useEffect(() => {
     const handleResize = () => {
       if (typeof window !== "undefined" && window.innerWidth < 640) {
@@ -131,7 +130,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`fixed sm:relative md:relative lg:relative z-50 h-[calc(100vh-75px)] border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
+      className={`fixed sm:relative z-50 sm:h-[calc(100vh - 75px)] border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
         isCollapsed ? "w-14" : "w-64"
       }`}
     >
@@ -142,9 +141,9 @@ const Sidebar: React.FC = () => {
         onClick={toggleCollapse}
       >
         <MdKeyboardDoubleArrowRight
-          className={`text-3xl sm:fixed bg-gray-200 p-1 rounded-lg left-5 top-5 z-50 transition-transform duration-500`}
+          className={`text-3xl sm:fixed bg-gray-200 bg-opacity-50 p-1 dark:bg-opacity-5 rounded-lg left-5 top-5 z-50 transition-transform duration-500`}
           style={{
-            transform: isCollapsed ? "rotateY(180deg) " : "rotateY(0deg) ",
+            transform: isCollapsed ? "rotateY(0deg) " : "rotateY(180deg) ",
             perspective: "500px",
           }}
         />

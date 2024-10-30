@@ -35,19 +35,29 @@
 }
 
 
-/* home bg pattern*/
-
+/* 
 .bg-pattern {
   background-color: #ecf8f8;
   background-image: linear-gradient(
     33deg,
     rgba(0, 0, 0, 0.05) 25%,
-    transparent 25%,
+    transparent 60%,
     transparent 50%,
-    rgba(0, 0, 0, 0.05) 50%,
-    rgba(0, 0, 0, 0.05) 75%,
     transparent 75%,
     transparent
   );
   background-size: 20px 20px;
 }
+
+.bg-pattern-dark {
+  background-color: #1a1a1a;
+  background-image: linear-gradient(
+    33deg,
+    rgba(255, 255, 255, 0.1) 25%, 
+    transparent 60%,
+    transparent 50%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 20px 20px;
+} */

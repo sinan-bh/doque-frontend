@@ -60,7 +60,7 @@ const CommentsList = () => {
   };
 
   return (
-    <div className="w-full h-44 bg-white rounded-lg shadow-md p-4 space-y-3 mt-4 overflow-hidden dark:bg-darkBg">
+    <div className="w-full h-44 bg-white bg-opacity-60 rounded-lg shadow-md p-4 space-y-3 mt-4 overflow-hidden dark:bg-darkBg dark:bg-opacity-80">
     <div className="flex justify-between items-center border-b pb-2 border-gray-200 dark:border-gray-700">
       <div className="font-semibold text-sm text-gray-600 dark:text-gray-300">
         New Comments

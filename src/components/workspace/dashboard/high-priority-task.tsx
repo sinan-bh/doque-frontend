@@ -37,7 +37,7 @@ const HighPriorityTask: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-[180px] bg-white  rounded-lg shadow-md p-2 space-y-2  dark:bg-darkBg">
+    <div className="w-full h-[180px] bg-white bg-opacity-60 rounded-lg shadow-md p-2 space-y-2  dark:bg-darkBg dark:bg-opacity-80">
       {highPriorityTasks.length > 0 ? (
         <div className="space-y-2">
           <div className="flex justify-between items-center">
