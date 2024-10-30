@@ -59,7 +59,7 @@ export default function Signup() {
         password: values.password,
         firstName: values.firstName,
         lastName: values.lastName,
-        image: "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg"
+        image: "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg",
       })
     );
 
@@ -88,7 +88,6 @@ export default function Signup() {
               <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent mb-2 dark:text-white">
                 Create Account
               </h2>
-
               <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
               <p className="mb-6 text-gray-500">
                 Please fill in the details below to create your account.
@@ -103,7 +102,8 @@ export default function Signup() {
                 confirmPassword: "",
               }}
               validationSchema={SignupSchema}
-              onSubmit={handleSubmit}>
+              onSubmit={handleSubmit}
+            >
               {({ isSubmitting }) => (
                 <Form className="flex flex-col space-y-4">
                   <div className="relative">
@@ -158,7 +158,8 @@ export default function Signup() {
                     />
                     <div
                       className="absolute right-3 top-3 cursor-pointer text-gray-400"
-                      onClick={togglePasswordVisibility}>
+                      onClick={togglePasswordVisibility}
+                    >
                       {showPassword ? (
                         <AiOutlineEyeInvisible />
                       ) : (
@@ -188,7 +189,8 @@ export default function Signup() {
                   {(successMessage || error) && (
                     <div
                       className={`text-center mb-4 ${successMessage ? "text-green-600" : "text-red-600"
-                        }`}>
+                        }`}
+                    >
                       {successMessage || error}
                     </div>
                   )}
@@ -202,14 +204,22 @@ export default function Signup() {
                   >
                     {isSubmitting ? "Registering..." : "Register"}
                   </button>
-
+                  <div className="mt-4 text-center md:hidden">
+                    <p className="text-gray-500">Already have an account?</p>
+                    <Link
+                      href="/signin"
+                      className="text-gray-700 hover:border-b border-gray-700 font-semibold"
+                    >
+                      Sign In
+                    </Link>
+                  </div>
                 </Form>
               )}
             </Formik>
           </div>
 
-          <div className="w-full md:w-1/2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 relative dark:bg-[#1F1A30]">
-            <h2 className="text-2xl font-bold mb-4 text-center">
+          <div className="hidden sm:block w-full md:w-1/2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 space-y-6 relative dark:bg-[#1F1A30]">
+            <h2 className="text-2xl font-bold text-center mt-12">
               Welcome to Doque!
             </h2>
             <Image
@@ -217,14 +227,15 @@ export default function Signup() {
               height={768}
               src="/images/onboarding1.jpg"
               alt="Onboarding Illustration"
-              className="rounded-full shadow-lg w-72 h-72 object-cover"
+              className="rounded-full shadow-lg w-72 h-72 object-cover ml-8"
             />
-            <p className="mb-2 text-center mt-4">
+            <p className="text-center">
               Already have an account? Sign in to continue.
             </p>
             <Link
               href="/signin"
-              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black">
+              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black"
+            >
               Sign In
             </Link>
           </div>
