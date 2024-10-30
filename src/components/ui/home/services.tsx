@@ -63,27 +63,36 @@ const servicesData: Service[] = [
 
 export default function Services() {
   return (
-    <section className="py-20">
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl text-gray-800">
-          How <span className="font-bold">DOQUE</span> Helps You
-        </h2>
-        <p className="text-gray-600 text-lg mt-4">
-          Here&apos;s how our task management system makes your life easier.
-        </p>
+    <section className="py-20 px-10 sm:px-4 md:px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-4xl md:text-4xl text-gray-800">
+            How{" "}
+            <span className="font-medium sm:font-bold md:font-bold">DOQUE</span>{" "}
+            Helps You
+          </h2>
+          <p className="text-gray-600 text-sm sm:text-lg md:text-lg mt-4">
+            Here&apos;s how our task management system makes your life easier.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
           {servicesData.map((service: Service, index: number) => (
             <div
               key={service.id}
               data-aos="fade-up"
-              data-aos-delay={index * 100}
-              className="relative p-6 transition-transform duration-300 ease-in-out hover:scale-105">
+              data-aos-delay={index * 0}
+              className="relative p-6 transition-transform duration-300 ease-in-out hover:scale-105"
+            >
               <div className="flex items-center mt-2">
                 {service.icon}
-                <h3 className="text-2xl font-bold ml-2">{service.title}</h3>
+                <h3 className="text-lg sm:text-2xl md:text-2xl font-medium sm:font-bold md:font-bold ml-2">
+                  {service.title}
+                </h3>
               </div>
-              <p className="mt-2 text-gray-600">{service.description}</p>
+              <p className="mt-2 text-gray-600 text-sm">
+                {service.description}
+              </p>
               <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gray-300" />
             </div>
           ))}

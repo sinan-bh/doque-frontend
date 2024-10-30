@@ -46,8 +46,10 @@ export default function Pricing() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-6xl mx-auto px-6 text-center">
-        <h2 className="text-4xl text-gray-900">Our Pricing Plans</h2>
-        <p className="text-gray-600 text-lg mt-4">
+        <h2 className="text-2xl sm:text-3xl md:text-3xl  text-gray-900">
+          Our Pricing Plans
+        </h2>
+        <p className="text-gray-600 text-sm sm:text-lg md:text-lg mt-4">
           Choose the best plan that fits your project needs.
         </p>
 
@@ -56,13 +58,15 @@ export default function Pricing() {
             <div
               key={plan.title}
               data-aos="fade-up"
-              data-aos-delay={index * 100}
-              className="shadow-lg rounded-lg overflow-hidden">
+              data-aos-delay={index * 0}
+              className="shadow-lg rounded-lg overflow-hidden"
+            >
               <div
                 className="p-6 text-white"
                 style={{
                   background: `linear-gradient(to right, ${plan.colorFrom}, ${plan.colorTo})`,
-                }}>
+                }}
+              >
                 <h3 className="text-2xl font-bold">{plan.title}</h3>
               </div>
 
