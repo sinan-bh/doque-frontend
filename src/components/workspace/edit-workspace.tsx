@@ -108,7 +108,7 @@ export function EditWorkSpace({
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[600px]">
+      <DialogContent className="sm:w-[500px]">
         <DialogHeader>
           <DialogTitle>Edit Workspace</DialogTitle>
         </DialogHeader>
@@ -116,9 +116,11 @@ export function EditWorkSpace({
           onSubmit={handleUpdateSpace}
           id="edit_workspace_form"
           className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="space_name" className="text-right">
-              Workspace Name
+          <div className="grid sm:grid-cols-4 items-center sm:gap-4">
+            <Label
+              htmlFor="space_name"
+              className="sm:text-right shrink-0 font-semibold">
+              Workspace Name:
             </Label>
             <Input
               placeholder="Enter new space name"
@@ -130,18 +132,21 @@ export function EditWorkSpace({
             />
           </div>
         </form>
-        <DialogFooter className="grid grid-cols-4">
+        <DialogFooter className="grid sm:grid-cols-4 grid-cols-3">
           <AlertConfirm
             message="Are you sure you want to delete this Work space?"
             description="All the data in this space will be deleted!!"
             confirmText="Delete Workspace"
             onConfirm={handleDeleteSpace}>
-            <Button size={"sm"} className="self-start" variant="destructive">
+            <Button
+              size={"sm"}
+              className="self-start w-fit"
+              variant="destructive">
               Delete workspace
             </Button>
           </AlertConfirm>
           {!loading && (
-            <DialogClose className="col-start-3" asChild>
+            <DialogClose className="hidden sm:block sm:col-start-3" asChild>
               <Button size={"sm"} variant="ghost">
                 Cancel
               </Button>
@@ -149,7 +154,7 @@ export function EditWorkSpace({
           )}
           <Button
             size={"sm"}
-            className="col-start-4 px-4"
+            className="sm:col-start-4 col-start-3 px-4"
             form="edit_workspace_form"
             disabled={loading}
             type="submit">
