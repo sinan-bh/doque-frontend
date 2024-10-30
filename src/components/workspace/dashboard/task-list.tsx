@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useAppSelector } from "@/lib/store/hooks";
 import React from "react";
@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-export  const formatedDate = (date: number | string | Date) => {
+export const formatedDate = (date: number | string | Date) => {
   const formated = new Date(date);
   return formated.toLocaleDateString("en-GB");
 };
@@ -17,7 +17,9 @@ const TaskList: React.FC = () => {
   const { selectedProjectId } = useAppSelector((state) => state.workspace);
   const { workSpaceId } = useParams<{ workSpaceId: string }>();
 
-  const selectedSpace = spaces?.find((space) => space._id === selectedProjectId);
+  const selectedSpace = spaces?.find(
+    (space) => space._id === selectedProjectId
+  );
 
   const isTask = selectedSpace
     ? selectedSpace.lists.some((list) => list.tasks && list.tasks.length > 0)
@@ -34,9 +36,13 @@ const TaskList: React.FC = () => {
               className="h-6 w-6 text-gray-600"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
             </svg>
           </button>
         </Link>
@@ -49,16 +55,19 @@ const TaskList: React.FC = () => {
               <div key={list._id} className="flex flex-col justify-between p-1">
                 <div className="flex flex-col">
                   {list.tasks.map((task) => (
-                    <div key={task._id} className="flex justify-between items-center">
+                    <div
+                      key={task._id}
+                      className="flex justify-between items-center">
                       <div>
-                        <span className="font-medium text-xs text-gray-700 dark:text-white">{task.title}</span>
+                        <span className="font-medium text-xs text-gray-700 dark:text-white">
+                          {task.title}
+                        </span>
                         <div className="flex items-center space-x-2 mt-2">
                           <span
                             className="text-[10px] text-green-600 px-1 rounded-full"
                             style={{
                               backgroundColor: `${list.color + "10"}`,
-                            }}
-                          >
+                            }}>
                             {list.name}
                           </span>
                           {task.dueDate && (
@@ -69,17 +78,20 @@ const TaskList: React.FC = () => {
                         </div>
                       </div>
                       <Link
-                        href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${task._id}&list=${list._id}`}
-                      >
+                        href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${task._id}&list=${list._id}`}>
                         <button className="focus:outline-none">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-6 text-gray-600"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            stroke="currentColor">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
                           </svg>
                         </button>
                       </Link>
@@ -99,16 +111,25 @@ const TaskList: React.FC = () => {
                   className="h-4 w-4 ml-2"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </Link>
           </div>
         </div>
       ) : (
-        <Image height={300} src={image} alt="No tasks available" className="max-h-[200px] opacity-15" />
+        <Image
+          height={300}
+          src={image}
+          alt="No tasks available"
+          className="max-h-[200px] opacity-15"
+        />
       )}
     </div>
   );

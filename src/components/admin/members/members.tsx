@@ -88,8 +88,7 @@ export default function Members() {
                   {filteredMembers.map((member) => (
                     <tr
                       key={member._id}
-                      className="border-b dark:border-gray-600 sm:table-row"
-                    >
+                      className="border-b dark:border-gray-600 sm:table-row">
                       <td className="p-4 flex flex-col items-start sm:flex-row sm:items-center">
                         <Image
                           src={
