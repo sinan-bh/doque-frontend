@@ -81,19 +81,19 @@ export default function Login() {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
+                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white py-2"
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
                 </div>
-                <div className="bg-gray-100 w-full max-w-xs p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
+                <div className="bg-gray-100 w-full max-w-xs flex items-center mb-3 dark:bg-[#383150] dark:text-white rounded-md p-1">
                   <AiOutlineLock className="text-gray-400 m-2" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
+                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white py-2"
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
@@ -117,7 +117,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold 
+                  className="border-2 border-green-500 text-green-500 rounded-full px-10 py-2 inline-block font-semibold 
              hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
              hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500">
                   {loading ? "Logging in..." : "Sign In"}
@@ -125,7 +125,6 @@ export default function Login() {
               </form>
             </div>
           </div>
-
           <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-br-2xl rounded-bl-2xl sm:rounded-bl-none sm:rounded-tr-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center dark:bg-[#1F1A30]">
             <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
             <div className="border-2 w-10 border-white inline-block mb-2"></div>
