@@ -19,9 +19,11 @@ import { useState } from "react";
 export default function CreateTask({
   dueTime,
   children,
+  onSuccess,
 }: {
   dueTime?: { chosenDate: Date; hour?: number };
   children: React.ReactNode;
+  onSuccess?: ()=> void;
 }) {
   const { allSpaces } = useAppSelector((state) => state.calendar);
   const [selectedSpace, setSelectedSpace] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export default function CreateTask({
               </SelectContent>
             </Select>
             <NewTaskButton
+            onSuccess={onSuccess}
               dueTime={dueTime}
               spaceId={selectedSpace || undefined}>
               <Button disabled={!selectedSpace}>Create</Button>
