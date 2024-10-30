@@ -59,7 +59,7 @@ const Spaces: React.FC = () => {
             }
             loading={loadingSpaces.getSpaces}
             error={error.getSpaces}>
-            <div className="mt-4">
+            <div className="mt-4 max-h-40 sm:max-h-56 md:max-h-56 lg:max-h-56 overflow-y-auto">
               {spaces.map((space) => (
                 <div key={space._id}>
                   <div className="flex justify-between items-center p-1 cursor-pointer">
