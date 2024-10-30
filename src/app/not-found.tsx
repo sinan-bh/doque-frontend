@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 export default function Notfound() {
   const handleBack = () => {
@@ -19,14 +19,16 @@ export default function Notfound() {
           <span>Page not found</span>
         </div>
         <div className="text-center text-1xl tracking-wides mb-10">
-          <p><span className="font-semibold text-gray-800">Oops!</span> We coudn&apos;t find the page</p>
+          <p>
+            <span className="font-semibold text-gray-800">Oops!</span> We
+            coudn&apos;t find the page
+          </p>
         </div>
       </div>
       <div>
         <button
           onClick={handleBack}
-          className="btn border text-black dark:text-white dark:hover:text-black border-gray-500 dark:border-gray-900 p-2 rounded shadow-xl hover:border-white hover:text-white"
-        >
+          className="btn border text-black dark:text-white dark:hover:text-black border-gray-500 dark:border-gray-900 p-2 rounded shadow-xl hover:border-white hover:text-white">
           Back to previous page
         </button>
       </div>

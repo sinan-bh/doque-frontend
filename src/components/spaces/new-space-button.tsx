@@ -19,6 +19,7 @@ import { ToastAction } from "../ui/toast";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { createSpace } from "@/lib/store/thunks/space-thunks";
 import { useParams } from "next/navigation";
+import { fetchCalendarData } from "@/lib/store/features/calendar-slice";
 
 export function NewSpaceButton({ children }: { children: React.ReactNode }) {
   const [spaceName, setSpaceName] = useState("New space");
@@ -39,6 +40,7 @@ export function NewSpaceButton({ children }: { children: React.ReactNode }) {
         spaceData: { name: spaceName, description: spaceDesc },
         workspaceId: workSpaceId,
         onSuccess: () => {
+          dispatch(fetchCalendarData({workSpaceId}))
           toast({
             title: "Space created",
             description: "Space has been created successfully",

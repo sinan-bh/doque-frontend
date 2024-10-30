@@ -38,16 +38,20 @@ const TaskCreateSchema = Yup.object().shape({
   members: Yup.array().of(Yup.string()).default([]),
 });
 
+
+
 export function NewTaskButton({
   listId,
   spaceId,
   dueTime,
   children,
+  onSuccess,
 }: {
   listId?: string;
   spaceId?: string;
   dueTime?: { chosenDate: Date; hour?: number };
   children: React.ReactNode;
+  onSuccess?: ()=> void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -96,6 +100,9 @@ export function NewTaskButton({
           taskData: values,
           onSuccess() {
             resetForm();
+            if (onSuccess) {
+              onSuccess()
+            }
             toast({
               description: "Task created",
             });

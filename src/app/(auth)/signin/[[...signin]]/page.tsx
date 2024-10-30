@@ -11,7 +11,11 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, clearMessages, setForgetEmail } from "@/lib/store/features/userSlice";
+import {
+  loginUser,
+  clearMessages,
+  setForgetEmail,
+} from "@/lib/store/features/userSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 
 export default function Login() {
@@ -56,7 +60,9 @@ export default function Login() {
               <span className="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent text-2xl font-bold dark:text-white">
                 DO
               </span>
-              <span className="text-black text-2xl dark:text-gray-500 font-bold">QUE</span>
+              <span className="text-black text-2xl dark:text-gray-500 font-bold">
+                QUE
+              </span>
             </div>
             <div className="py-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent mb-2 dark:text-white">
@@ -65,7 +71,9 @@ export default function Login() {
               <div className="border-2 w-10 border-green-500 inline-block mb-2 dark:border-white"></div>
               <p className="mb-10 text-gray-500">Sign in to your account</p>
               {error && <p className="text-red-500">{error}</p>}
-              <form onSubmit={handleLogin} className="flex flex-col items-center mt-10">
+              <form
+                onSubmit={handleLogin}
+                className="flex flex-col items-center mt-10">
                 <div className="bg-gray-100 w-full max-w-xs p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
                   <AiOutlineMail className="text-gray-400 m-2" />
                   <input
@@ -73,53 +81,59 @@ export default function Login() {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
+                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white py-2"
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
                 </div>
-                <div className="bg-gray-100 w-full max-w-xs p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
+                <div className="bg-gray-100 w-full max-w-xs flex items-center mb-3 dark:bg-[#383150] dark:text-white rounded-md p-1">
                   <AiOutlineLock className="text-gray-400 m-2" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white"
+                    className="bg-gray-100 w-full outline-none text-sm flex-1 dark:bg-[#383150] dark:text-white py-2"
                     required
                     onFocus={() => dispatch(clearMessages())}
                   />
-                  <div className="cursor-pointer text-gray-400 m-2" onClick={togglePasswordVisibility}>
-                    {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                  <div
+                    className="cursor-pointer text-gray-400 m-2"
+                    onClick={togglePasswordVisibility}>
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-end w-full max-w-xs mb-5">
-                  <div onClick={handleForgotPassword} className="text-xs text-gray-500 cursor-pointer">
+                  <div
+                    onClick={handleForgotPassword}
+                    className="text-xs text-gray-500 cursor-pointer">
                     Forgot Password?
                   </div>
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold 
+                  className="border-2 border-green-500 text-green-500 rounded-full px-10 py-2 inline-block font-semibold 
              hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
-             hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
+             hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500">
                   {loading ? "Logging in..." : "Sign In"}
                 </button>
-
               </form>
             </div>
           </div>
-
           <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-br-2xl rounded-bl-2xl sm:rounded-bl-none sm:rounded-tr-2xl py-10 sm:py-36 px-8 sm:px-12 flex flex-col justify-center items-center dark:bg-[#1F1A30]">
             <h2 className="text-3xl font-bold mb-2">Hello, Friend!</h2>
             <div className="border-2 w-10 border-white inline-block mb-2"></div>
-            <p className="mb-10">Don&apos;t have an account? Sign up today and start your journey!</p>
+            <p className="mb-10">
+              Don&apos;t have an account? Sign up today and start your journey!
+            </p>
             <Link
               href="/signup"
-              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 transition duration-300 dark:hover:text-black"
-            >
+              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 transition duration-300 dark:hover:text-black">
               Sign Up
             </Link>
           </div>

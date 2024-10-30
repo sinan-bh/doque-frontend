@@ -57,8 +57,7 @@ export default function Sidebar() {
     <div className="relative">
       <button
         className="p-2 bg-gray-300 dark:bg-gray-800 rounded-md fixed top-4 left-4 z-50"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
         <AiOutlineMenu className="text-xl" />
       </button>
 
@@ -76,8 +75,7 @@ export default function Sidebar() {
             isSmallScreen
               ? "fixed left-0 top-0 h-full max-w-72 w-full z-50"
               : "relative sm:w-1/4 md:w-[260px]"
-          } bg-[#F3F9FB] h-full p-4 flex flex-col dark:bg-gray-900`}
-        >
+          } bg-[#F3F9FB] h-full p-4 flex flex-col dark:bg-gray-900`}>
           <div className="flex-1">
             <div className="flex items-center p-1 mr-2 mt-1 cursor-pointer border-l-2 border-black dark:border-l-2 dark:border-white">
               <AiOutlineHome className="text-2xl" />
@@ -93,11 +91,12 @@ export default function Sidebar() {
               {workSpace?.map((workspace, index) => (
                 <Link
                   href={`/w/${workspace.WorkspaceId}/dashboard`}
-                  key={index}
-                >
+                  key={index}>
                   <div className="flex items-center hover:bg-zinc-200 dark:hover:bg-gray-800 px-4 py-2 rounded-md">
                     <div className="flex flex-col p-1 border-b-2 border-gray-400 dark:border-gray-600">
-                      <span className="text-sm font-medium">{workspace.name}</span>
+                      <span className="text-sm font-medium">
+                        {workspace.name}
+                      </span>
                     </div>
                   </div>
                 </Link>
