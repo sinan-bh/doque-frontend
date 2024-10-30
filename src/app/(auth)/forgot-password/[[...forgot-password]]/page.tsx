@@ -22,7 +22,8 @@ export default function ForgotPassword() {
         if (forgotPassword.fulfilled.match(resultAction)) {
             setMessage(resultAction.payload.message);
         } else {
-            setMessage(resultAction.payload as string);
+            const errorMessage = (resultAction.payload as { message?: string })?.message || "An unknown error occurred.";
+            setMessage(errorMessage);
         }
     };
 
@@ -53,8 +54,7 @@ export default function ForgotPassword() {
                 <p className="text-sm sm:text-base text-gray-600 text-center mb-6 dark:text-gray-400">
                     Enter your email to receive a link to reset your password.
                 </p>
-                {message && <p className="text-green-600 text-center mb-4">{message}</p>}
-                {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+                {message && <p className={`text-center mb-4 ${error ? "text-red-600" : "text-green-600"}`}>{message}</p>}
                 <form onSubmit={handleForgotPassword} className="space-y-6 sm:space-y-8">
                     <div className="relative">
                         <AiOutlineMail className="absolute left-3 top-4 text-[#5E6061]" />
@@ -80,7 +80,6 @@ export default function ForgotPassword() {
                     >
                         {loading ? "Sending..." : "Send Link"}
                     </button>
-
                 </form>
                 <div className="flex justify-center items-center mt-6 sm:mt-8 text-xs sm:text-sm text-gray-700">
                     <Link href="/signup" className="text-[#242425] hover:underline dark:text-gray-300">
