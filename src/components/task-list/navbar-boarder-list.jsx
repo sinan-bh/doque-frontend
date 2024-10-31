@@ -5,7 +5,7 @@ import ListBoardView from "@/components/task-list/list-board-view";
 export default function NavbarBoarderList() {
   return (
     <div>
-      <div className="flex px-4 justify-between gap-2">
+      <div className="flex sm:px-2 px-4 justify-between gap-2">
         <SearchBar />
         <ListBoardView />
       </div>

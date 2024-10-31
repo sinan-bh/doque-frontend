@@ -218,7 +218,7 @@ export default function BoardsContainer() {
             onClick={handleCreateList}
             size="sm"
             variant="outline"
-            className="flex gap-2 items-center my-2">
+            className="flex gap-2 items-center my-2 sm:mx-2 mx-4">
             Add Column <FaPlus size={10} />
           </Button>
           <div className="flex gap-4">
@@ -229,42 +229,44 @@ export default function BoardsContainer() {
             <LoadingBox loading={loading.moveTask} text="Moving task.." />
           </div>
         </div>
-        <div className="flex sm:gap-4 gap-2 overflow-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
-          <HandleLoading
-            loadingComponent={
+        <div className="overflow-auto scrollbar-thin h-full scrollbar-thumb-zinc-700 scrollbar-track-white scrollbar-corner-transparent">
+          <div className="flex sm:px-2 px-4 sm:gap-4 gap-2">
+            <HandleLoading
+              loadingComponent={
+                <>
+                  <SectionContainerSkeleton />
+                  <SectionContainerSkeleton />
+                  <SectionContainerSkeleton />
+                </>
+              }
+              loading={loading.getSpaceDetails}
+              error={error.getSpaceDetails}>
               <>
-                <SectionContainerSkeleton />
-                <SectionContainerSkeleton />
-                <SectionContainerSkeleton />
+                <SortableContext
+                  items={columnsIds}
+                  strategy={horizontalListSortingStrategy}>
+                  {lists.map((section) => (
+                    <SectionContainer
+                      key={section.id}
+                      section={section}
+                      tasks={tasks.filter((task) => task.column === section.id)}
+                    />
+                  ))}
+                </SortableContext>
+                <DragOverlay>
+                  {activeColumn ? (
+                    <SectionContainer
+                      section={activeColumn}
+                      tasks={tasks.filter(
+                        (task) => task.column === activeColumn.id
+                      )}
+                    />
+                  ) : null}
+                  {activeTask ? <TaskCard task={activeTask} /> : null}
+                </DragOverlay>
               </>
-            }
-            loading={loading.getSpaceDetails}
-            error={error.getSpaceDetails}>
-            <>
-              <SortableContext
-                items={columnsIds}
-                strategy={horizontalListSortingStrategy}>
-                {lists.map((section) => (
-                  <SectionContainer
-                    key={section.id}
-                    section={section}
-                    tasks={tasks.filter((task) => task.column === section.id)}
-                  />
-                ))}
-              </SortableContext>
-              <DragOverlay>
-                {activeColumn ? (
-                  <SectionContainer
-                    section={activeColumn}
-                    tasks={tasks.filter(
-                      (task) => task.column === activeColumn.id
-                    )}
-                  />
-                ) : null}
-                {activeTask ? <TaskCard task={activeTask} /> : null}
-              </DragOverlay>
-            </>
-          </HandleLoading>
+            </HandleLoading>
+          </div>
         </div>
       </div>
     </DndContext>

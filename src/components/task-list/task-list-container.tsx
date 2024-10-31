@@ -72,7 +72,7 @@ export default function TaskListContainer() {
   };
 
   return (
-    <div>
+    <div className="sm:ml-2 ml-4">
       <Button
         title="Create new List"
         disabled={loading.createList || loading.getSpaceDetails}

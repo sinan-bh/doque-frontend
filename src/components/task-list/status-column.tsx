@@ -130,7 +130,10 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
 
   return (
     <div className="w-full sm:w-[500px] py-1">
-      <div className="flex items-center justify-between py-1 rounded-lg shadow">
+      <div
+        className={`flex bg-white items-center justify-between py-1  ${
+          isExpanded ? "rounded-t-lg" : "rounded-lg"
+        } shadow dark:bg-zinc-900`}>
         <div className="flex ">
           <Button
             variant="ghost"
@@ -173,7 +176,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
           <div
             className="cursor-pointer border rounded-md p-1 dark:border-none dark:hover:bg-gray-800"
             onClick={handleEditLabelClick}>
-            <FaEdit  />
+            <FaEdit />
           </div>
           <ColorSelector currentColor={color} listId={id} name={currentLabel} />
           <AlertConfirm
@@ -191,7 +194,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
         </div>
       </div>
       {isExpanded && (
-        <div>
+        <div className="bg-white dark:bg-black  bg-opacity-40 dark:bg-opacity-40 rounded-b-xl">
           {currentTasks?.map((task) => (
             <Link
               href={`/w/${workSpaceId}/spaces/${spaceId}/1?task=${task.id}&list=${id}`}
@@ -205,7 +208,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
             </Link>
           ))}
           <div className="max-w-full flex">
-            <div className="ml-5 text-gray-400">
+            <div className="ml-5 text-black placeholder:text-black">
               <input
                 type="text"
                 value={newTask.title}
@@ -216,7 +219,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
               />
             </div>
             <div
-              className="mt-2 h-6 text-sm px-1 border border-gray-300 text-gray-400 rounded cursor-pointer"
+              className="mt-2 h-6 text-sm px-1 pl-1 border-2 border-gray-700 text-gray-400 rounded cursor-pointer"
               onClick={handleCreateTask}>
               Enter
             </div>

@@ -59,7 +59,8 @@ export default function Signup() {
         password: values.password,
         firstName: values.firstName,
         lastName: values.lastName,
-        image: "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg",
+        image:
+          "https://i.pinimg.com/564x/a3/e4/7c/a3e47c7483116543b6fa589269b760df.jpg",
       })
     );
 
@@ -82,7 +83,9 @@ export default function Signup() {
               <span className="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent text-2xl font-bold dark:text-white">
                 DO
               </span>
-              <span className="text-black text-2xl dark:text-gray-500 font-bold">QUE</span>
+              <span className="text-black text-2xl dark:text-gray-500 font-bold">
+                QUE
+              </span>
             </div>
             <div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent mb-2 dark:text-white">
@@ -102,8 +105,7 @@ export default function Signup() {
                 confirmPassword: "",
               }}
               validationSchema={SignupSchema}
-              onSubmit={handleSubmit}
-            >
+              onSubmit={handleSubmit}>
               {({ isSubmitting }) => (
                 <Form className="flex flex-col space-y-4">
                   <div className="relative">
@@ -158,8 +160,7 @@ export default function Signup() {
                     />
                     <div
                       className="absolute right-3 top-3 cursor-pointer text-gray-400"
-                      onClick={togglePasswordVisibility}
-                    >
+                      onClick={togglePasswordVisibility}>
                       {showPassword ? (
                         <AiOutlineEyeInvisible />
                       ) : (
@@ -188,9 +189,9 @@ export default function Signup() {
                   </div>
                   {(successMessage || error) && (
                     <div
-                      className={`text-center mb-4 ${successMessage ? "text-green-600" : "text-red-600"
-                        }`}
-                    >
+                      className={`text-center mb-4 ${
+                        successMessage ? "text-green-600" : "text-red-600"
+                      }`}>
                       {successMessage || error}
                     </div>
                   )}
@@ -200,16 +201,14 @@ export default function Signup() {
               hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
               hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 
               ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-                    disabled={isSubmitting}
-                  >
+                    disabled={isSubmitting}>
                     {isSubmitting ? "Registering..." : "Register"}
                   </button>
-                  <div className="mt-4 text-center md:hidden">
+                  <div className="mt-4 text-center md:hidden dark:text-white">
                     <p className="text-gray-500">Already have an account?</p>
                     <Link
                       href="/signin"
-                      className="text-gray-700 hover:border-b border-gray-700 font-semibold"
-                    >
+                      className="text-gray-700 hover:border-b border-gray-700 font-semibold dark:text-white dark:hover:border-white">
                       Sign In
                     </Link>
                   </div>
@@ -218,7 +217,7 @@ export default function Signup() {
             </Formik>
           </div>
 
-          <div className="hidden sm:block w-full md:w-1/2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-tr-2xl rounded-br-2xl flex flex-col justify-center items-center p-10 space-y-6 relative dark:bg-[#1F1A30]">
+          <div className="hidden sm:block w-full md:w-1/2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-tr-2xl rounded-br-2xl flex-col justify-center items-center p-10 space-y-6 relative dark:bg-[#1F1A30]">
             <h2 className="text-2xl font-bold text-center mt-12">
               Welcome to Doque!
             </h2>
@@ -234,8 +233,7 @@ export default function Signup() {
             </p>
             <Link
               href="/signin"
-              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black"
-            >
+              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 dark:hover:text-black">
               Sign In
             </Link>
           </div>
