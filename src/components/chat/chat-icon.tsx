@@ -25,7 +25,7 @@ const MessageIcon: React.FC<MessageIconProps> = ({ onClick }) => {
       onClick={handleClick}
       className="fixed bottom-10 z-50 right-10 p-3 bg-purple-500 text-white rounded-full shadow-lg hover:bg-purple-600 transition-transform transform hover:scale-110" // Added scale effect on hover
     >
-      <SiImessage size={24} />
+      <SiImessage className="text-lg sm:text-2xl" />
     </button>
   );
 };

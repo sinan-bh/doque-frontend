@@ -73,7 +73,7 @@ export default function Members() {
 
   return (
     <div className="relative">
-      <div className="mb-4 dark:border-gray-600 sticky top-0 z-10 dark:bg-darkBg">
+      <div className="mb-4 sticky top-0 z-10">
         <div className="flex flex-col sm:flex-row justify-between">
           <div className="flex mt-2">
             <h2
@@ -96,7 +96,7 @@ export default function Members() {
               />
               <input
                 type="text"
-                className="pl-10 w-44 sm:w-72 pr-4 py-2 border-b-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 focus:outline-none"
+                className="pl-10 w-44 sm:w-72 bg-transparent pr-4 py-2 border-b-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 focus:outline-none"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -158,7 +158,7 @@ export default function Members() {
           </div>
         </div>
 
-        <hr className="mt-2 bg-gray-300"/>
+        <hr className="mt-2 bg-gray-900 dark:bg-gray-600"/>
         <div
           className="overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 200px)" }}

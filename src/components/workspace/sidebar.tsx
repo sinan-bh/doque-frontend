@@ -130,12 +130,12 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`fixed sm:relative z-50 sm:h-[calc(100vh - 75px)] border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
+      className={`fixed top-0 h-screen sm:relative z-40 sm:h-auto  border-r-2 dark:border-gray-700 p-2 flex-shrink-0 flex flex-col transition-all duration-300 bg-white dark:bg-darkBg ${
         isCollapsed ? "w-14" : "w-64"
       }`}
     >
       <div
-        className={`flex items-center p-2 cursor-pointer ${
+        className={`flex mt-16 sm:mt-0 items-center p-2 cursor-pointer ${
           isCollapsed ? "justify-center" : ""
         }`}
         onClick={toggleCollapse}

@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const path = usePathname()  
   return (
-    <nav className="bg-white dark:bg-darkBg shadow-md  z-20">
+    <nav className="bg-white dark:bg-darkBg shadow-md z-50 sm:z-40">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         <Link href="/">
           <div className="flex items-center space-x-4 sm:ml-10">
