@@ -52,15 +52,17 @@ export const loginUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await Instance.post("/login", credentials);
+      const response = await Instance.post("/auth/login", credentials);
       const { data } = response;
       const userData = data.data;
 
       Cookies.set(
         "user",
         JSON.stringify({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
           email: userData.email,
-          token: data.token,
+          token: userData.token,
           id: userData._id,
         }),
         { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
@@ -163,7 +165,7 @@ export const signup = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await Instance.post("/register", userData);
+      const response = await Instance.post("/auth/register", userData);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -181,7 +183,7 @@ export const forgotPassword = createAsyncThunk(
   "user/forgotPassword",
   async (email: string | null, { rejectWithValue }) => {
     try {
-      const response = await Instance.post("/forgotpassword", { email });
+      const response = await Instance.post("/auth/forgotpassword", { email });
       return {
         message:
           response.data.message ||
@@ -207,7 +209,7 @@ export const resetPassword = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await Instance.patch(`/reset-password/${token}`, {
+      const response = await Instance.patch(`/auth/resetpassword/${token}`, {
         newPassword,
       });
       return response.data;
@@ -230,12 +232,30 @@ export const verifyOtp = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await Instance.post("/verifyotp", { email, otp });
+      const response = await Instance.post("/auth/verifyotp", { email, otp });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue({
           message: error.response?.data.message || "OTP Verification failed",
+        });
+      }
+      return rejectWithValue({ message: "An unknown error occurred" });
+    }
+  }
+);
+
+//resend otp
+export const resendOtp = createAsyncThunk(
+  "user/resendOtp",
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await Instance.post("/auth/resendotp", { email });
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue({
+          message: error.response?.data.message || "OTP Resend failed",
         });
       }
       return rejectWithValue({ message: "An unknown error occurred" });
@@ -391,6 +411,21 @@ const userSlice = createSlice({
         state.error =
           (action.payload as { message: string }).message ||
           "OTP verification failed";
+      })
+      .addCase(resendOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendOtp.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.successMessage = "OTP resented successfully!";
+      })
+      .addCase(resendOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as { message: string }).message ||
+          "Resend OTP failed";
       });
   },
 });

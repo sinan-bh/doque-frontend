@@ -1,22 +1,38 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { verifyOtp } from "@/lib/store/features/userSlice";
-import { AppDispatch, RootState } from "@/lib/store";
+import { verifyOtp, resendOtp } from '@/lib/store/features/userSlice';
+import { AppDispatch, RootState } from '@/lib/store';
 
 export default function VerifyEmail() {
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
+    const [countdown, setCountdown] = useState<number>(30);
 
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
+
     const loading = useSelector((state: RootState) => state.user.loading);
     const error = useSelector((state: RootState) => state.user.error);
+    const success = useSelector((state: RootState) => state.user.successMessage);
 
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
+
+    useEffect(() => {
+        if (error) setStatusMessage(error);
+        if (success) setStatusMessage(success);
+    }, [error, success]);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (countdown > 0) {
+            timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        }
+        return () => clearTimeout(timer);
+    }, [countdown]);
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
@@ -28,22 +44,7 @@ export default function VerifyEmail() {
 
             if (value && index < 5) {
                 const nextInput = document.getElementById(`otp-${index + 1}`);
-                if (nextInput) {
-                    nextInput.focus();
-                }
-            }
-        }
-    };
-
-    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-        const pastedData = e.clipboardData.getData('text').slice(0, 6);
-        if (pastedData.length === 6) {
-            const newOtp = pastedData.split('');
-            setOtp(newOtp);
-            setStatusMessage(null);
-            const lastInput = document.getElementById(`otp-${pastedData.length - 1}`);
-            if (lastInput) {
-                lastInput.focus();
+                nextInput?.focus();
             }
         }
     };
@@ -51,18 +52,15 @@ export default function VerifyEmail() {
     const handleBackspace = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
             const prevInput = document.getElementById(`otp-${index - 1}`);
-            if (prevInput) {
-                prevInput.focus();
-            }
+            prevInput?.focus();
         }
     };
 
     const handleSubmit = async () => {
         const fullOtp = otp.join('');
 
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(email)) {
-            setStatusMessage("Invalid email address.");
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setStatusMessage('Invalid email address.');
             return;
         }
 
@@ -70,10 +68,22 @@ export default function VerifyEmail() {
         const response = await dispatch(verifyOtp({ email, otp: fullOtp }));
 
         if (verifyOtp.fulfilled.match(response)) {
-            setStatusMessage("OTP verified successfully!");
+            setStatusMessage('OTP verified successfully!');
             router.push('/signin');
         } else {
-            setStatusMessage(error || "Failed to verify OTP.");
+            setStatusMessage(error || 'Failed to verify OTP.');
+        }
+    };
+
+    const handleResendOtp = async () => {
+        setStatusMessage(null);
+        setCountdown(30);
+        await dispatch(resendOtp(email));
+        const response = await dispatch(resendOtp(email));
+        if (resendOtp.fulfilled.match(response)) {
+            setStatusMessage('OTP resent successfully!');
+        } else {
+            setStatusMessage(error || 'Failed to resend OTP.');
         }
     };
 
@@ -113,13 +123,11 @@ export default function VerifyEmail() {
                             value={digit}
                             onChange={(e) => handleOtpChange(e, index)}
                             onKeyDown={(e) => handleBackspace(e, index)}
-                            onPaste={handlePaste}
                             className="w-full h-12 sm:h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md 
                  focus:outline-none focus:ring-2 focus:ring-green-500 
                  transition duration-300 ease-in-out 
                  dark:bg-[#383150] dark:text-white
                  hover:border-green-400 focus:border-green-600"
-                            onFocus={() => setStatusMessage(null)}
                             aria-label={`OTP digit ${index + 1}`}
                         />
                     ))}
@@ -134,9 +142,18 @@ export default function VerifyEmail() {
              hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
              focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
                 >
-                    {loading ? 'Verifying...' : 'Submit'}
+                    {loading ? 'Verifying...' : 'Verify'}
                 </button>
-
+                <div className="mt-6 text-center">
+                    <button
+                        onClick={handleResendOtp}
+                        disabled={countdown > 0 || loading}
+                        className={`text-sm font-semibold text-green-500 hover:text-green-700  transition ${countdown > 0 ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                    >
+                        {countdown > 0 ? `Resend OTP in ${countdown}s` : 'Resend OTP'}
+                    </button>
+                </div>
             </div>
         </div>
     );
