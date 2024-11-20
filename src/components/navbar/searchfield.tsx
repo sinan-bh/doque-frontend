@@ -5,7 +5,7 @@ import axiosInstance from "@/utils/axios";
 import Link from "next/link";
 
 interface Workspace {
-  WorkspaceId: string;
+  workspaceId: string;
   name: string;
 }
 
@@ -44,7 +44,7 @@ export default function SearchField() {
 
   const saveToSearchHistory = (workspace: Workspace) => {
     let history = [...searchHistory];
-    if (!history.some((item) => item.WorkspaceId === workspace.WorkspaceId)) {
+    if (!history.some((item) => item.workspaceId === workspace.workspaceId)) {
       history = [workspace, ...history].slice(0, 5);
       setSearchHistory(history);
       localStorage.setItem("searchHistory", JSON.stringify(history));
@@ -145,7 +145,7 @@ export default function SearchField() {
                 key={index}
                 className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
                 onClick={() => handleClick(workspace)}>
-                <Link href={`/w/${workspace.WorkspaceId}/dashboard`}>
+                <Link href={`/w/${workspace.workspaceId}/dashboard`}>
                   {workspace.name}
                 </Link>
               </li>
@@ -162,8 +162,8 @@ export default function SearchField() {
         <ul className="absolute z-50 top-full left-0 right-0 bg-white dark:bg-zinc-900 border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
           {suggestions.map((workspace) => (
             <Link
-              key={workspace.WorkspaceId}
-              href={`/w/${workspace.WorkspaceId}/dashboard`}
+              key={workspace.workspaceId}
+              href={`/w/${workspace.workspaceId}/dashboard`}
               onClick={() => handleClick(workspace)}>
               <li className="px-4 py-2 cursor-pointer">{workspace.name}</li>
             </Link>

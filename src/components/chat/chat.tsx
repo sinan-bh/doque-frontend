@@ -22,9 +22,9 @@ export default function Chat() {
   const { workSpaceId }: { workSpaceId: string } = useParams();
   const [isRotating, setIsRotating] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchMessages());
-  }, [workSpaceId]);
+  // useEffect(() => {
+  //   dispatch(fetchMessages());
+  // }, [workSpaceId]);
 
   const handleRefreshClick = () => {
     setIsRotating(true);

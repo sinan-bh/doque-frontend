@@ -32,12 +32,8 @@ export default function SectionContainerSkeleton() {
                 <div className="grid grid-cols-2 items-center h-6">
                   <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
                   <div className="flex gap-1">
-                    <div
-                      key={index}
-                      className="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
-                    <div
-                      key={index}
-                      className="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                    <div className="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                    <div className="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

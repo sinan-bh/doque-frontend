@@ -25,7 +25,7 @@ export type Task = {
   assignedTo: string[];
   dueDate?: string;
   priority?: string;
-  status: string;
+  listId: string;
   createdBy?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -60,7 +60,7 @@ export type TaskFormValues = {
   assignedTo?: string[];
   dueDate?: string;
   priority?: string;
-  status?: string;
+  listId?: string;
 };
 
 export type ApiResponse<T> = {

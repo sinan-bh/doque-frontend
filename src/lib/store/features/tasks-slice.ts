@@ -234,7 +234,7 @@ const tasksSlice = createSlice({
         state.tasks[index] = {
           ...state.tasks[index],
           ...action.payload.taskData,
-          column: action.payload.taskData.status || state.tasks[index].column,
+          column: action.payload.taskData.listId || state.tasks[index].column,
         };
         state.loading.updateTask = false;
       })

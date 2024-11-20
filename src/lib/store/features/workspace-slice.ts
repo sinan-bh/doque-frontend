@@ -14,8 +14,11 @@ export interface Member {
   user: string;
 }
 
-interface Workspace {
-  WorkspaceId: string;
+export interface Workspace {
+  _id: string;
+  spaces: [];
+  createdAt: string;
+  createdBy: string;
   name: string;
   members: {
     user: {
@@ -35,7 +38,8 @@ export type Users = {
 };
 
 interface WorkspaceState {
-  workspaces: null | Workspace[];
+  workspaces: Workspace[];
+  pendingWorkspaces: Workspace[];
   chosenDate: Date | string | number;
   projects: Project[] | null;
   workSpaceId: string;
@@ -44,14 +48,14 @@ interface WorkspaceState {
   user: "";
   allUsers: Users[];
   selectedProjectId: string | null;
-  workSpace: Workspace[];
   members: Member[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: WorkspaceState = {
-  workspaces: null,
+  workspaces: [],
+  pendingWorkspaces: [],
   chosenDate: "",
   projects: null,
   workSpaceId: "",
@@ -60,7 +64,6 @@ const initialState: WorkspaceState = {
   selectedProjectId: null,
   users: [],
   allUsers: [],
-  workSpace: [],
   members: [],
   loading: true,
   error: null,
@@ -144,15 +147,15 @@ export const createList = createAsyncThunk(
     try {
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.todo,
-        color: "#808080"
+        color: "#808080",
       });
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.doing,
-        color: "#1591ea"
+        color: "#1591ea",
       });
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.completed,
-        color: "#5ce65c"
+        color: "#5ce65c",
       });
     } catch (error) {
       console.error(error);
@@ -208,11 +211,13 @@ export const fetchUserProfiles = createAsyncThunk(
       const userPromises = members.map((member) => {
         return axiosInstance.get(`/userprofile/${member.user}`);
       });
-     const userResponses = await Promise.allSettled(userPromises);
+      const userResponses = await Promise.allSettled(userPromises);
       const fetchedUsers = userResponses
-        .filter((result) => result.status === "fulfilled") 
-        .map((result) => result.value.data.data); 
-      const rejectedResponses = userResponses.filter((result) => result.status === "rejected");
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value.data.data);
+      const rejectedResponses = userResponses.filter(
+        (result) => result.status === "rejected"
+      );
       if (rejectedResponses.length > 0) {
         console.error("Some requests failed:", rejectedResponses);
       }
@@ -223,10 +228,12 @@ export const fetchUserProfiles = createAsyncThunk(
     }
   }
 );
+
 export const fetchAllUsers = createAsyncThunk(
   "workspace/fetchAllUsers",
   async (_, { rejectWithValue }) => {
     try {
+      // to fetch all users for invite suggestion
       const { data } = await axiosInstance.get("/userprofile");
       return data.data;
     } catch (error) {
@@ -314,7 +321,8 @@ const workspaceSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchWorkspaceData.fulfilled, (state, action) => {
-        state.workSpace = action.payload;
+        state.workspaces = action.payload?.activeWorkspaces || [];
+        state.pendingWorkspaces = action.payload?.pendingWorkspaces || [];
         state.loading = false;
       })
       .addCase(fetchWorkspaceData.rejected, (state, action) => {
@@ -340,17 +348,19 @@ const workspaceSlice = createSlice({
         state.allUsers = action.payload;
       })
       .addCase(deleteWorkspace.fulfilled, (state, action) => {
-        state.workSpace = state.workSpace.filter(
-          (workspace) => workspace.WorkspaceId !== action.payload
-        );
+        state.workspaces =
+          state.workspaces?.filter(
+            (workspace) => workspace._id !== action.payload
+          ) || null;
       })
       .addCase(updateWorkspace.fulfilled, (state, action) => {
-        state.workSpace = state.workSpace.map((workspace) => {
-          if (workspace.WorkspaceId === action.payload.workSpaceId) {
-            return { ...workspace, name: action.payload.name };
-          }
-          return workspace;
-        });
+        state.workspaces =
+          state.workspaces?.map((workspace) => {
+            if (workspace._id === action.payload.workSpaceId) {
+              return { ...workspace, name: action.payload.name };
+            }
+            return workspace;
+          }) || null;
       });
   },
 });

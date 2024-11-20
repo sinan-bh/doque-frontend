@@ -29,8 +29,10 @@ import { fetchCalendarData } from "@/lib/store/features/calendar-slice";
 
 // Validation schema using Yup
 const TaskCreateSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  description: Yup.string().required("Description is required"),
+  title: Yup.string()
+    .required("Title is required")
+    .min(3, "Title must be at least 3 characters"),
+  description: Yup.string(),
   assignedTo: Yup.array().of(Yup.string()).default([]),
   dueDate: Yup.string(),
   status: Yup.string().required("Please select a status"),

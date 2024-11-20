@@ -205,14 +205,10 @@ export const updateTask = createAsyncThunk(
         `/space/${spaceId}/lists/${listId}/tasks/${taskId}`,
         taskData
       );
-      if (taskData.status) {
-        await axiosInstance.patch(
-          `/space/${spaceId}/lists/${listId}/tasks/${taskId}`,
-          { targetListId: taskData.status }
-        );
-      }
       onSuccess();
-      return { taskId, taskData, status: taskData.status };
+      console.log(taskData);
+
+      return { taskId, taskData };
     } catch (error) {
       onError(axiosErrorCatch(error));
       return rejectWithValue(axiosErrorCatch(error));

@@ -8,14 +8,13 @@ import WorkspaceCard from "./workspace-card";
 
 export default function GuestWorkSpaces() {
   const [carouselRef] = useEmblaCarousel({ loop: false });
-  const { workSpace } = useAppSelector((state) => state.workspace);
+  const { workspaces } = useAppSelector((state) => state.workspace);
 
   const userId = JSON.parse(Cookies.get("user") || "{}").id;
 
-  const guestWorkSpaces = workSpace.filter((workspace) => {
-    const owner = workspace.members.find((member) => member.status === "owner");
-    return owner?.user?._id !== userId;
-  });
+  const guestWorkSpaces = workspaces.filter(
+    (workspace) => workspace.createdBy !== userId
+  );
 
   return (
     <>
@@ -28,8 +27,8 @@ export default function GuestWorkSpaces() {
           <div className="relative">
             <div ref={carouselRef} className="overflow-hidden">
               <div className="flex py-4 ml-4">
-                {guestWorkSpaces.map(({ WorkspaceId }, index) => (
-                  <WorkspaceCard key={index} workSpaceId={WorkspaceId} />
+                {guestWorkSpaces.map((w, index) => (
+                  <WorkspaceCard key={index} workSpace={w} />
                 ))}
               </div>
             </div>

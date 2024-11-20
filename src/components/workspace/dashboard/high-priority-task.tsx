@@ -15,6 +15,9 @@ const HighPriorityTask: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const selectedSpace = spaces.find((space) => space._id === selectedProjectId);
+  console.log(spaces);
+
+  console.log(selectedSpace);
 
   const highPriorityTasks = selectedSpace
     ? selectedSpace.lists.flatMap((list) =>
@@ -51,8 +54,7 @@ const HighPriorityTask: React.FC = () => {
                   className="h-3 w-3 text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                  stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -67,8 +69,7 @@ const HighPriorityTask: React.FC = () => {
                   className="h-3 w-3 text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                  stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -79,35 +80,34 @@ const HighPriorityTask: React.FC = () => {
               </button>
             </div>
           </div>
-            <Link
-              href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${highPriorityTasks[currentIndex]?._id}&list=${highPriorityTasks[currentIndex]?.listId}`}
-              className="flex flex-col py-2"
-            >
-              {highPriorityTasks[currentIndex].createdAt &&
-                highPriorityTasks[currentIndex].dueDate && (
-                  <div className="flex justify-between text-[10px] text-gray-500 dark:text-gray-300">
-                    <p>
-                      Created at{" "}
-                      {formatedDate(highPriorityTasks[currentIndex].createdAt)}
-                    </p>
-                    <p>
-                      Due Date{" "}
-                      {formatedDate(highPriorityTasks[currentIndex].dueDate)}
-                    </p>
-                  </div>
-                )}
-              <h2 className="text-ms py-1 text-gray-900 dark:text-gray-300">
-                {highPriorityTasks[currentIndex].title}
-              </h2>
-              <p className="text-[10px] py1 text-gray-600 dark:text-gray-400">
-                {highPriorityTasks[currentIndex].description}
-              </p>
-              <div className="py-1">
-                <span className="text-xs  font-medium text-gray-700 dark:text-gray-300">
-                  Status: {highPriorityTasks[currentIndex].listName}
-                </span>
-              </div>
-            </Link>
+          <Link
+            href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${highPriorityTasks[currentIndex]?._id}&list=${highPriorityTasks[currentIndex]?.listId}`}
+            className="flex flex-col py-2">
+            {highPriorityTasks[currentIndex].createdAt &&
+              highPriorityTasks[currentIndex].dueDate && (
+                <div className="flex justify-between text-[10px] text-gray-500 dark:text-gray-300">
+                  <p>
+                    Created at{" "}
+                    {formatedDate(highPriorityTasks[currentIndex].createdAt)}
+                  </p>
+                  <p>
+                    Due Date{" "}
+                    {formatedDate(highPriorityTasks[currentIndex].dueDate)}
+                  </p>
+                </div>
+              )}
+            <h2 className="text-ms py-1 text-gray-900 dark:text-gray-300">
+              {highPriorityTasks[currentIndex].title}
+            </h2>
+            <p className="text-[10px] py1 text-gray-600 dark:text-gray-400">
+              {highPriorityTasks[currentIndex].description}
+            </p>
+            <div className="py-1">
+              <span className="text-xs  font-medium text-gray-700 dark:text-gray-300">
+                Status: {highPriorityTasks[currentIndex].listName}
+              </span>
+            </div>
+          </Link>
         </div>
       ) : (
         <div>

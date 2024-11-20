@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
-import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { Task, TaskFormValues } from "@/types/spaces";
@@ -44,23 +44,6 @@ export default function TaskDetails({
   const [titleEditOpen, setTitleEditOpen] = useState(false);
   const [values, setValues] = useState<TaskFormValues | null>(null);
 
-  const initialData = useMemo(() => {
-    return JSON.stringify({
-      title: data?.title,
-      description: data?.description,
-      assignedTo: data?.assignedTo,
-      priority: data?.priority,
-      dueDate: data?.dueDate
-        ? moment(data?.dueDate).format("YYYY-MM-DDTHH:mm")
-        : undefined,
-      status: data?.status,
-    });
-  }, [data]);
-
-  const changesMade = useMemo(() => {
-    return initialData !== JSON.stringify(values);
-  }, [initialData, values]);
-
   const { toast } = useToast();
 
   const router = useRouter();
@@ -88,7 +71,7 @@ export default function TaskDetails({
           dueDate: data.dueDate
             ? moment(data.dueDate).format("YYYY-MM-DDTHH:mm")
             : undefined,
-          status: data.status,
+          listId: data.listId,
         });
       } catch (error) {
         toast({
@@ -139,7 +122,7 @@ export default function TaskDetails({
       assignedTo: values?.assignedTo,
       dueDate: values?.dueDate,
       priority: values?.priority,
-      status: values?.status === data?.status ? undefined : values?.status,
+      listId: values?.listId === data?.listId ? undefined : values?.listId,
     };
     dispatch(
       updateTask({
@@ -150,8 +133,8 @@ export default function TaskDetails({
         onSuccess() {
           setData((prev) => ({ ...prev!, ...values }));
           toast({ title: "Task updated successfully" });
-          if (values?.status !== data?.status) {
-            router.push(`${pathname}?task=${taskId}&list=${values?.status}`);
+          if (values?.listId !== data?.listId) {
+            router.push(`${pathname}?task=${taskId}&list=${values?.listId}`);
           }
         },
         onError(error) {
@@ -308,11 +291,11 @@ export default function TaskDetails({
                 <div>
                   <p>Status</p>
                   <StatusSelector
-                    status={values?.status}
+                    status={values?.listId}
                     setStatus={(status) =>
                       setValues((prev) => ({
                         ...prev!,
-                        status,
+                        listId: status,
                       }))
                     }
                   />
@@ -350,7 +333,7 @@ export default function TaskDetails({
               <Button
                 onClick={handleUpdateTask}
                 size="sm"
-                disabled={!changesMade || loading.updateTask}
+                disabled={loading.updateTask}
                 className="col-start-4 self-end">
                 {loading.updateTask ? "Saving.." : "Save changes"}
               </Button>

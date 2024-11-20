@@ -19,6 +19,8 @@ export const createWorkSpaceTemplate = async (
 
     const workspaceId = workSpaceData.data._id;
 
+    console.log("workspaceId", workspaceId);
+
     // create Spaces from template data
     onLoadingChange();
     const spaceCreationPromises = template.spaces.map(async (space) => {

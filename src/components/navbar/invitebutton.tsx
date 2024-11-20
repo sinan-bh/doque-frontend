@@ -38,11 +38,11 @@ export default function InviteButton() {
   const [isSmallScreen, setIsSmallScreen] = useState(false); // New state for screen size
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  useEffect(() => {
-    if (workSpaceId) {
-      dispatch(fetchAllUsers());
-    }
-  }, [workSpaceId]);
+  // useEffect(() => {
+  //   if (workSpaceId) {
+  //     dispatch(fetchAllUsers());
+  //   }
+  // }, [workSpaceId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -117,8 +117,7 @@ export default function InviteButton() {
         <DialogTrigger asChild>
           <Button
             variant="ghost"
-            className="bg-white rounded p-2 hover:bg-transparent dark:bg-black"
-          >
+            className="bg-white rounded p-2 hover:bg-transparent dark:bg-black">
             {isSmallScreen ? <BiSolidUserPlus className="text-lg" /> : "Invite"}
           </Button>
         </DialogTrigger>
@@ -147,8 +146,9 @@ export default function InviteButton() {
                       <li
                         key={index}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer"
-                        onClick={() => handleSelectSuggestion(suggestion?.email)}
-                      >
+                        onClick={() =>
+                          handleSelectSuggestion(suggestion?.email)
+                        }>
                         {suggestion?.email}
                       </li>
                     ))}

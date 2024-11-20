@@ -33,7 +33,9 @@ export default function SpaceNameStep({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mt-10 md:mt-14 w-full">
         <div className="space-y-4 flex flex-col px-4 mt-10 lg:max-w-lg mx-auto mb-16">
-          <h2 className="text-2xl md:text-3xl font-semibold text-black">Great!</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-black">
+            Great!
+          </h2>
           <p className="text-base md:text-lg text-gray-700">
             Let&apos;s create your first Work Space
           </p>
@@ -45,11 +47,11 @@ export default function SpaceNameStep({
             className="w-full max-w-xs md:max-w-sm lg:max-w-md py-3 px-4 bg-transparent border border-gray-400 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
-            className={`text-left text-indigo-600 font-semibold hover:underline ${!spaceName.trim() ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`text-left text-indigo-600 font-semibold hover:underline ${
+              !spaceName.trim() ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             onClick={handleNextStep}
-            disabled={!spaceName.trim()}
-          >
+            disabled={!spaceName.trim()}>
             Next
           </button>
         </div>

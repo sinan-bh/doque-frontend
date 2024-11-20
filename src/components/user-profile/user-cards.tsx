@@ -23,7 +23,7 @@ export function Usercards() {
         const workspacesResp = await instance.get("/workspace");
         const userWorkspaces = workspacesResp.data.data;
         const workspaceIds = userWorkspaces.map(
-          (workspace: { WorkspaceId: string }) => workspace.WorkspaceId
+          (workspace: { workspaceId: string }) => workspace.workspaceId
         );
 
         const spacesResp = await instance.get("/space");
@@ -88,19 +88,16 @@ export function Usercards() {
                         }) => (
                           <Link
                             href={`/w/${space.workspace}/spaces/${space._id}?task=${task._id}&list=${listItem._id}`}
-                            key={task._id}
-                          >
+                            key={task._id}>
                             <Card
                               key={task._id}
-                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950"
-                            >
+                              className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950">
                               <div
                                 className={clsx("h-6", {
                                   "bg-red-300": task?.priority === "high",
                                   "bg-yellow-300": task?.priority === "medium",
                                   "bg-green-300": task?.priority === "low",
-                                })}
-                              ></div>
+                                })}></div>
                               <CardHeader className="p-4">
                                 <div className="flex flex-col space-y-2">
                                   <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
@@ -129,8 +126,7 @@ export function Usercards() {
                                           "text-green-700 bg-green-100":
                                             task?.priority === "low",
                                         }
-                                      )}
-                                    >
+                                      )}>
                                       {task.priority}
                                     </p>
                                   </div>
