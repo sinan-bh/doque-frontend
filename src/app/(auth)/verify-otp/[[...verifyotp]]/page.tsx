@@ -7,7 +7,7 @@ import { verifyOtp, resendOtp } from '@/lib/store/features/userSlice';
 import { AppDispatch, RootState } from '@/lib/store';
 
 export default function VerifyEmail() {
-    const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+    const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const [countdown, setCountdown] = useState<number>(30);
 
@@ -35,15 +35,15 @@ export default function VerifyEmail() {
     }, [countdown]);
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value;
+        const value = e.target.value.replace(/[^0-9]/g, '');
         if (value.length <= 1) {
             const newOtp = [...otp];
             newOtp[index] = value;
             setOtp(newOtp);
             setStatusMessage(null);
 
-            if (value && index < 5) {
-                const nextInput = document.getElementById(`otp-${index + 1}`);
+            if (value && index < otp.length - 1) {
+                const nextInput = document.getElementById(`otp-${index + 1}`) as HTMLInputElement;
                 nextInput?.focus();
             }
         }
@@ -51,8 +51,15 @@ export default function VerifyEmail() {
 
     const handleBackspace = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
-            const prevInput = document.getElementById(`otp-${index - 1}`);
+            const prevInput = document.getElementById(`otp-${index - 1}`) as HTMLInputElement;
             prevInput?.focus();
+        }
+    };
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        const pasteData = e.clipboardData.getData('text').slice(0, 6).replace(/[^0-9]/g, '');
+        if (pasteData.length === otp.length) {
+            setOtp(pasteData.split(''));
         }
     };
 
@@ -123,6 +130,7 @@ export default function VerifyEmail() {
                             value={digit}
                             onChange={(e) => handleOtpChange(e, index)}
                             onKeyDown={(e) => handleBackspace(e, index)}
+                            onPaste={index === 0 ? handlePaste : undefined}
                             className="w-full h-12 sm:h-14 text-center text-xl border border-gray-300 rounded-lg shadow-md 
                  focus:outline-none focus:ring-2 focus:ring-green-500 
                  transition duration-300 ease-in-out 
