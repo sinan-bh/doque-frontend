@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
 import axiosInstance from "@/utils/admin/axios";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
+import { AdminWorkspace } from "./admin-workspace-slice";
 
 export interface AdminMember {
   _id: string;
@@ -10,9 +11,10 @@ export interface AdminMember {
   email: string;
   image: string;
   status: string;
+  verified: string;
   user: string;
   subscription: string;
-  activeWorkspace: string;
+  activeWorkspaces: AdminWorkspace[];
   createdAt: string;
   isActive: boolean;
   isBlocked: boolean;
@@ -42,7 +44,6 @@ export const fetchMembers = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
       return response.data.data;
     } catch (error) {
       const errMesg = axiosErrorCatch(error);
@@ -63,7 +64,7 @@ export const toggleBlockMember = createAsyncThunk(
     const action = isBlocked ? "unblock" : "block";
     try {
       await axiosInstance.patch(
-        `/admin/userblock/${memberId}?action=${action}`,
+        `/admin/blockuser/${memberId}?action=${action}`,
         {},
         {
           headers: {

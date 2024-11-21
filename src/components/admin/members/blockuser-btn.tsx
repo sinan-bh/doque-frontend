@@ -40,7 +40,7 @@ export default function StatusButton({
       </button>
 
       {showDropdown && (
-        <div className="absolute  right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-10">
+        <div className="absolute  right-0 mt-6 w-32 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-10">
           <ul className="py-1">
             <li
               onClick={() => toggleStatus(false)}

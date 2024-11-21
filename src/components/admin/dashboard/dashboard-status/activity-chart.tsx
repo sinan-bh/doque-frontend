@@ -86,7 +86,7 @@ export default function ActivityChart({
       },
       {
         label: "Spaces Activity",
-        data: workspaces.map((workspace) => workspace.space.length),
+        data: workspaces.map((workspace) => workspace.spaces.length),
         borderColor: "#FFD966",
         backgroundColor: "rgba(255, 217, 102, 0.1)",
         fill: true,
@@ -108,7 +108,8 @@ export default function ActivityChart({
                 lineChartView === option
                   ? "bg-transparent border border-slate-800 dark:border-white text-black dark:text-white"
                   : "bg-gray-300 dark:bg-gray-700 dark:text-white"
-              }`}>
+              }`}
+            >
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </button>
           ))}

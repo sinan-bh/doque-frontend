@@ -1,6 +1,10 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "../../index";
-import { AxiosError } from "axios";
+import {
+  createSlice,
+  type PayloadAction,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
+import type { RootState } from "../../index";
+import type { AxiosError } from "axios";
 import axiosInstance from "@/utils/admin/axios";
 import Cookies from "js-cookie";
 
@@ -12,7 +16,8 @@ interface AdminState {
 
 const initialState: AdminState = {
   token: Cookies.get("adminToken")
-    ? JSON.parse(Cookies.get("adminToken")!).token
+    ? // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      JSON.parse(Cookies.get("adminToken")!).token
     : null,
   isAuthenticated: !!Cookies.get("adminToken"),
   error: null,
@@ -38,21 +43,23 @@ export const login = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/admin/adminlogin", {
+      const response = await axiosInstance.post("/admin/login", {
         email,
         password,
       });
 
-      const { data } = response;
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 7);
+
       Cookies.set(
         "adminToken",
-        JSON.stringify({
-          token: data.data,
-        }),
-        { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
+        JSON.stringify({ token: response.data.message }),
+        {
+          expires: expirationDate,
+        }
       );
 
-      return data.data;
+      return response.data;
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       if (axiosError.response?.data) {

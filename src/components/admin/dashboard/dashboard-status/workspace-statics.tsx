@@ -65,7 +65,7 @@ export default function WorkspaceStatistics({
   });
 
   const filteredSpaces = filteredWorkspaces.reduce(
-    (acc, workspace) => acc + workspace.space.length,
+    (acc, workspace) => acc + workspace.spaces.length,
     0
   );
 
@@ -116,7 +116,8 @@ export default function WorkspaceStatistics({
           <select
             value={barCount}
             onChange={(e) => setBarCount(Number(e.target.value))}
-            className="ml-2 w-14 border border-gray-300 rounded-md shadow-sm p-2">
+            className="ml-2 w-14 border border-gray-300 rounded-md shadow-sm p-2"
+          >
             {[12, 11, 10, 9, 8, 7, 6, 5].map((value) => (
               <option key={value} value={value}>
                 {value}

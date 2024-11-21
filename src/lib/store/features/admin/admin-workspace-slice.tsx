@@ -4,13 +4,20 @@ import { AdminMember } from "./admin-member-slice";
 import axiosInstance from "@/utils/admin/axios";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
+export interface Space {
+  _id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AdminWorkspace {
   _id: string;
   name: string;
   description: string;
   createdBy: string;
   members: AdminMember[];
-  space: string[];
+  spaces: Space[];
   visibility: string;
   isActive: boolean;
   isDelete: boolean;
@@ -30,6 +37,9 @@ const initialState: WorkspaceState = {
   error: null,
 };
 
+export const selectWorkspaceById = (state: RootState, id: string) =>
+  state.adminWorkspace.workspaces.find((workspace) => workspace._id === id);
+
 export const fetchWorkspaces = createAsyncThunk<
   AdminWorkspace[],
   { page: number; limit: number },
@@ -41,14 +51,14 @@ export const fetchWorkspaces = createAsyncThunk<
 
     try {
       const response = await axiosInstance.get(
-        `/admin/workspace?page=${page}&limit=${limit}`,
+        `/admin/workspaces?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      return response.data.data;
+      return response.data.data.data;
     } catch (error) {
       const errMesg = axiosErrorCatch(error);
       return rejectWithValue(errMesg);

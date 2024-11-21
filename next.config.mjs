@@ -14,7 +14,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: '"th.bing.com"',
+        hostname: "th.bing.com",
         port: "",
       },
       {
@@ -45,6 +45,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "i.pinimg.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
         port: "",
       },
     ],

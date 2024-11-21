@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const isAdminRoute = (route: string) =>
-  route.startsWith("/admin") && route !== "/admin/adminlogin";
+  route.startsWith("/admin") && route !== "/admin/login";
 
 const isUserProtectedRoute = (route: string) =>
   route.startsWith("/w") ||
@@ -21,7 +21,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (adminToken && pathname === "/admin/adminlogin") {
+  if (adminToken && pathname === "/admin/login") {
     url.pathname = "/admin/dashboard";
     return NextResponse.redirect(url);
   }

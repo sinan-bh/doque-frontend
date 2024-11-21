@@ -22,6 +22,7 @@ import {
 export default function Dashboard() {
   const dispatch = useAppDispatch();
   const members = useAppSelector(selectMembers);
+
   const workspaces = useAppSelector(selectWorkspaces);
   const memberLoading = useAppSelector(selectMembersLoading);
   const workspaceLoading = useAppSelector(selectWorkspaceLoading);
@@ -37,7 +38,7 @@ export default function Dashboard() {
   const totalMembers = members.length;
   const totalWorkspaces = workspaces.length;
   const totalSpaces = workspaces.reduce(
-    (acc, workspace) => acc + workspace.space.length,
+    (acc, workspace) => acc + workspace.spaces.length,
     0
   );
   const isLoading = memberLoading || workspaceLoading;
