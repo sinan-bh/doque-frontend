@@ -17,6 +17,9 @@ export default function ProfileSettings() {
     (state) => state.user
   );
 
+  const url = process.env.NEXT_PUBLIC_CLOUDINARY_URL ?? "";
+  console.log(url);
+
   const { toast } = useToast();
   const router = useRouter();
 
@@ -78,16 +81,13 @@ export default function ProfileSettings() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "Project Doque");
+    formData.append("upload_preset", "Doque project");
 
     try {
-      const response = await fetch(
-        "https://api.cloudinary.com/v1_1/dzxrdd7a4/image/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
 
       const data = await response.json();
       setUserData((prevData) => ({
