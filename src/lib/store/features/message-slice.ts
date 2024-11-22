@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import axiosInstance from "@/utils/axios";
 import { RootState } from "@/lib/store/index";
 
-type Message = {
+export type Message = {
   _id: string;
   messages: Array<{
     content: string;
@@ -12,12 +12,13 @@ type Message = {
     sender: {
       firstName: string;
       image: string;
+      _id: string
     };
   }>;
 };
 
 interface MessageState {
-  messages: Message | null;
+  messages: Message | null; 
   error: boolean;
   isOnline: boolean;
 }
@@ -50,22 +51,22 @@ export const fetchMessages = createAsyncThunk(
   }
 );
 
-export const addMessage = createAsyncThunk(
-  "message/addMessage",
-  async (text: string, { getState, rejectWithValue }) => {
-    const state = getState() as RootState;
-    const { workSpaceId } = state.workspace;
-    if (!workSpaceId) return rejectWithValue("Invalid data");
+// export const addMessage = createAsyncThunk(
+//   "message/addMessage",
+//   async (text: string, { getState, rejectWithValue }) => {
+//     const state = getState() as RootState;
+//     const { workSpaceId } = state.workspace;
+//     if (!workSpaceId) return rejectWithValue("Invalid data");
 
-    try {
-      await axiosInstance.post(`/chat/workspaces/${workSpaceId}/messages`, {
-        content: text,
-      });
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
+//     try {
+//       await axiosInstance.post(`/chat/workspaces/${workSpaceId}/messages`, {
+//         content: text,
+//       });
+//     } catch (err) {
+//       return rejectWithValue(err);
+//     }
+//   }
+// );
 
 export const deleteMessage = createAsyncThunk(
   "message/deleteMessage",
@@ -88,11 +89,15 @@ const messageSlice = createSlice({
     setOnlineStatus: (state, action: PayloadAction<boolean>) => {
       state.isOnline = action.payload;
     },
+    socketMessage(state, action) {
+        state.messages = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMessages.fulfilled, (state, action) => {
-        state.messages = action.payload;
+        state.messages = action.payload || null;
+        state.error = false;
       })
       .addCase(fetchMessages.rejected, (state) => {
         state.error = true;
@@ -100,5 +105,5 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setOnlineStatus } = messageSlice.actions;
+export const { setOnlineStatus, socketMessage } = messageSlice.actions;
 export default messageSlice.reducer;

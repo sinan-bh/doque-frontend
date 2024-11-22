@@ -5,18 +5,14 @@ import MembersGrid from "@/components/workspace/members-views/member-grid";
 import MembersList from "@/components/workspace/members-views/member-list";
 import { IoGrid, IoList } from "react-icons/io5";
 import { FiFilter, FiSearch } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
 import {
-  fetchUserProfiles,
-  fetchWorkspaceMembers,
-  Member,
-  Users,
+  fetchInvitedMembers,
 } from "@/lib/store/features/workspace-slice";
 import { useParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 export default function Members() {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState<"members" | "teams">("members");
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -26,12 +22,11 @@ export default function Members() {
   const handleTabSwitch = (tab: "members" | "teams") => setActiveTab(tab);
   const handleViewSwitch = (view: "grid" | "list") => setViewType(view);
 
-  const { members, users }: { members: Member[]; users: Users[] } = useSelector(
-    (state: RootState) => state.workspace
-  );
+  const {invitedMembers} = useAppSelector(state=> state.workspace)
+
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  const filteredUsers = users
+  const filteredUsers = invitedMembers
     ?.filter(
       (user) =>
         user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,17 +54,17 @@ export default function Members() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchWorkspaceMembers({ workSpaceId }));
+      await dispatch(fetchInvitedMembers({ workSpaceId }));
     };
     fetchData();
   }, [workSpaceId]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchUserProfiles({ members }));
-    };
-    fetchData();
-  }, [members]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await dispatch(fetchUserProfiles({ members }));
+  //   };
+  //   fetchData();
+  // }, [members]);
 
   return (
     <div className="relative">

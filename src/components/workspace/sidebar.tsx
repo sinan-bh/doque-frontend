@@ -21,6 +21,7 @@ import { fetchWorkspaceUser } from "@/lib/store/features/userSlice";
 import { fetchSpacesData } from "@/lib/store/thunks/space-thunks";
 import { EditWorkSpace } from "./edit-workspace";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { IoMdChatbubbles } from "react-icons/io";
 
 interface SidebarIcon {
   icon: ReactNode;
@@ -69,6 +70,11 @@ const Sidebar: React.FC = () => {
       icon: <FaCalendar className="text-xl" />,
       label: "Calendar",
       href: `/w/${workSpaceId}/calendar`,
+    },
+    {
+      icon: <IoMdChatbubbles className="text-xl" />,
+      label: "Chat",
+      href: `/w/${workSpaceId}/chat`,
     },
   ];
 

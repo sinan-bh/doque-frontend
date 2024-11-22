@@ -49,6 +49,7 @@ interface WorkspaceState {
   allUsers: Users[];
   selectedProjectId: string | null;
   members: Member[];
+  invitedMembers: Users[]
   loading: boolean;
   error: string | null;
 }
@@ -65,6 +66,7 @@ const initialState: WorkspaceState = {
   users: [],
   allUsers: [],
   members: [],
+  invitedMembers: [],
   loading: true,
   error: null,
 };
@@ -229,6 +231,19 @@ export const fetchUserProfiles = createAsyncThunk(
   }
 );
 
+export const fetchInvitedMembers = createAsyncThunk(
+  "workspace/fetchInvitedMembers",
+  async ({workSpaceId}: {workSpaceId: string}, {rejectWithValue}) => {
+    try {
+      const {data} = await axiosInstance.get(`workspace/${workSpaceId}/invited-members`)      
+      return data.data.members
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue("Failed to fetch invited members");
+    }
+  }
+)
+
 export const fetchAllUsers = createAsyncThunk(
   "workspace/fetchAllUsers",
   async (_, { rejectWithValue }) => {
@@ -343,6 +358,9 @@ const workspaceSlice = createSlice({
       })
       .addCase(createSpace.fulfilled, (state, action) => {
         state.spaceId = action.payload;
+      })
+      .addCase(fetchInvitedMembers.fulfilled, (state, action) => {
+        state.invitedMembers = action.payload
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.allUsers = action.payload;

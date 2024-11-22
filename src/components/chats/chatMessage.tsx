@@ -1,44 +1,42 @@
 "use client";
 
 import React from "react";
+import Cookies from "js-cookie";
 
-interface ChatMessageProps {
-  message: string;
-  sender: string;
-  isReceiver?: boolean;
-  isFile?: boolean;
-}
+// Define the type of the message prop
+type MessageProps = {
+  message: {
+    content: string;
+    timestamp: string;
+    _id: string;
+    sender: {
+      firstName: string;
+      image: string;
+      _id: string;
+    };
+  };
+};
 
-export default function ChatMessage({
-  message,
-  sender,
-  isReceiver,
-  isFile,
-}: ChatMessageProps) {
+export default function ChatMessage({ message }: MessageProps) {
+  const currentUser = Cookies.get("user");
+  const user = JSON.parse(currentUser || "{}");
+  const currentUserId = user.id;
+
   return (
     <div
-      className={`flex mb-4 ${isReceiver ? "justify-end" : "justify-start"}`}
+      className={`flex mb-4 ${message.sender._id === currentUserId ? "justify-end" : "justify-start"}`}
     >
-      {!isReceiver && (
-        <img
-          src="https://picsum.photos/500"
-          className="w-8 h-8 rounded-full mr-2"
-          alt="Sender"
-        />
-      )}
+      <img
+        src={message.sender.image || "https://picsum.photos/500"}
+        className="w-8 h-8 rounded-full mr-2"
+        alt="Sender"
+      />
       <div
         className={`p-3 rounded-lg ${
-          isReceiver ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+          message.sender._id === currentUserId ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
         }`}
       >
-        {isFile ? (
-          <div className="flex items-center">
-            <img src="/file-icon.png" className="w-5 h-5 mr-2" alt="File" />
-            <span>{message}</span>
-          </div>
-        ) : (
-          <p>{message}</p>
-        )}
+        <p>{message.content}</p>
       </div>
     </div>
   );

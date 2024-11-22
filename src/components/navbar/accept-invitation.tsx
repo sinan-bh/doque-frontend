@@ -17,7 +17,7 @@ export default function Acceptinvitation() {
           console.log('iddddd', workspaceId);
           
           const res = await axiosInstance.get(
-            `/workspaces/${workspaceId}/accept-invitation`
+            `/workspace/${workspaceId}/accept-invitation`
           );
           console.log(res);
           
@@ -26,7 +26,7 @@ export default function Acceptinvitation() {
           }
         } catch (err) {
           console.error(err);
-          router.push(`/w/${workspaceId}/dashboard`);
+          // router.push(`/w/${workspaceId}/dashboard`);
         }
       };
       fetchData();
