@@ -1,54 +1,72 @@
 "use client";
 
-import { fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
+import {
+  fetchAllUsers,
+  fetchWorkspaceData,
+} from "@/lib/store/features/workspace-slice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function ChatList() {
-  const {workSpaceId} = useParams()
-  const dispatch = useAppDispatch()
-  const {workspaces} = useAppSelector(state=> state.workspace)
+  const { workSpaceId } = useParams();
+  const dispatch = useAppDispatch();
+  const { workspaces } = useAppSelector((state) => state.workspace);
 
-  const workspaceName = workspaces?.find(w => w._id === workSpaceId)
-  const workSpaces = workspaces?.filter(w => w._id !== workSpaceId)
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(()=> {
-    dispatch(fetchWorkspaceData())
-  }, [dispatch])
+  const workspaceName = workspaces?.find((w) => w._id === workSpaceId);
+  const workSpaces = workspaces?.filter((w) => w._id !== workSpaceId);
+
+  const filteredWorkspaces = workSpaces?.filter((w) =>
+    w.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    dispatch(fetchWorkspaceData());
+    dispatch(fetchAllUsers());
+  }, [dispatch, workSpaceId]);
 
   return (
-    <div className="w-1/4 max-h-screen p-4 bg-gray-100 overflow-auto">
+    <div className="w-1/4 h-screen p-4 bg-gray-100 overflow-auto">
       <div className="flex items-center mb-4">
-        <img
-          src="https://picsum.photos/300"
-          className="w-10 h-10 rounded-full"
-          alt="User"
-        />
+        <Avatar className="w-7 h-7 mr-4 sm:w-10 sm:h-10">
+          <AvatarImage
+            src={
+              workspaceName?.createdBy?.image || "/images/avatarFallback.png"
+            }
+            alt="Avatar"
+          />
+          <AvatarFallback />
+        </Avatar>
         <div className="ml-2">
-          <h2 className="font-bold">{}</h2>
-          <p className="text-sm text-gray-500">{workspaceName?.name}</p>
+          <h2 className="font-bold">{workspaceName?.name}</h2>
         </div>
       </div>
       <input
         type="text"
         placeholder="Search Here..."
         className="w-full p-2 mb-4 rounded-lg border border-gray-300"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
       <div className="space-y-4">
-        {workSpaces?.map((chat) => (
+        {filteredWorkspaces?.map((chat) => (
           <Link
             key={chat._id}
             className="flex items-center justify-between p-2 hover:bg-gray-200 rounded-lg cursor-pointer"
             href={`/w/${chat._id}/chat`}
           >
             <div className="flex items-center">
-              <img
-                src="https://picsum.photos/200/300"
-                className="w-10 h-10 rounded-full"
-                alt="Chat Icon"
-              />
+              <Avatar className="w-7 h-7 mr-4 sm:w-10 sm:h-10">
+                <AvatarImage
+                  src={chat?.createdBy?.image || "/images/avatarFallback.png"}
+                  alt="Avatar"
+                />
+                <AvatarFallback />
+              </Avatar>
               <div className="ml-2">
                 <h3 className="font-bold">{chat.name}</h3>
                 <p className="text-sm text-gray-500">Latest message...</p>
@@ -57,6 +75,9 @@ export default function ChatList() {
             <span className="text-xs text-gray-500">10:35 AM</span>
           </Link>
         ))}
+        {filteredWorkspaces?.length === 0 && (
+          <p className="text-gray-500 text-sm">No workspaces found.</p>
+        )}
       </div>
     </div>
   );

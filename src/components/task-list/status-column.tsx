@@ -74,6 +74,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
     setCurrentLabel(e.target.value);
   };
 
+  
   const handleSaveLabel = () => {
     setIsEditing(false);
     dispatch(
@@ -110,7 +111,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({
     }
   };
 
-  const currentTasks = tasks?.filter((task) => task.status === id);
+  const currentTasks = tasks?.filter((task) => task.column === id);
 
   const handleDeleteList = () => {
     dispatch(

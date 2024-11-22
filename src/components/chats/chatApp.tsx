@@ -7,7 +7,7 @@ import ChatDetails from "./chatDetails";
 
 export default function ChatApp() {
   return (
-    <div className="flex w-full max-h-screen">
+    <div className="flex w-full h-auto">
       <ChatList />
       <ChatBox />
       <ChatDetails />

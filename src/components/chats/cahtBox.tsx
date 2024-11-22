@@ -2,24 +2,25 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { fetchMessages, socketMessage } from "@/lib/store/features/message-slice";
+import {
+  fetchMessages,
+  socketMessage,
+} from "@/lib/store/features/message-slice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import io from "socket.io-client";
-import { Message } from "@/lib/store/features/message-slice"; 
+import { Message } from "@/lib/store/features/message-slice";
 import Cookies from "js-cookie";
 import { useParams } from "next/navigation";
 import ChatMessage from "./chatMessage";
 import { fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
 
-export const socket = io("http://localhost:3001");
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_API_URI);
 
 export default function ChatBox() {
-  const {workSpaceId} = useParams()
+  const { workSpaceId }: { workSpaceId: string } = useParams();
   const dispatch = useAppDispatch();
-  const {workspaces} = useAppSelector(state=> state.workspace)
-  const { messages } = useAppSelector(
-    (state) => state.message
-  );
+  const { workspaces } = useAppSelector((state) => state.workspace);
+  const { messages } = useAppSelector((state) => state.message);
   const [inputMessage, setInputMessage] = useState<string>("");
 
   const currentUser = Cookies.get("user");
@@ -27,10 +28,10 @@ export default function ChatBox() {
   const currentUserId = user.id;
 
   useEffect(() => {
-    dispatch(fetchWorkspaceData())
+    dispatch(fetchWorkspaceData());
     dispatch(fetchMessages());
     socket.on("receiveMessage", (newMessage: Message) => {
-      dispatch(socketMessage(newMessage))
+      dispatch(socketMessage(newMessage));
     });
 
     return () => {
@@ -41,14 +42,13 @@ export default function ChatBox() {
   const handleSendMessage = () => {
     if (inputMessage.trim() === "") return;
 
-  
-        const messageToSend = {
-          workSpaceId: workSpaceId,
-          sender: currentUserId,
-            content: inputMessage,
-        };
+    const messageToSend = {
+      workSpaceId: workSpaceId,
+      sender: currentUserId,
+      content: inputMessage,
+    };
 
-      socket.emit("sendMessage", messageToSend);
+    socket.emit("sendMessage", messageToSend);
     setInputMessage("");
   };
 
@@ -58,29 +58,26 @@ export default function ChatBox() {
     }
   };
 
-  const workspaceName = workspaces?.find(w => w._id === workSpaceId)
+  const workspaceName = workspaces?.find((w) => w._id === workSpaceId);
 
   return (
-    <div className="w-1/2 max-h-screen p-4 bg-white flex flex-col">
-
+    <div className="w-1/2 h-screen p-4 bg-white flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl">{workspaceName?.name}</h2>
       </div>
-
 
       <div className="flex-1 max-h-[500px] overflow-y-auto mb-4">
         {messages?.messages?.map((msg, index) => (
           <div
             key={index}
             className={`flex ${
-              msg.sender._id ===  currentUserId? "justify-end" : "justify-start"
+              msg.sender._id === currentUserId ? "justify-end" : "justify-start"
             } mb-2`}
           >
-           <ChatMessage message={msg} />
+            <ChatMessage message={msg} />
           </div>
         ))}
       </div>
-
 
       <div className="flex items-center">
         <input

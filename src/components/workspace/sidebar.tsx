@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     if (profile) {
       const fetchData = async () => {
-        dispatch(fetchWorkspaceUser({ userId: profile }));
+        dispatch(fetchWorkspaceUser({ userId: profile._id }));
       };
       fetchData();
     }

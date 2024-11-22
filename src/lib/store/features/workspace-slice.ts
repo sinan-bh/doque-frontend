@@ -18,7 +18,7 @@ export interface Workspace {
   _id: string;
   spaces: [];
   createdAt: string;
-  createdBy: string;
+  createdBy: {_id: string,image: string};
   name: string;
   members: {
     user: {
