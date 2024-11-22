@@ -1,7 +1,7 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { fetchUserProfiles, fetchWorkspaceMembers } from "@/lib/store/features/workspace-slice";
+import { fetchInvitedMembers } from "@/lib/store/features/workspace-slice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -34,32 +34,26 @@ function ChatList({ name, image }: MessageProps) {
 }
 
 export default function GroupChat() {
-  const { users, members } = useAppSelector((state) => state.workspace);
+  const { invitedMembers } = useAppSelector((state) => state.workspace);
   const dispatch = useAppDispatch();
   const { workSpaceId }: { workSpaceId: string } = useParams();
   // const [isActive, setIsActive] = useState<boolean>(false)
 
 useEffect(() => {
   const fetchData = async () => {
-    await dispatch(fetchWorkspaceMembers({ workSpaceId }));
+    await dispatch(fetchInvitedMembers({ workSpaceId }));
   };
   // const value = window.navigator.onLine
   // setIsActive(value)
     fetchData();
-  }, [workSpaceId]);
+  }, [workSpaceId,dispatch]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchUserProfiles({ members }));
-    };
-    fetchData()
-  }, [members]);
 
   return (
     <div className="text-lg mt-2 p-4 bg-white bg-opacity-50 h-80 rounded-lg shadow-md space-y-2 dark:bg-darkBg dark:bg-opacity-80">
       <div className="text-1xl font-semibold text-gray-600 dark:text-gray-300">Message</div>
       <div className="grid grid-cols-3 gap-4">
-        {users?.map((message, index) => (
+        {invitedMembers?.map((message, index) => (
           <ChatList
             key={index}
             name={message.firstName}

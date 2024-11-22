@@ -14,10 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchAllUsers } from "@/lib/store/features/workspace-slice";
 import axiosInstance from "@/utils/axios";
 import { useParams } from "next/navigation";
@@ -28,7 +27,7 @@ type UserEmail = {
 
 export default function InviteButton() {
   const dispatch = useAppDispatch();
-  const { allUsers } = useSelector((state: RootState) => state.workspace);
+  const { allUsers } = useAppSelector((state: RootState) => state.workspace);
   const [formData, setFormData] = useState({
     email: "",
   });
@@ -38,11 +37,12 @@ export default function InviteButton() {
   const [isSmallScreen, setIsSmallScreen] = useState(false); // New state for screen size
   const { workSpaceId }: { workSpaceId: string } = useParams();
 
-  // useEffect(() => {
-  //   if (workSpaceId) {
-  //     dispatch(fetchAllUsers());
-  //   }
-  // }, [workSpaceId]);
+  useEffect(() => {
+    if (workSpaceId) {
+      dispatch(fetchAllUsers());
+    }
+  }, [workSpaceId]);
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -64,7 +64,7 @@ export default function InviteButton() {
 
     if (value.length > 2) {
       try {
-        const filteredSuggestions = allUsers.filter((user: UserEmail) =>
+        const filteredSuggestions = allUsers?.filter((user: UserEmail) =>
           user.email.toLowerCase().includes(value.toLowerCase())
         );
         dispatch(fetchAllUsers());

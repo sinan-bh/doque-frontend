@@ -3,26 +3,27 @@
 import React, { useEffect } from "react";
 import Spinner from "../ui/spinner/spinner";
 import axiosInstance from "@/utils/axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Acceptinvitation() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
+  const {workSpaceId} = useParams()
+
+
 
   useEffect(() => {
-    if (workspaceId) {
+    if (workSpaceId) {
       const fetchData = async () => {
         try {
-          console.log('iddddd', workspaceId);
+          console.log('workId', workSpaceId);
           
-          const res = await axiosInstance.get(
-            `/workspace/${workspaceId}/accept-invitation`
+          const res = await axiosInstance.patch(
+            `/workspace/${workSpaceId}/accept-invitation`
           );
           console.log(res);
           
           if (res.status === 200) {
-            router.push(`/w/${workspaceId}/dashboard`);
+            router.push(`/w/${workSpaceId}/dashboard`);
           }
         } catch (err) {
           console.error(err);
@@ -31,7 +32,7 @@ export default function Acceptinvitation() {
       };
       fetchData();
     }
-  }, [workspaceId]);
+  }, [workSpaceId]);
 
   return (
     <div className="h-screen flex justify-center items-center">

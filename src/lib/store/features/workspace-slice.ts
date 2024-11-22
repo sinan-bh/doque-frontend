@@ -248,8 +248,7 @@ export const fetchAllUsers = createAsyncThunk(
   "workspace/fetchAllUsers",
   async (_, { rejectWithValue }) => {
     try {
-      // to fetch all users for invite suggestion
-      const { data } = await axiosInstance.get("/userprofile");
+      const { data } = await axiosInstance.get("/userprofile");      
       return data.data;
     } catch (error) {
       console.error(error);
