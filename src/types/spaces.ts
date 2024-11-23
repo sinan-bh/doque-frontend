@@ -30,6 +30,7 @@ export type Task = {
   createdAt?: string;
   updatedAt?: string;
   color?: string;
+  status?: string;
 };
 
 export type TaskRow = {

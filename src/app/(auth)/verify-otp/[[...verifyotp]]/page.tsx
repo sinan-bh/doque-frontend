@@ -118,7 +118,7 @@ export default function VerifyEmail() {
                     Enter OTP
                 </p>
                 {statusMessage && (
-                    <div className="text-center mb-4 text-red-500">{statusMessage}</div>
+                    <div className="text-center mb-4 text-green-500">{statusMessage}</div>
                 )}
                 <div className="grid grid-cols-6 gap-2 sm:gap-4 mb-6 sm:mb-8">
                     {otp.map((digit, index) => (

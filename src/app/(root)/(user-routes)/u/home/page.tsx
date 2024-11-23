@@ -8,7 +8,15 @@ import { useAppSelector } from "@/lib/store/hooks";
 
 export default function Workspace() {
   const { workspaces, loading } = useAppSelector((state) => state.workspace);
+  const { userProfile } = useAppSelector(
+    (state) => state.user
+  );
   const router = useRouter();
+
+
+  if (userProfile?.subscription === null) {
+    router.push("/pricing");
+  }
 
   if (!loading && workspaces.length === 0) {
     router.push("/onboarding");

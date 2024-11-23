@@ -13,6 +13,7 @@ interface UserProfile {
   description?: string;
   name?: string;
   phoneNumber: string;
+  subscription?: string;
 }
 
 interface UserState {
@@ -24,6 +25,7 @@ interface UserState {
   successMessage: string | null;
   forgetEmail: string | null;
   setForgetEmail: string | null;
+  subscription: string | null;
   assignedTasks: { data: any[] };
 }
 
@@ -36,6 +38,7 @@ const initialState: UserState = {
   successMessage: null,
   forgetEmail: null,
   setForgetEmail: null,
+  subscription: null,
   assignedTasks: { data: [] },
 };
 
