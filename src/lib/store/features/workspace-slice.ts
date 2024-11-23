@@ -18,7 +18,7 @@ export interface Workspace {
   _id: string;
   spaces: [];
   createdAt: string;
-  createdBy: {_id: string,image: string};
+  createdBy: { _id: string; image: string };
   name: string;
   members: {
     user: {
@@ -49,7 +49,7 @@ interface WorkspaceState {
   allUsers: Users[];
   selectedProjectId: string | null;
   members: Member[];
-  invitedMembers: Users[]
+  invitedMembers: Users[];
   loading: boolean;
   error: string | null;
 }
@@ -149,7 +149,7 @@ export const createList = createAsyncThunk(
     try {
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.todo,
-        color: "#808080",
+        color: "#FEF08A",
       });
       await axiosInstance.post(`/space/${spaceId}/lists`, {
         name: listName.doing,
@@ -233,22 +233,24 @@ export const fetchUserProfiles = createAsyncThunk(
 
 export const fetchInvitedMembers = createAsyncThunk(
   "workspace/fetchInvitedMembers",
-  async ({workSpaceId}: {workSpaceId: string}, {rejectWithValue}) => {
+  async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     try {
-      const {data} = await axiosInstance.get(`workspace/${workSpaceId}/invited-members`)      
-      return data.data.members
+      const { data } = await axiosInstance.get(
+        `workspace/${workSpaceId}/invited-members`
+      );
+      return data.data.members;
     } catch (error) {
       console.error(error);
       return rejectWithValue("Failed to fetch invited members");
     }
   }
-)
+);
 
 export const fetchAllUsers = createAsyncThunk(
   "workspace/fetchAllUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get("/userprofile");      
+      const { data } = await axiosInstance.get("/userprofile");
       return data.data;
     } catch (error) {
       console.error(error);
@@ -359,7 +361,7 @@ const workspaceSlice = createSlice({
         state.spaceId = action.payload;
       })
       .addCase(fetchInvitedMembers.fulfilled, (state, action) => {
-        state.invitedMembers = action.payload
+        state.invitedMembers = action.payload;
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.allUsers = action.payload;

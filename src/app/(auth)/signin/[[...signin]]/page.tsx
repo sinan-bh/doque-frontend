@@ -32,9 +32,12 @@ export default function Login() {
     dispatch(clearMessages());
     setLoading(true);
     const result = await dispatch(loginUser({ email, password }));
-    if (result.payload?.statusCode === 200) {
+    if (result?.payload?.data?.newUser) {
+      router.push("/onboarding");
+    } else if (result?.payload?.data?.statusCode === 200) {
       router.push("/u/home");
     }
+    setLoading(false);
   };
 
   const togglePasswordVisibility = () => {
@@ -72,7 +75,8 @@ export default function Login() {
               {error && <p className="text-red-500">{error}</p>}
               <form
                 onSubmit={handleLogin}
-                className="flex flex-col items-center mt-10">
+                className="flex flex-col items-center mt-10"
+              >
                 <div className="bg-gray-100 w-full max-w-xs p-2 flex items-center mb-3 dark:bg-[#383150] dark:text-white">
                   <AiOutlineMail className="text-gray-400 m-2" />
                   <input
@@ -98,7 +102,8 @@ export default function Login() {
                   />
                   <div
                     className="cursor-pointer text-gray-400 m-2"
-                    onClick={togglePasswordVisibility}>
+                    onClick={togglePasswordVisibility}
+                  >
                     {showPassword ? (
                       <AiOutlineEyeInvisible />
                     ) : (
@@ -109,7 +114,8 @@ export default function Login() {
                 <div className="flex justify-end w-full max-w-xs mb-5">
                   <div
                     onClick={handleForgotPassword}
-                    className="text-xs text-gray-500 cursor-pointer">
+                    className="text-xs text-gray-500 cursor-pointer"
+                  >
                     Forgot Password?
                   </div>
                 </div>
@@ -118,7 +124,8 @@ export default function Login() {
                   disabled={loading}
                   className="border-2 border-green-500 text-green-500 rounded-full px-10 py-2 inline-block font-semibold 
              hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 
-             hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500">
+             hover:text-white transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
                   {loading ? "Logging in..." : "Sign In"}
                 </button>
               </form>
@@ -132,7 +139,8 @@ export default function Login() {
             </p>
             <Link
               href="/signup"
-              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 transition duration-300 dark:hover:text-black">
+              className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500 transition duration-300 dark:hover:text-black"
+            >
               Sign Up
             </Link>
           </div>

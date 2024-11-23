@@ -34,6 +34,10 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
       await dispatch(createList({ spaceId, listName }));
       if (spaceId) {
         router.push(`w/${workSpaceId}/spaces/${spaceId}`);
+      } else if (workSpaceId) {
+        router.push(`w/${workSpaceId}`);
+      } else {
+        router.push("/u/home");
       }
     };
 
@@ -45,7 +49,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
       <div className="flex items-center justify-center w-full">
         <div className="flex flex-col items-center">
           <div className="flex space-x-2 text-3xl md:text-4xl font-extrabold tracking-widest text-white">
-            {['D', 'O', 'Q', 'U', 'E'].map((letter, index) => (
+            {["D", "O", "Q", "U", "E"].map((letter, index) => (
               <span
                 key={index}
                 className="rounded-lg text-gray-600 dark:text-white animate-bounceDelay bg-gradient-to-r from-white to-gray-600 dark:from-slate-900 dark:to-slate-700"
@@ -57,7 +61,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
           </div>
           <div className="flex text-3xl md:text-4xl justify-center tracking-widest">
             {Array(5)
-              .fill('.')
+              .fill(".")
               .map((dot, index) => (
                 <span
                   key={index}

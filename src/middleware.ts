@@ -27,7 +27,7 @@ export function middleware(req: NextRequest) {
   }
 
   if (!token && isUserProtectedRoute(pathname)) {
-    url.pathname = "/home";
+    url.pathname = "/signin";
     return NextResponse.redirect(url);
   }
 

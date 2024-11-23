@@ -9,12 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchUserProfile, logout } from "@/lib/store/features/userSlice";
-import { useRouter } from "next/navigation";
 
 export default function ProfileSection() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { userProfile } = useAppSelector((state) => state.user);
 
@@ -43,8 +41,7 @@ export default function ProfileSection() {
 
   const handleLogout = () => {
     dispatch(logout());
-    window.location.reload();
-    router.push("/signin");
+    window.location.href = "/home";
   };
 
   return (
