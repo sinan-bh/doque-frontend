@@ -74,10 +74,7 @@ export default function ProfileSection() {
           ref={dropdownRef}
           className="absolute right-0 mt-2 w-56 sm:w-64 bg-white/90 rounded-lg z-10 shadow-lg backdrop-blur-md p-3 dark:bg-gray-950"
         >
-          <Link
-            href={`/u/${userProfile?._id}/profile`}
-            onClick={() => setIsOpen(!isOpen)}
-          >
+          <Link href={`/u/profile`} onClick={() => setIsOpen(!isOpen)}>
             <Button className="flex items-center justify-between bg-gray-100 rounded-lg w-full hover:bg-gray-300 h-10 sm:h-12 p-2 dark:bg-gray-900 dark:hover:bg-gray-800">
               <div className="flex items-center space-x-2">
                 <Avatar className="w-8 h-8">
@@ -98,14 +95,6 @@ export default function ProfileSection() {
           </Link>
 
           <div className="flex flex-col sm:flex-row justify-between gap-2 mt-2">
-            <Link
-              href={`/u/${userProfile?._id}/settings`}
-              className="flex-1 bg-gray-200 text-black rounded-lg flex items-center justify-center h-10 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-600 dark:text-gray-300"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <FiSettings className="mr-1" />
-              Settings
-            </Link>
             <Button
               onClick={() => {
                 handleLogout();

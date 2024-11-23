@@ -464,13 +464,12 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.assignedTasks = action.payload;
-        state.successMessage = "Task assigned successfully!";
       })
       .addCase(assignedTask.rejected, (state, action) => {
         state.loading = false;
         state.error =
           (action.payload as { message: string }).message ||
-          "Assign task failed";
+          "Failed to fetch assigned tasks";
       });
   },
 });

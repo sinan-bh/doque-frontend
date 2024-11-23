@@ -4,19 +4,42 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Usercards } from "@/components/user-profile/user-cards";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { fetchUserProfile } from "@/lib/store/features/userSlice";
+import {
+  clearMessages,
+  fetchUserProfile,
+} from "@/lib/store/features/userSlice";
+import ProfileSettings from "@/components/user-settings/userSettings";
+import { toast } from "@/hooks/use-toast";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"activity" | "cards">("activity");
   const dispatch = useAppDispatch();
-  const { userProfile } = useAppSelector((state) => state.user);
-
+  const { userProfile, successMessage, error } = useAppSelector(
+    (state) => state.user
+  );
   useEffect(() => {
     if (!userProfile) {
       dispatch(fetchUserProfile());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, userProfile]);
+
+  useEffect(() => {
+    if (successMessage) {
+      toast({
+        title: "Success",
+        description: successMessage,
+      });
+      dispatch(clearMessages());
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+      });
+      dispatch(clearMessages());
+    }
+  }, [successMessage, error, toast, dispatch]);
 
   const handleTabClick = (tab: "activity" | "cards") => {
     setActiveTab(tab);
@@ -60,7 +83,7 @@ export default function Page() {
                 : "text-gray-500 dark:text-gray-300"
             }`}
           >
-            Activity
+            Settings
           </h2>
           <h2
             onClick={() => handleTabClick("cards")}
@@ -74,32 +97,7 @@ export default function Page() {
           </h2>
         </div>
 
-        {activeTab === "activity" ? (
-          <div>
-            <div className="p-3 rounded-lg flex items-center space-x-4">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src={userProfile?.image} alt="User Profile" />
-                <AvatarFallback />
-              </Avatar>
-              <div>
-                <h1 className="text-lg text-gray-800 dark:text-gray-100">
-                  {userProfile?.firstName} {userProfile?.lastName}
-                  <span className="text-sm text-gray-500 dark:text-gray-300">
-                    - activity log
-                  </span>
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  30 Sept 2024, 11:49 . Activity performed in{" "}
-                  <span className="font-semibold underline dark:text-gray-100">
-                    Project Management
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <Usercards />
-        )}
+        {activeTab === "activity" ? <ProfileSettings /> : <Usercards />}
       </div>
     </div>
   );
