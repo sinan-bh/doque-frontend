@@ -13,7 +13,7 @@ export default function GuestWorkSpaces() {
   const userId = JSON.parse(Cookies.get("user") || "{}").id;
 
   const guestWorkSpaces = workspaces.filter(
-    (workspace) => workspace.createdBy !== userId
+    (workspace) => workspace.createdBy?._id !== userId
   );
 
   return (
