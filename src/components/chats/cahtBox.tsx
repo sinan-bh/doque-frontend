@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   fetchMessages,
   socketMessage,
@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import ChatMessage from "./chatMessage";
 import { fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_API_URI);
+export const socket = io(process.env.NEXT_PUBLIC_SOCKET_API_URI);
 
 export default function ChatBox() {
   const { workSpaceId }: { workSpaceId: string } = useParams();
@@ -22,6 +22,7 @@ export default function ChatBox() {
   const { workspaces } = useAppSelector((state) => state.workspace);
   const { messages } = useAppSelector((state) => state.message);
   const [inputMessage, setInputMessage] = useState<string>("");
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const currentUser = Cookies.get("user");
   const user = JSON.parse(currentUser || "{}");
@@ -29,7 +30,8 @@ export default function ChatBox() {
 
   useEffect(() => {
     dispatch(fetchWorkspaceData());
-    dispatch(fetchMessages());
+    dispatch(fetchMessages({ workSpaceId }));
+
     socket.on("receiveMessage", (newMessage: Message) => {
       dispatch(socketMessage(newMessage));
     });
@@ -38,6 +40,17 @@ export default function ChatBox() {
       socket.off("receiveMessage");
     };
   }, [dispatch, workSpaceId]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  };
 
   const handleSendMessage = () => {
     if (inputMessage.trim() === "") return;
@@ -50,6 +63,7 @@ export default function ChatBox() {
 
     socket.emit("sendMessage", messageToSend);
     setInputMessage("");
+    scrollToBottom();
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,17 +75,22 @@ export default function ChatBox() {
   const workspaceName = workspaces?.find((w) => w._id === workSpaceId);
 
   return (
-    <div className="w-1/2 h-screen p-4 bg-white flex flex-col">
+    <div className="w-full h-full p-4 bg-white flex flex-col ">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl">{workspaceName?.name}</h2>
       </div>
 
-      <div className="flex-1 max-h-[500px] overflow-y-auto mb-4">
+      <div
+        ref={chatContainerRef}
+        className="flex-1 overflow-y-auto mb-4 overflow-x-hidden"
+      >
         {messages?.messages?.map((msg, index) => (
           <div
             key={index}
             className={`flex ${
-              msg.sender._id === currentUserId ? "justify-end" : "justify-start"
+              msg?.sender?._id === currentUserId
+                ? "justify-end"
+                : "justify-start"
             } mb-2`}
           >
             <ChatMessage message={msg} />

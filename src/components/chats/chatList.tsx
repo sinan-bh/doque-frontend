@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function ChatList() {
-  const { workSpaceId } = useParams();
+  const { workSpaceId }: { workSpaceId: string } = useParams();
   const dispatch = useAppDispatch();
   const { workspaces } = useAppSelector((state) => state.workspace);
 
@@ -30,7 +30,7 @@ export default function ChatList() {
   }, [dispatch, workSpaceId]);
 
   return (
-    <div className="w-1/4 h-screen p-4 bg-gray-100 overflow-auto">
+    <div className="w-2/4 h-full p-4 bg-gray-100 overflow-auto hidden sm:block">
       <div className="flex items-center mb-4">
         <Avatar className="w-7 h-7 mr-4 sm:w-10 sm:h-10">
           <AvatarImage
@@ -69,10 +69,10 @@ export default function ChatList() {
               </Avatar>
               <div className="ml-2">
                 <h3 className="font-bold">{chat.name}</h3>
-                <p className="text-sm text-gray-500">Latest message...</p>
+                {/* <p className="text-sm text-gray-500">Latest message...</p> */}
               </div>
             </div>
-            <span className="text-xs text-gray-500">10:35 AM</span>
+            {/* <span className="text-xs text-gray-500">10:35 AM</span> */}
           </Link>
         ))}
         {filteredWorkspaces?.length === 0 && (

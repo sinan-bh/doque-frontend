@@ -20,7 +20,7 @@ export default function MyWorkSpace() {
   const userId = JSON.parse(cookie).id;
 
   const usersWorkSpaces = workspaces?.filter(
-    (workspace) => workspace.createdBy === userId
+    (workspace) => workspace?.createdBy?._id === userId
   );
 
   return (
@@ -35,7 +35,8 @@ export default function MyWorkSpace() {
                 <WorkSpaceCardSkeleton key={i} />
               ))}
             </div>
-          }>
+          }
+        >
           <div className="flex py-4 ml-4">
             {usersWorkSpaces?.map((w, index) => (
               <WorkspaceCard key={index} workSpace={w} />
