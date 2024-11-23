@@ -23,8 +23,11 @@ import { useParams } from "next/navigation";
 import { axiosErrorCatch } from "@/utils/axiosErrorCatch";
 
 type Member = {
-  status: string;
-  user: { firstName: string; _id: string };
+  firstName: string;
+  _id: string;
+  lastName: string;
+  email: string;
+  image: string;
 };
 
 export default function AssignTaskToMembers({
@@ -48,9 +51,9 @@ export default function AssignTaskToMembers({
     async function fetchMembers() {
       try {
         const { data } = await axiosInstance.get(
-          `/workspaces/${workSpaceId}/invited-members`
+          `/workspace/${workSpaceId}/invited-members`
         );
-        setMembers(data.data);
+        setMembers(data.data.members);
       } catch (error) {
         setError(axiosErrorCatch(error));
       } finally {
@@ -70,7 +73,8 @@ export default function AssignTaskToMembers({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="flex gap-2 items-center">
+              className="flex gap-2 items-center"
+            >
               Add members
               <CiCirclePlus size={20} />
             </Button>
@@ -88,28 +92,30 @@ export default function AssignTaskToMembers({
                     </CommandEmpty>
                   )}
                   {members.map((member) => {
-                    const isAssigned = existingMembers?.includes(
-                      member.user?._id
-                    );
+                    const isAssigned = existingMembers?.includes(member._id);
                     return (
                       <CommandItem
-                        value={member.user?._id}
-                        key={member.user?._id}
-                        className="flex justify-between">
-                        <div className="flex flex-col items-start">
-                          <span>{member.user?.firstName}</span>
+                        value={member.firstName + " " + member.lastName}
+                        key={member._id}
+                        className="flex justify-between"
+                      >
+                        <div className="flex flex-col items-start text-ellipsis whitespace-nowrap overflow-hidden w-full">
+                          <span>
+                            {member.firstName} {member.lastName}
+                          </span>
                         </div>
                         <Button
                           variant="outline"
-                          className="flex gap-2"
+                          className="flex gap-2 flex-shrink-0"
                           title="Add member"
                           onClick={() => {
                             if (isAssigned) {
-                              removeMember(member.user?._id);
+                              removeMember(member._id);
                               return;
                             }
-                            assignMember(member.user?._id);
-                          }}>
+                            assignMember(member._id);
+                          }}
+                        >
                           {isAssigned ? (
                             "Remove"
                           ) : (
@@ -133,7 +139,8 @@ export default function AssignTaskToMembers({
             {existingMembers.map((member) => (
               <div
                 key={member}
-                className="flex flex-col justify-center items-center">
+                className="flex flex-col justify-center items-center"
+              >
                 <Avatar className="border-2 border-white w-12 h-12">
                   <AvatarImage
                     src={"/images/avatarFallback.png"}
@@ -142,7 +149,7 @@ export default function AssignTaskToMembers({
                   <AvatarFallback />
                 </Avatar>
                 <p className="text-xs text-zinc-700 min-h-2">
-                  {members.find((m) => member === m.user?._id)?.user.firstName}
+                  {members.find((m) => member === m._id)?.firstName}
                 </p>
               </div>
             ))}

@@ -18,7 +18,6 @@ export default function ProfileSettings() {
   );
 
   const url = process.env.NEXT_PUBLIC_CLOUDINARY_URL ?? "";
-  console.log(url);
 
   const { toast } = useToast();
   const router = useRouter();

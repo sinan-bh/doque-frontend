@@ -24,6 +24,7 @@ interface UserState {
   successMessage: string | null;
   forgetEmail: string | null;
   setForgetEmail: string | null;
+  assignedTasks: { data: any[] };
 }
 
 const initialState: UserState = {
@@ -35,6 +36,7 @@ const initialState: UserState = {
   successMessage: null,
   forgetEmail: null,
   setForgetEmail: null,
+  assignedTasks: { data: [] },
 };
 
 const Instance = axios.create({
@@ -263,6 +265,30 @@ export const resendOtp = createAsyncThunk(
   }
 );
 
+export const assignedTask = createAsyncThunk(
+  "user/assignedTask",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `userprofile/${id}/assigned-tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("user")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue({
+          message: error.response?.data.message || "Task fetch failed",
+        });
+      }
+      return rejectWithValue({ message: "An unknown error occurred" });
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -426,6 +452,22 @@ const userSlice = createSlice({
         state.error =
           (action.payload as { message: string }).message ||
           "Resend OTP failed";
+      })
+      .addCase(assignedTask.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(assignedTask.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.assignedTasks = action.payload;
+        state.successMessage = "Task assigned successfully!";
+      })
+      .addCase(assignedTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as { message: string }).message ||
+          "Assign task failed";
       });
   },
 });
