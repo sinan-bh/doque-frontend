@@ -1,7 +1,6 @@
 "use client";
 
-import instance from "@/utils/axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import clsx from "clsx";
 import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -54,19 +53,16 @@ export function Usercards() {
             return (
               <Link
                 href={`/w/${space.id}/spaces/${space.id}?task=${task.id}&list=${list.id}`}
-                key={task.id}
-              >
+                key={task.id}>
                 <Card
                   key={task.id}
-                  className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950"
-                >
+                  className="w-[300px] m-3 max-w-full overflow-hidden border rounded-lg shadow-md dark:bg-gray-950">
                   <div
                     className={clsx("h-6", {
                       "bg-red-300": task?.priority === "high",
                       "bg-yellow-300": task?.priority === "medium",
                       "bg-green-300": task?.priority === "low",
-                    })}
-                  ></div>
+                    })}></div>
                   <CardHeader className="p-4">
                     <div className="flex flex-col space-y-2">
                       <CardTitle className="font-normal text-gray-900 dark:text-gray-100">
@@ -92,8 +88,7 @@ export function Usercards() {
                               task?.priority === "medium",
                             "text-green-700 bg-green-100":
                               task?.priority === "low",
-                          })}
-                        >
+                          })}>
                           {task.priority}
                         </p>
                       </div>

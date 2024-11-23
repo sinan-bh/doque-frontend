@@ -26,6 +26,7 @@ interface UserState {
   forgetEmail: string | null;
   setForgetEmail: string | null;
   subscription: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   assignedTasks: { data: any[] };
 }
 

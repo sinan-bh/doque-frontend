@@ -2,7 +2,7 @@
 
 import React from "react";
 import ChatList from "./chatList";
-import ChatBox from "./cahtBox";
+import ChatBox from "./chatBox";
 import ChatDetails from "./chatDetails";
 
 export default function ChatApp() {

@@ -23,25 +23,28 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
   const router = useRouter();
 
   useEffect(() => {
-    const handleSpace = async () => {
-      await dispatch(createSpace({ workSpaceId, spaceName }));
-    };
-    handleSpace();
+    if (workSpaceId) {
+      const handleSpace = async () => {
+        await dispatch(createSpace({ workSpaceId, spaceName }));
+      };
+      handleSpace();
+    }
   }, [workSpaceId]);
 
   useEffect(() => {
-    const handleReady = async () => {
-      await dispatch(createList({ spaceId, listName }));
-      if (spaceId) {
-        router.push(`w/${workSpaceId}/spaces/${spaceId}`);
-      } else if (workSpaceId) {
-        router.push(`w/${workSpaceId}`);
-      } else {
-        router.push("/u/home");
-      }
-    };
-
-    handleReady();
+    if (spaceId) {
+      const handleReady = async () => {
+        await dispatch(createList({ spaceId, listName }));
+        if (spaceId) {
+          router.push(`/w/${workSpaceId}/spaces/${spaceId}`);
+        } else if (workSpaceId) {
+          router.push(`/w/${workSpaceId}`);
+        } else {
+          router.push("/u/home");
+        }
+      };
+      handleReady();
+    }
   }, [spaceId]);
 
   return (
@@ -53,8 +56,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
               <span
                 key={index}
                 className="rounded-lg text-gray-600 dark:text-white animate-bounceDelay bg-gradient-to-r from-white to-gray-600 dark:from-slate-900 dark:to-slate-700"
-                style={{ animationDelay: `${0.1 + (index % 2) * 0.1}s` }}
-              >
+                style={{ animationDelay: `${0.1 + (index % 2) * 0.1}s` }}>
                 {letter}
               </span>
             ))}
@@ -66,8 +68,7 @@ export default function ReadyPage({ spaceName, listName }: readyPage) {
                 <span
                   key={index}
                   className="text-gray-600 dark:text-white px-2 animate-bounceDelay"
-                  style={{ animationDelay: `${0.1 + (index % 2) * 0.1}s` }}
-                >
+                  style={{ animationDelay: `${0.1 + (index % 2) * 0.1}s` }}>
                   {dot}
                 </span>
               ))}

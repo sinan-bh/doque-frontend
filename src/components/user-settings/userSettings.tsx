@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   fetchUserProfile,
-  clearMessages,
   updateUserProfile,
 } from "@/lib/store/features/userSlice";
 import { FaCamera } from "react-icons/fa";
@@ -162,14 +161,12 @@ export default function ProfileSettings() {
             <div className="flex justify-between mt-2">
               <a
                 href="/forgot-password"
-                className="text-sm text-blue-500 hover:underline"
-              >
+                className="text-sm text-blue-500 hover:underline">
                 Change Password
               </a>
               <button
                 type="submit"
-                className="bg-blue-400 p-2 rounded-xl w-full md:w-auto mt-4"
-              >
+                className="bg-blue-400 p-2 rounded-xl w-full md:w-auto mt-4">
                 Save
               </button>
             </div>

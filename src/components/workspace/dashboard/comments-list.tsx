@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMdRefresh } from "react-icons/io";
-import { socket } from "@/components/chats/cahtBox";
+import { socket } from "@/components/chats/chatBox";
 import { fetchWorkspaceData } from "@/lib/store/features/workspace-slice";
 
 interface Message {
