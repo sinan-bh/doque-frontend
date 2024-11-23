@@ -7,21 +7,16 @@ import { useParams, useRouter } from "next/navigation";
 
 export default function Acceptinvitation() {
   const router = useRouter();
-  const {workSpaceId} = useParams()
-
-
+  const { workSpaceId }: { workSpaceId: string } = useParams();
 
   useEffect(() => {
     if (workSpaceId) {
       const fetchData = async () => {
         try {
-          console.log('workId', workSpaceId);
-          
           const res = await axiosInstance.patch(
             `/workspace/${workSpaceId}/accept-invitation`
           );
-          console.log(res);
-          
+
           if (res.status === 200) {
             router.push(`/w/${workSpaceId}/dashboard`);
           }

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import axiosInstance from "@/utils/axios";
-import { RootState } from "@/lib/store/index";
 
 export type Message = {
   _id: string;
@@ -12,13 +11,13 @@ export type Message = {
     sender: {
       firstName: string;
       image: string;
-      _id: string
+      _id: string;
     };
   }>;
 };
 
 interface MessageState {
-  messages: Message | null; 
+  messages: Message | null;
   error: boolean;
   isOnline: boolean;
 }
@@ -31,10 +30,7 @@ const initialState: MessageState = {
 
 export const fetchMessages = createAsyncThunk(
   "message/fetchMessages",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as RootState;
-    const { workSpaceId } = state.workspace;
-
+  async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     if (!workSpaceId) return rejectWithValue("Invalid data");
 
     try {
@@ -51,28 +47,9 @@ export const fetchMessages = createAsyncThunk(
   }
 );
 
-// export const addMessage = createAsyncThunk(
-//   "message/addMessage",
-//   async (text: string, { getState, rejectWithValue }) => {
-//     const state = getState() as RootState;
-//     const { workSpaceId } = state.workspace;
-//     if (!workSpaceId) return rejectWithValue("Invalid data");
-
-//     try {
-//       await axiosInstance.post(`/chat/workspaces/${workSpaceId}/messages`, {
-//         content: text,
-//       });
-//     } catch (err) {
-//       return rejectWithValue(err);
-//     }
-//   }
-// );
-
 export const deleteMessage = createAsyncThunk(
   "message/deleteMessage",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as RootState;
-    const { workSpaceId } = state.workspace;
+  async ({ workSpaceId }: { workSpaceId: string }, { rejectWithValue }) => {
     if (!workSpaceId) return rejectWithValue("Invalid data");
     try {
       await axiosInstance.delete(`/chat/workspaces/${workSpaceId}/chat`);
@@ -90,7 +67,7 @@ const messageSlice = createSlice({
       state.isOnline = action.payload;
     },
     socketMessage(state, action) {
-        state.messages = action.payload
+      state.messages = action.payload;
     },
   },
   extraReducers: (builder) => {

@@ -206,8 +206,6 @@ export const updateTask = createAsyncThunk(
         taskData
       );
       onSuccess();
-      console.log(taskData);
-
       return { taskId, taskData };
     } catch (error) {
       onError(axiosErrorCatch(error));
