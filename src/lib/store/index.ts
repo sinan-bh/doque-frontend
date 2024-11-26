@@ -8,6 +8,7 @@ import calendarSlice from "@/lib/store/features/calendar-slice";
 import adminAuthReducer from "@/lib/store/features/admin/admin-auth-slice";
 import adminmMembersReducer from "@/lib/store/features/admin/admin-member-slice";
 import adminWorkspaceReducer from "@/lib/store/features/admin/admin-workspace-slice";
+import adminSubscriptionsReducer from "@/lib/store/features/admin/admin-subscription-slice";
 
 export const makeStore = () => {
   return configureStore({
@@ -21,6 +22,7 @@ export const makeStore = () => {
       adminAuth: adminAuthReducer,
       adminMembers: adminmMembersReducer,
       adminWorkspace: adminWorkspaceReducer,
+      adminSubscriptions: adminSubscriptionsReducer,
     },
   });
 };

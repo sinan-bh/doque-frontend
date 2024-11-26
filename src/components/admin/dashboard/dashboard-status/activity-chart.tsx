@@ -96,7 +96,7 @@ export default function ActivityChart({
   };
 
   return (
-    <div className="mt-6 p-6 bg-white dark:bg-gray-800 shadow rounded-lg">
+    <div className="mt-6 p-6 bg-white w-full h-full md:w-1/2 dark:bg-gray-800 shadow rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
         <h3 className="text-xl font-semibold mb-2 sm:mb-0">Your Activity</h3>
         <div className="flex space-x-2">

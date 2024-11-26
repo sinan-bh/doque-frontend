@@ -117,7 +117,6 @@ export default function Members() {
                             <span className="mr-2">
                               {member.firstName} {member.lastName}
                             </span>
-                            {/* Icon with small gap from the name */}
                             <CiSquareInfo className="text-gray-600 dark:text-gray-300" />
                           </div>
                           <div className="flex flex-col sm:hidden mt-2">
@@ -181,6 +180,10 @@ export default function Members() {
                                       : "Inactive"}
                                   </p>
                                   <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <strong>Subscription Plan:</strong>
+                                    {member.subscription}
+                                  </p>
+                                  <p className="text-sm text-gray-500 dark:text-gray-400">
                                     <strong>Verified:</strong>{" "}
                                     {member.verified ? "Yes" : "No"}
                                   </p>
@@ -213,6 +216,7 @@ export default function Members() {
                                           <p className="text-sm text-gray-600 dark:text-gray-400">
                                             {workspace.description}
                                           </p>
+
                                           <p className="text-sm text-gray-500 dark:text-gray-400">
                                             <strong>Visibility:</strong>{" "}
                                             {workspace.visibility}

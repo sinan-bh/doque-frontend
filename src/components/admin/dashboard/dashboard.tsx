@@ -10,6 +10,11 @@ import {
   selectWorkspaces,
   selectWorkspaceLoading,
 } from "../../../lib/store/features/admin/admin-workspace-slice";
+import {
+  fetchSubscriptions,
+  selectSubscriptions,
+  selectSubscriptionLoading,
+} from "../../../lib/store/features/admin/admin-subscription-slice";
 import DashboardStats from "./dashboard-status/dashboard-status";
 import WorkspaceStatistics from "./dashboard-status/workspace-statics";
 import ActivityChart from "./dashboard-status/activity-chart";
@@ -18,6 +23,7 @@ import {
   WorkspaceStatisticsSkeleton,
   ActivityChartSkeleton,
 } from "../../ui/admin/dashboard-skelton";
+import SubscriptionStatistics from "./dashboard-status/subscription-data";
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
@@ -27,12 +33,17 @@ export default function Dashboard() {
   const memberLoading = useAppSelector(selectMembersLoading);
   const workspaceLoading = useAppSelector(selectWorkspaceLoading);
 
+  const Subscription = useAppSelector(selectSubscriptions);
+  console.log("subscription:", Subscription);
+  const subscriptionLoading = useAppSelector(selectSubscriptionLoading);
+
   const [view, setView] = useState("all");
   const [lineChartView, setLineChartView] = useState("week");
 
   useEffect(() => {
     dispatch(fetchMembers());
     dispatch(fetchWorkspaces({ page: 1, limit: 100 }));
+    dispatch(fetchSubscriptions());
   }, [dispatch]);
 
   const totalMembers = members.length;
@@ -41,7 +52,13 @@ export default function Dashboard() {
     (acc, workspace) => acc + workspace.spaces.length,
     0
   );
-  const isLoading = memberLoading || workspaceLoading;
+  const totalSubscriptions = Subscription.length;
+  const totalRevenue = Subscription.reduce(
+    (acc, subscription) => acc + subscription.amount,
+    0
+  );
+
+  const isLoading = memberLoading || workspaceLoading || subscriptionLoading;
 
   return (
     <div className="min-h-screen ml-10 bg-gray-100 dark:bg-gray-900">
@@ -57,6 +74,8 @@ export default function Dashboard() {
             totalMembers={totalMembers}
             totalWorkspaces={totalWorkspaces}
             totalSpaces={totalSpaces}
+            totalSubscriptions={totalSubscriptions}
+            totalRevenue={totalRevenue}
           />
           <WorkspaceStatistics
             workspaces={workspaces}
@@ -64,11 +83,14 @@ export default function Dashboard() {
             setView={setView}
             members={members}
           />
-          <ActivityChart
-            workspaces={workspaces}
-            lineChartView={lineChartView}
-            setLineChartView={setLineChartView}
-          />
+          <div className="flex flex-col md:flex-row gap-6">
+            <SubscriptionStatistics subscriptions={Subscription} />
+            <ActivityChart
+              workspaces={workspaces}
+              lineChartView={lineChartView}
+              setLineChartView={setLineChartView}
+            />
+          </div>
         </div>
       )}
     </div>
