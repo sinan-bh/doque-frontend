@@ -5,7 +5,7 @@ import axiosInstance from "@/utils/axios";
 import Link from "next/link";
 
 interface Workspace {
-  workspaceId: string;
+  _id: string;
   name: string;
 }
 
@@ -16,7 +16,7 @@ export default function SearchField() {
   const [searchHistory, setSearchHistory] = useState<Workspace[]>([]);
   const [showHistory, setShowHistory] = useState<boolean>(false);
 
-  const searchContainerRef = useRef<HTMLDivElement>(null); // Reference for the container
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedHistory = localStorage.getItem("searchHistory");
@@ -24,7 +24,6 @@ export default function SearchField() {
       setSearchHistory(JSON.parse(storedHistory));
     }
 
-    // Close dropdown on click outside
     const handleClickOutside = (event: MouseEvent) => {
       if (
         searchContainerRef.current &&
@@ -44,7 +43,7 @@ export default function SearchField() {
 
   const saveToSearchHistory = (workspace: Workspace) => {
     let history = [...searchHistory];
-    if (!history.some((item) => item.workspaceId === workspace.workspaceId)) {
+    if (!history.some((item) => item._id === workspace._id)) {
       history = [workspace, ...history].slice(0, 5);
       setSearchHistory(history);
       localStorage.setItem("searchHistory", JSON.stringify(history));
@@ -60,15 +59,11 @@ export default function SearchField() {
     setLoading(true);
     try {
       const response = await axiosInstance.get<{ data: Workspace[] }>(
-        `/workspace`
+        `/search?query=${searchValue}`
       );
       const data = response.data?.data || [];
 
-      const filteredData = data.filter((workspace) =>
-        workspace.name.toLowerCase().includes(searchValue.toLowerCase())
-      );
-
-      setSuggestions(filteredData);
+      setSuggestions(data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     } finally {
@@ -125,7 +120,8 @@ export default function SearchField() {
 
       <span
         className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer"
-        onClick={clearSearch}>
+        onClick={clearSearch}
+      >
         <IoIosClose className="text-gray-600 size-6" />
       </span>
 
@@ -135,7 +131,8 @@ export default function SearchField() {
             <span>Recent Searches</span>
             <button
               onClick={clearSearchHistory}
-              className="text-sm text-blue-500">
+              className="text-sm text-blue-500"
+            >
               Clear
             </button>
           </div>
@@ -144,8 +141,9 @@ export default function SearchField() {
               <li
                 key={index}
                 className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
-                onClick={() => handleClick(workspace)}>
-                <Link href={`/w/${workspace.workspaceId}/dashboard`}>
+                onClick={() => handleClick(workspace)}
+              >
+                <Link href={`/w/${workspace._id}/dashboard`}>
                   {workspace.name}
                 </Link>
               </li>
@@ -162,9 +160,10 @@ export default function SearchField() {
         <ul className="absolute z-50 top-full left-0 right-0 bg-white dark:bg-zinc-900 border rounded-md mt-1 shadow-lg max-h-40 overflow-y-auto">
           {suggestions.map((workspace) => (
             <Link
-              key={workspace.workspaceId}
-              href={`/w/${workspace.workspaceId}/dashboard`}
-              onClick={() => handleClick(workspace)}>
+              key={workspace._id}
+              href={`/w/${workspace._id}/dashboard`}
+              onClick={() => handleClick(workspace)}
+            >
               <li className="px-4 py-2 cursor-pointer">{workspace.name}</li>
             </Link>
           ))}
