@@ -189,7 +189,8 @@ export default function TaskDetails({
   return (
     <div
       onClick={handleClickOutside}
-      className="fixed bg-black top-0 left-0 h-screen w-screen bg-opacity-50 z-50">
+      className="fixed bg-black top-0 left-0 h-screen w-screen bg-opacity-50 z-50"
+    >
       <div className="absolute w-full h-full flex justify-center items-center">
         {taskDetailsLoading && <TaskDetailsSkeleton />}
         {data && (
@@ -199,13 +200,15 @@ export default function TaskDetails({
                 "bg-red-300": values?.priority === "high",
                 "bg-yellow-200": values?.priority === "medium",
                 "bg-green-300": values?.priority === "low",
-              })}>
+              })}
+            >
               <Button
                 title="Close"
                 size="icon"
                 variant="ghost"
                 className="hover:bg-black hover:bg-opacity-20 text-zinc-700 dark:text-zinc-700 dark:hover:text-black dark:hover:bg-opacity-20 p-1 h-8 w-8"
-                onClick={() => router.push(pathname)}>
+                onClick={() => router.push(pathname)}
+              >
                 <XIcon className="" />
               </Button>
             </div>
@@ -241,7 +244,9 @@ export default function TaskDetails({
                   </div>
                 </CardTitle>
                 <div className="flex flex-wrap gap-x-2 items-center px-3">
-                  <p className="text-zinc-700 text-xs">Created At</p>
+                  <p className="text-zinc-700 text-xs dark:text-white">
+                    Created At
+                  </p>
                   <div className="flex items-center gap-2 text-sm">
                     <FaRegClock />
                     {data.createdAt && (
@@ -325,7 +330,8 @@ export default function TaskDetails({
                 confirmText="Delete Task"
                 onConfirm={handleTaskDelete}
                 message="Are you sure you want to delete this task?"
-                description="This action is permanent and cannot be undone">
+                description="This action is permanent and cannot be undone"
+              >
                 <Button size="sm" variant="destructive">
                   Delete task <IoTrashOutline />
                 </Button>
@@ -334,7 +340,8 @@ export default function TaskDetails({
                 onClick={handleUpdateTask}
                 size="sm"
                 disabled={loading.updateTask}
-                className="col-start-4 self-end">
+                className="col-start-4 self-end"
+              >
                 {loading.updateTask ? "Saving.." : "Save changes"}
               </Button>
             </CardFooter>

@@ -21,7 +21,8 @@ export default function TaskDescription({
           }}
           size="xs"
           variant="secondary"
-          className="w-16 border text-zinc-600 rounded-sm">
+          className="w-16 border text-zinc-600 rounded-sm"
+        >
           Edit
         </Button>
       </span>
@@ -34,7 +35,7 @@ export default function TaskDescription({
             setEditOpen(false);
           }}
           disabled={!editOpen}
-          className="my-2 disabled:cursor-default"
+          className="my-2 disabled:cursor-default placeholder:text-gray-100"
           placeholder="Add description here"
           value={description}
         />

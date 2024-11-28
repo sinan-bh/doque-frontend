@@ -65,14 +65,15 @@ export function TemplateCard({ template }: { template: Template }) {
             {template.description}
           </p>
           <div className="mt-2 mb-1">
-            <h4 className="text-sm text-gray-800 font-medium">
+            <h4 className="text-sm text-gray-800 font-medium dark:text-gray-500">
               Spaces: {template.spaces.length}
             </h4>
             <ul className="flex flex-wrap gap-1">
               {template.spaces.map((s, i) => (
                 <li
                   className="text-xs bg-zinc-200 dark:bg-zinc-900 py-1 px-2 rounded w-fit"
-                  key={i}>
+                  key={i}
+                >
                   {s.name}
                 </li>
               ))}
@@ -91,7 +92,8 @@ export function TemplateCard({ template }: { template: Template }) {
               handleCreate();
             }}
             id={`template_form_${template.name}`}
-            className="flex items-center gap-2 flex-wrap pt-4">
+            className="flex items-center gap-2 flex-wrap pt-4"
+          >
             <Label htmlFor="title" className="flex-shrink-0 font-semibold">
               Workspace Name:
             </Label>
@@ -121,7 +123,8 @@ export function TemplateCard({ template }: { template: Template }) {
                       background: list.color && list.color + "33",
                       color: list.color,
                     }}
-                    className="text-sm flex-shrink-0 text-gray-500 bg-gray-100 rounded py-1 px-2">
+                    className="text-sm flex-shrink-0 text-gray-500 bg-gray-100 rounded py-1 px-2"
+                  >
                     {list.name}
                   </li>
                 ))}

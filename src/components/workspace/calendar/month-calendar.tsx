@@ -87,7 +87,8 @@ const MonthCalendar: React.FC = () => {
       <div className="flex items-center justify-end p-4 bg-white shadow-md rounded-t-lg dark:bg-darkBg">
         <button
           onClick={handlePreviousMonth}
-          className="text-gray-600 hover:text-gray-800 px-3 dark:text-gray-200">
+          className="text-gray-600 hover:text-gray-800 px-3 dark:text-gray-200"
+        >
           &lt;
         </button>
 
@@ -99,16 +100,18 @@ const MonthCalendar: React.FC = () => {
 
         <button
           onClick={handleNextMonth}
-          className="text-gray-600 hover:text-gray-800 px-3 dark:text-gray-200">
+          className="text-gray-600 hover:text-gray-800 px-3 dark:text-gray-200"
+        >
           &gt;
         </button>
       </div>
 
-      <div className="grid grid-cols-7 border-t border-gray-300 shadow-md bg-gray-100">
+      <div className="grid grid-cols-7 border-t border-gray-300 shadow-md bg-gray-100 dark:border-none dark:border-gray-50">
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
           <div
             key={index}
-            className="text-center  bg-gray-100 text-gray-600 font-semibold dark:bg-darkBg dark:text-gray-200">
+            className="text-center  bg-gray-100 text-gray-600 font-semibold dark:bg-darkBg dark:text-gray-200"
+          >
             {day}
           </div>
         ))}
@@ -118,13 +121,15 @@ const MonthCalendar: React.FC = () => {
             key={index}
             href={`/w/${workSpaceId}/calendar?tab=Day&date=${
               currentDate.month() + 1
-            }-${dayInfo.day}`}>
+            }-${dayInfo.day}`}
+          >
             <div
               className={`relative flex justify-center items-center h-20 border border-gray-200 dark:bg-darkBg hover:bg-gray-300 dark:hover:bg-zinc-700 ${
                 dayInfo.isCurrentMonth
                   ? "bg-white hover:bg-gray-50"
                   : "bg-gray-50 text-gray-400"
-              }`}>
+              }`}
+            >
               <span className="absolute top-2 right-2 text-sm font-bold">
                 {dayInfo.day}
               </span>
@@ -132,14 +137,15 @@ const MonthCalendar: React.FC = () => {
                 <div className="text-xs">
                   {tasksByDay[dayInfo.day].length === 1 ? (
                     <span
-                      className={clsx("text-white rounded-full px-2 py-1", {
+                      className={clsx("text-white  rounded-full px-2 py-1", {
                         "bg-red-400":
                           tasksByDay[dayInfo.day][0].priority === "high",
                         "bg-yellow-500":
                           tasksByDay[dayInfo.day][0].priority === "medium",
                         "bg-green-500":
                           tasksByDay[dayInfo.day][0].priority === "ow",
-                      })}>
+                      })}
+                    >
                       {tasksByDay[dayInfo.day][0].title}
                     </span>
                   ) : (

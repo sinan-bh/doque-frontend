@@ -34,14 +34,11 @@ const months = [
   "December",
 ];
 
-
-
-
 const CalendarSmall = ({ className }: { className?: string }) => {
-  const dispatch = useAppDispatch()
-  const {allTasks} = useAppSelector(state=>state.calendar)
+  const dispatch = useAppDispatch();
+  const { allTasks } = useAppSelector((state) => state.calendar);
   const router = useRouter();
-  const {workSpaceId} : {workSpaceId: string} = useParams()
+  const { workSpaceId }: { workSpaceId: string } = useParams();
   const searchParams = useSearchParams();
   const chosenDateParam = searchParams.get("date");
   const chosenDate = chosenDateParam
@@ -85,7 +82,9 @@ const CalendarSmall = ({ className }: { className?: string }) => {
 
   const setChosenDate = (date: Date) => {
     const formattedDate = moment(date).format("MM-DD");
-    router.push(`/w/${workSpaceId}/calendar?${createQueryString("date", formattedDate)}`);
+    router.push(
+      `/w/${workSpaceId}/calendar?${createQueryString("date", formattedDate)}`
+    );
   };
 
   useEffect(() => {
@@ -110,31 +109,37 @@ const CalendarSmall = ({ className }: { className?: string }) => {
     };
   }, []);
 
-  useEffect(()=> {
-    dispatch(fetchCalendarData({workSpaceId}))
-  },[workSpaceId,dispatch])
+  useEffect(() => {
+    dispatch(fetchCalendarData({ workSpaceId }));
+  }, [workSpaceId, dispatch]);
 
   const renderHeader = () => (
     <div className="flex justify-between items-center min-w-[300px] py-5 dark:text-white">
-      <button onClick={prevMonth} className="text-gray-500 hover:text-black">
+      <button
+        onClick={prevMonth}
+        className="text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
+      >
         &#x276E;
       </button>
       <div className="flex space-x-5 items-center">
         <div className="relative inline-block">
           <div
             className="cursor-pointer p-2 rounded-lg hover:bg-gray-100 dark:hover:text-black"
-            onClick={() => setMonthPickerOpen(!isMonthPickerOpen)}>
+            onClick={() => setMonthPickerOpen(!isMonthPickerOpen)}
+          >
             {format(currentMonth, "MMMM")}
           </div>
           {isMonthPickerOpen && (
             <div
               ref={monthPickerRef}
-              className="absolute z-10 right-1 bg-white shadow-lg p-3 mt-1 rounded-lg w-30 max-h-60 overflow-y-scroll dark:bg-black">
+              className="absolute z-10 right-1 bg-white shadow-lg p-3 mt-1 rounded-lg w-30 max-h-60 overflow-y-scroll dark:bg-black"
+            >
               {months.map((month, index) => (
                 <div
                   key={index}
                   className="cursor-pointer hover:bg-blue-100 p-2 rounded-lg dark:hover:text-black"
-                  onClick={() => onMonthSelect(index)}>
+                  onClick={() => onMonthSelect(index)}
+                >
                   {month}
                 </div>
               ))}
@@ -145,13 +150,17 @@ const CalendarSmall = ({ className }: { className?: string }) => {
         <div className="relative inline-block">
           <div
             className="cursor-pointer p-2 rounded-lg hover:bg-gray-100 dark:hover:text-black"
-            onClick={() => setYearPickerOpen(!isYearPickerOpen)}>
+            onClick={() => setYearPickerOpen(!isYearPickerOpen)}
+          >
             {format(currentMonth, "yyyy")}
           </div>
           {isYearPickerOpen && renderYearPicker()}
         </div>
       </div>
-      <button onClick={nextMonth} className="text-gray-500 hover:text-black">
+      <button
+        onClick={nextMonth}
+        className="text-gray-500 hover:text-black dark:text-gray-300 dark:hover:text-white"
+      >
         &#x276F;
       </button>
     </div>
@@ -160,14 +169,16 @@ const CalendarSmall = ({ className }: { className?: string }) => {
   const renderYearPicker = () => (
     <div
       ref={yearPickerRef}
-      className="absolute z-10 bg-white shadow-lg p-3 mt-1 right-1 rounded-lg w-30 max-h-60 overflow-y-scroll dark:bg-black dark:text-white">
+      className="absolute z-10 bg-white shadow-lg p-3 mt-1 right-1 rounded-lg w-30 max-h-60 overflow-y-scroll dark:bg-black dark:text-white"
+    >
       {years.map((year) => (
         <div
           key={year}
           className={`cursor-pointer hover:bg-blue-100 p-2 rounded-lg flex justify-between items-center dark:hover:bg-gray-100 dark:hover:text-black ${
             year === currentMonth.getFullYear() ? "font-bold" : ""
           }`}
-          onClick={() => onYearSelect(year)}>
+          onClick={() => onYearSelect(year)}
+        >
           <span>{year}</span>
           {year === currentMonth.getFullYear() && (
             <span className="text-blue-500">&#10003;</span>
@@ -184,7 +195,10 @@ const CalendarSmall = ({ className }: { className?: string }) => {
 
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={i} className="text-center text-gray-500 text-xs dark:text-white">
+        <div
+          key={i}
+          className="text-center text-gray-500 text-xs dark:text-white"
+        >
           {format(addDays(startDate, i), dateFormat)}
         </div>
       );
@@ -198,22 +212,21 @@ const CalendarSmall = ({ className }: { className?: string }) => {
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
     const endDate = endOfWeek(monthEnd);
-  
+
     const rows = [];
     let days = [];
     let day = startDate;
-  
+
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
-  
-        // Find tasks that are due on this day
-        const tasksForDay = allTasks.filter(task =>
+
+        const tasksForDay = allTasks.filter((task) =>
           isSameDay(new Date(task.dueDate), cloneDay)
         );
-  
+
         const taskCount = tasksForDay.length;
-  
+
         days.push(
           <div
             key={day.toString()}
@@ -222,7 +235,7 @@ const CalendarSmall = ({ className }: { className?: string }) => {
                 ? "text-gray-300 dark:text-gray-400"
                 : isSameDay(day, chosenDate)
                 ? "bg-black bg-opacity-10 text-white rounded-full dark:bg-gray-500 dark:text-white"
-                : isToday(day) 
+                : isToday(day)
                 ? "bg-blue-500 text-white rounded-full "
                 : "text-gray-700 hover:bg-gray-200 rounded-full dark:text-white dark:hover:text-black"
             }`}
@@ -247,7 +260,6 @@ const CalendarSmall = ({ className }: { className?: string }) => {
     }
     return <div>{rows}</div>;
   };
-    
 
   return (
     <div className={`${className} p-2 rounded-lg`}>

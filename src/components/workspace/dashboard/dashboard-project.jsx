@@ -17,7 +17,10 @@ export default function DashboardProject() {
         <div className="font-semibold text-xs text-gray-600 flex items-center cursor-pointer">
           <NewSpaceButton>
             <div className="flex items-center">
-              <IoMdAddCircleOutline size={15} className="mr-1" />
+              <IoMdAddCircleOutline
+                size={15}
+                className="mr-1 dark:text-white"
+              />
               <span className="dark:text-gray-300">Add New Project</span>
             </div>
           </NewSpaceButton>

@@ -148,7 +148,7 @@ export default function AssignTaskToMembers({
                   />
                   <AvatarFallback />
                 </Avatar>
-                <p className="text-xs text-zinc-700 min-h-2">
+                <p className="text-xs text-zinc-700 min-h-2 dark:text-gray-300 mt-1">
                   {members.find((m) => member === m._id)?.firstName}
                 </p>
               </div>

@@ -30,7 +30,7 @@ export default function ChatList() {
   }, [dispatch, workSpaceId]);
 
   return (
-    <div className="w-2/4 h-full p-4 bg-gray-100 overflow-auto hidden sm:block">
+    <div className="w-2/4 h-full p-4 bg-gray-100 overflow-auto hidden sm:block dark:bg-black">
       <div className="flex items-center mb-4">
         <Avatar className="w-7 h-7 mr-4 sm:w-10 sm:h-10">
           <AvatarImage
@@ -56,7 +56,7 @@ export default function ChatList() {
         {filteredWorkspaces?.map((chat) => (
           <Link
             key={chat._id}
-            className="flex items-center justify-between p-2 hover:bg-gray-200 rounded-lg cursor-pointer"
+            className="flex items-center justify-between p-2 hover:bg-gray-200 rounded-lg cursor-pointer dark:hover:bg-gray-800"
             href={`/w/${chat._id}/chat`}
           >
             <div className="flex items-center">

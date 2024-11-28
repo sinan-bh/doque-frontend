@@ -104,7 +104,7 @@ export default function SearchField() {
   return (
     <div className="relative w-full" ref={searchContainerRef}>
       <span className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-        <IoIosSearch className="text-gray-600 text-xl" />
+        <IoIosSearch className="text-gray-600 text-xl dark:text-gray-300" />
       </span>
 
       <input
@@ -112,7 +112,7 @@ export default function SearchField() {
         placeholder="Search Workspaces..."
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
-        className="w-full px-8 text-sm py-2 pl-8 pr-8 outline-none text-black placeholder:text-gray-600  border-b-2 border-gray-500 bg-transparent dark:bg-darkBg"
+        className="w-full px-8 text-sm py-2 pl-8 pr-8 outline-none text-black placeholder:text-gray-600  border-b-2 border-gray-500 bg-transparent dark:bg-darkBg dark:text-white dark:placeholder:text-gray-300"
         onFocus={() => {
           if (searchValue === "") setShowHistory(true);
         }}

@@ -113,7 +113,7 @@ const HighPriorityTask: React.FC = () => {
         <div>
           {selectedProjectId ? (
             <Link href={`/w/${workSpaceId}/spaces/${selectedProjectId}`}>
-              <p className="h-full flex justify-center items-center text-gray-500 cursor-pointer">
+              <p className="h-full flex justify-center items-center text-gray-500 cursor-pointer dark:text-white">
                 Assign High Priority Task
               </p>
             </Link>

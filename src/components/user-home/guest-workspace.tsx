@@ -20,7 +20,7 @@ export default function GuestWorkSpaces() {
     <>
       {guestWorkSpaces.length > 0 && (
         <>
-          <h2 className="text-1xl sm:text-2xl md:text-2xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4">
+          <h2 className="text-1xl sm:text-2xl md:text-2xl text-[#3B3C3D] font-bold ml-5 mt-8 mb-4 dark:text-white">
             Guest Workspaces
           </h2>
           <hr />

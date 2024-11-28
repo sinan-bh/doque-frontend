@@ -16,7 +16,7 @@ export default function ChatDetails() {
   }, [dispatch]);
 
   return (
-    <div className="w-2/4 h-full p-4 bg-gray-50 overflow-auto hidden lg:block">
+    <div className="w-2/4 h-full p-4 bg-gray-50 overflow-auto hidden lg:block dark:bg-black">
       {/* <h2 className="font-bold text-lg mb-4">Designers</h2>
       <p className="text-sm mb-4">We are a Digital Designers team.</p> */}
       <h3 className="font-bold mb-2">Members</h3>

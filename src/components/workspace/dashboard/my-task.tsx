@@ -65,17 +65,21 @@ export default function MyTask() {
           {assignedTask.map((task) => (
             <div
               key={task._id}
-              className="group flex-shrink-0 w-60 h-28 border border-gray-500  dark:bg-darkBg p-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300">
+              className="group flex-shrink-0 flex w-60 h-28 border border-gray-500  dark:bg-darkBg p-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300"
+            >
               <Link
-                href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${task._id}&list=${task.status}`}>
+                href={`/w/${workSpaceId}/spaces/${selectedProjectId}?task=${task._id}&list=${task.status}`}
+              >
                 <p
                   className="text-sm font-medium dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap "
-                  title={task.title}>
+                  title={task.title}
+                >
                   {task.title}
                 </p>
                 <p
                   className="text-xs text-gray-600 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap "
-                  title={task.description}>
+                  title={task.description}
+                >
                   {task.description}
                 </p>
               </Link>

@@ -68,7 +68,7 @@ export default function ChatMessage({ message }: MessageProps) {
       )}
       <div className="mr-2">
         <p
-          className={`text-xs mb-1 ${
+          className={`text-xs mb-1 dark:text-gray-300 ${
             message?.sender?._id === currentUserId
               ? "text-right text-gray-500"
               : "text-left text-gray-600"
@@ -86,7 +86,7 @@ export default function ChatMessage({ message }: MessageProps) {
           <p>{message.content}</p>
         </div>
         <p
-          className={`text-xs mt-1 ${
+          className={`text-xs mt-1 dark:text-gray-300 ${
             message?.sender?._id === currentUserId
               ? "text-right text-gray-400"
               : "text-left text-gray-500"

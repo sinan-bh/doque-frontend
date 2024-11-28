@@ -53,7 +53,8 @@ const ProjectCard: React.FC = () => {
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 20 20"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -67,7 +68,8 @@ const ProjectCard: React.FC = () => {
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -83,9 +85,11 @@ const ProjectCard: React.FC = () => {
           <div className="flex justify-center cursor-pointer">
             <IoMdAddCircleOutline
               size={15}
-              className="mr-1 mt-1 text-gray-500"
+              className="mr-1 mt-1 text-gray-500 dark:text-white"
             />
-            <span className="text-gray-500">Add New Project</span>
+            <span className="text-gray-500 dark:text-white">
+              Add New Project
+            </span>
           </div>
         </NewSpaceButton>
       )}
@@ -95,7 +99,8 @@ const ProjectCard: React.FC = () => {
             <div
               key={project._id}
               className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-gray-100 border-b border-gray-700 dark:hover:bg-gray-800"
-              onClick={() => handleProjectClick(project._id)}>
+              onClick={() => handleProjectClick(project._id)}
+            >
               <div className="flex-grow">
                 <p className="text-sm font-medium">{project.name}</p>
                 <p className="text-xs text-gray-500">{project.description}</p>

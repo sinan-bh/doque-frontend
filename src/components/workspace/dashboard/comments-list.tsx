@@ -38,7 +38,7 @@ const Comment: React.FC<Message> = ({ messages }) => {
             </Avatar>
             <div className="flex-1 pl-3 overflow-hidden">
               <p className="text-xs truncate">{comment?.sender?.firstName}</p>
-              <p className="text-[10px] text-gray-600 truncate">
+              <p className="text-[10px] text-gray-600 truncate dark:text-gray-400">
                 {comment.content}
               </p>
             </div>

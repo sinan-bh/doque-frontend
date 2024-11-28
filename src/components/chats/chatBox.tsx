@@ -32,6 +32,8 @@ export default function ChatBox() {
     dispatch(fetchWorkspaceData());
     dispatch(fetchMessages({ workSpaceId }));
 
+    socket.emit("joinWorkspace", workSpaceId);
+
     socket.on("receiveMessage", (newMessage: Message) => {
       dispatch(socketMessage(newMessage));
     });
@@ -75,7 +77,7 @@ export default function ChatBox() {
   const workspaceName = workspaces?.find((w) => w._id === workSpaceId);
 
   return (
-    <div className="w-full h-full p-4 bg-white flex flex-col ">
+    <div className="w-full h-full p-4 bg-white flex flex-col dark:bg-black">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-xl">{workspaceName?.name}</h2>
       </div>
